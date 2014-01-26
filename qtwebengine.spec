@@ -10,7 +10,13 @@ License: GPL
 Group: System/Libraries
 BuildRequires: qmake5
 BuildRequires: pkgconfig(Qt5Gui)
+BuildRequires: pkgconfig(gtk+-2.0) pkgconfig(gconf-2.0)
 BuildRequires: pkgconfig(gnome-keyring-1)
+BuildRequires: pkgconfig(libpci)
+BuildRequires: pkgconfig(libudev)
+BuildRequires: pkgconfig(libpulse)
+BuildRequires: git-core
+BuildRequires: cups-devel
 BuildRequires: python
 BuildRequires: nasm
 BuildRequires: yasm
