@@ -46,6 +46,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(harfbuzz)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
+BuildRequires:	gperf
 
 %dependinglibpackage Qt5WebEngineWidgets 5
 %dependinglibpackage Qt5WebEngineCore 5
