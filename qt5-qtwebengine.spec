@@ -156,7 +156,7 @@ Demo browser utilizing Qt WebEngine
 %{_iconsdir}/hicolor/*/apps/qtwebengine.png
 
 %prep
-%setup -qn %{name}-opensource-src-%{version}
+%setup -qn qtwebengine-opensource-src-%{version}
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
