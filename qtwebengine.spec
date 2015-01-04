@@ -1,17 +1,17 @@
 %define _disable_ld_no_undefined 1
-%define beta tp1
 
 Summary:	Qt WebEngine
 Name:		qtwebengine
-Version:	0.1.0
-Release:	0.%{beta}.1
+Version:	5.4.0
+Release:	1
 License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
-Source0:	http://alfred.qt-project.org/qt/development_releases/qt/qtwebengine-tp/qtwebengine-opensource-src-%{version}-%{beta}.tar.gz
+Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/qtwebengine-opensource-src-%{version}.tar.xz
+Source1000:	%{name}.rpmlintrc
 BuildRequires:	git-core
 BuildRequires:	nasm
-BuildRequires:	python
+BuildRequires:	python2
 BuildRequires:	qmake5
 BuildRequires:	yasm
 BuildRequires:	cups-devel
@@ -21,50 +21,164 @@ BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
+BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5Network)
+BuildRequires:	pkgconfig(Qt5Qml)
+BuildRequires:	pkgconfig(Qt5Quick)
+BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(x11)
+BuildRequires:	pkgconfig(xcomposite)
+BuildRequires:	pkgconfig(xcursor)
+BuildRequires:	pkgconfig(xdamage)
+BuildRequires:	pkgconfig(xext)
+BuildRequires:	pkgconfig(xfixes)
+BuildRequires:	pkgconfig(xi)
+BuildRequires:	pkgconfig(xrandr)
+BuildRequires:	pkgconfig(xrender)
+BuildRequires:	pkgconfig(xtst)
+BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(libcap)
+BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(expat)
+BuildRequires:	pkgconfig(fontconfig)
+BuildRequires:	pkgconfig(freetype2)
+BuildRequires:	pkgconfig(harfbuzz)
+BuildRequires:	pkgconfig(nspr)
+BuildRequires:	pkgconfig(nss)
 
-#libpackage Qt5WebEngineWidgets 5
-#libpackage Qt5WebEngine 5
+%dependinglibpackage Qt5WebEngineWidgets 5
+%dependinglibpackage Qt5WebEngineCore 5
+%dependinglibpackage Qt5WebEngine 5
+
+%define engined %{mklibname -d Qt5WebEngine}
+%define cored %{mklibname -d Qt5WebEngineCore}
+%define widgetsd %{mklibname -d Qt5WebEngineWidgets}
 
 %description
 Chromium based web rendering engine for Qt
 
-%package devel
+%files
+%{_datadir}/qt5/icudtl.dat
+%{_datadir}/qt5/translations/qtwebengine_locales
+%{_datadir}/qt5/qtwebengine_resources.pak
+%{_libdir}/qt5/qml/QtWebEngine
+%{_libdir}/qt5/plugins/qtwebengine
+%{_libdir}/qt5/libexec/QtWebEngineProcess
+
+%package -n %{engined}
 Summary:	Development files for Qt WebEngine
 Group:		Development/KDE and Qt
-#Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
-#Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
-Provides:	%{mklibname -d Qt5WebEngine} = %{EVRD}
-Provides:	%{mklibname -d Qt5WebEngineWidgets} = %{EVRD}
-%if "%_lib" == "lib64"
-Provides:	devel(libQt5WebEngineCore(64bit))
-%else
-Provides:	devel(libQt5WebEngineCore())
-%endif
+Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
 
-%description
+%description -n %{engined}
 Development files for Qt WebEngine
+
+%files -n %{engined}
+%{_libdir}/cmake/Qt5WebEngine
+%{_libdir}/libQt5WebEngine.so
+%{_libdir}/libQt5WebEngine.prl
+%{_libdir}/pkgconfig/Qt5WebEngine.pc
+%{_libdir}/qt5/mkspecs/modules/qt_lib_webengine.pri
+%{_libdir}/qt5/mkspecs/modules/qt_lib_webengine_private.pri
+%{_includedir}/qt5/QtWebEngine
+
+%package -n %{cored}
+Summary:	Development files for Qt WebEngine Core
+Group:		Development/KDE and Qt
+Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
+
+%description -n %{cored}
+Development files for Qt WebEngine Core
+
+%files -n %{cored}
+%{_libdir}/cmake/Qt5WebEngineCore
+%{_libdir}/libQt5WebEngineCore.so
+%{_libdir}/libQt5WebEngineCore.prl
+%{_libdir}/pkgconfig/Qt5WebEngineCore.pc
+%{_libdir}/qt5/mkspecs/modules/qt_lib_webenginecore.pri
+%{_libdir}/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri
+
+%package -n %{widgetsd}
+Summary:	Development files for Qt WebEngine Widgets
+Group:		Development/KDE and Qt
+Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
+
+%description -n %{widgetsd}
+Development files for Qt WebEngine Widgets
+
+%files -n %{widgetsd}
+%{_libdir}/cmake/Qt5WebEngineWidgets
+%{_libdir}/libQt5WebEngineWidgets.so
+%{_libdir}/libQt5WebEngineWidgets.prl
+%{_libdir}/pkgconfig/Qt5WebEngineWidgets.pc
+%{_libdir}/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri
+%{_libdir}/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri
+%{_includedir}/qt5/QtWebEngineWidgets
+
+%package devel
+Summary:	Metapackage pulling in all QtWebEngine development files
+Group:		Development/KDE and Qt
+Requires:	%{engined} = %{EVRD}
+Requires:	%{cored} = %{EVRD}
+Requires:	%{widgetsd} = %{EVRD}
+
+%description devel
+Development files for Qt WebEngine
+
+%files devel
+
+%package examples
+Summary:	Examples for QtWebEngine
+Group:		Development/KDE and Qt
+Requires:	%{name}-devel = %{EVRD}
+
+%description examples
+Examples for QtWebEngine
+
+%files examples
+%{_libdir}/qt5/examples/webengine
+%{_libdir}/qt5/examples/webenginewidgets
 
 %package demobrowser
 Summary:	Demo browser utilizing Qt WebEngine
 Group:		Networking/WWW
 Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
+Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
 Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
 
 %description demobrowser
 Demo browser utilizing Qt WebEngine
 
+%files demobrowser
+%{_bindir}/browser
+%{_datadir}/applications/*.desktop
+%{_iconsdir}/hicolor/*/apps/qtwebengine.png
+
 %prep
-%setup -qn %{name}-opensource-src-%{version}-%{beta}
-%qmake_qt5 *.pro
+%setup -qn %{name}-opensource-src-%{version}
+
+# Yuuucccckkk... gyp
+ln -s %{_bindir}/python2 python
+ln -s %{_bindir}/gcc cc
+ln -s %{_bindir}/g++ c++
+export PATH=`pwd`:$PATH
+# chromium is a huge bogosity -- references to hidden SQLite symbols, has
+# asm files forcing an executable stack etc., but still tries to force ld
+# into --fatal-warnings mode...
+sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
+sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
+
+%qmake_qt5 qtwebengine.pro
 
 %build
+export PATH=`pwd`:$PATH
 %make
 
 %install
 %make install INSTALL_ROOT=%{buildroot}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
-install -c -m 755 examples/widgets/browser/browser %{buildroot}%{_bindir}/
+install -c -m 755 examples/webenginewidgets/browser/browser %{buildroot}%{_bindir}/
 cat >%{buildroot}%{_datadir}/applications/%{name}-browser.desktop <<EOF
 [Desktop Entry]
 Name=QtWebEngine Browser
@@ -79,35 +193,5 @@ Terminal=false
 EOF
 for i in 16 22 32 48 64; do
 	mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
-	convert examples/widgets/browser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
+	convert examples/webenginewidgets/browser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
 done
-
-%files
-%{_datadir}/qt5/translations/qtwebengine_locales
-%{_datadir}/qt5/qtwebengine_resources.pak
-%{_libdir}/qt5/qml/QtWebEngine
-%{_libdir}/qt5/plugins/qtwebengine
-%{_libdir}/libQt5WebEngineCore.so
-
-%files devel
-%{_libdir}/cmake/Qt5WebEngine
-%{_libdir}/cmake/Qt5WebEngineWidgets
-%{_libdir}/libQt5WebEngine.so
-%{_libdir}/libQt5WebEngine.prl
-%{_libdir}/libQt5WebEngineWidgets.so
-%{_libdir}/libQt5WebEngineWidgets.prl
-%{_libdir}/pkgconfig/Qt5WebEngine.pc
-%{_libdir}/pkgconfig/Qt5WebEngineWidgets.pc
-%{_libdir}/qt5/examples/quick/quicknanobrowser
-%{_libdir}/qt5/examples/widgets/browser
-%{_libdir}/qt5/examples/widgets/fancybrowser
-%{_libdir}/qt5/mkspecs/modules/*.pri
-%{_libdir}/qt5/libexec/QtWebEngineProcess
-%{_includedir}/qt5/QtWebEngine
-%{_includedir}/qt5/QtWebEngineWidgets
-
-%files demobrowser
-%{_bindir}/browser
-%{_datadir}/applications/*.desktop
-%{_iconsdir}/hicolor/*/apps/qtwebengine.png
-
