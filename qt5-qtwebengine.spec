@@ -1,7 +1,7 @@
 %define _disable_ld_no_undefined 1
 
 Summary:	Qt WebEngine
-Name:		qtwebengine
+Name:		qt5-qtwebengine
 Version:	5.4.0
 Release:	1
 License:	GPLv2
