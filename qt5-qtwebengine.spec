@@ -48,6 +48,7 @@ BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
 BuildRequires:	gperf
 BuildRequires:	bison
+BuildRequires:	qt5-qtquick-private-devel
 
 %dependinglibpackage Qt5WebEngineWidgets 5
 %dependinglibpackage Qt5WebEngineCore 5
