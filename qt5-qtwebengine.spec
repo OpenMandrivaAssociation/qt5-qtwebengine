@@ -15,6 +15,9 @@ BuildRequires:	python2
 BuildRequires:	qmake5
 BuildRequires:	yasm
 BuildRequires:	cups-devel
+BuildRequires:	gperf
+BuildRequires:	bison
+BuildRequires:	imagemagick
 BuildRequires:	pkgconfig(gconf-2.0)
 BuildRequires:	pkgconfig(gnome-keyring-1)
 BuildRequires:	pkgconfig(gtk+-2.0)
@@ -47,8 +50,6 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(harfbuzz)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
-BuildRequires:	gperf
-BuildRequires:	bison
 BuildRequires:	qt5-qtquick-private-devel
 
 %dependinglibpackage Qt5WebEngineWidgets 5
