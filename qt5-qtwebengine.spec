@@ -173,7 +173,9 @@ export PATH=`pwd`:$PATH
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
 sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-
+%ifarch armv7hl
+export GYP_DEFINES="target_arch=arm arm_float_abi=hard"
+%endif
 %qmake_qt5 qtwebengine.pro
 
 %build
