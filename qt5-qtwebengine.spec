@@ -2,7 +2,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.4.0
+Version:	5.4.1
 Release:	1
 License:	GPLv2
 Group:		System/Libraries
