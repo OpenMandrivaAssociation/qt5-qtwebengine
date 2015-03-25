@@ -24,6 +24,7 @@ BuildRequires:	cups-devel
 BuildRequires:	gperf
 BuildRequires:	bison
 BuildRequires:	imagemagick
+BuildRequires:	jpeg-devel
 BuildRequires:	pkgconfig(gconf-2.0)
 BuildRequires:	pkgconfig(gnome-keyring-1)
 BuildRequires:	pkgconfig(gtk+-2.0)
