@@ -1,13 +1,19 @@
 %define _disable_ld_no_undefined 1
+%define beta alpha
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.4.1
+Version:	5.5.0
+%if "%{beta}" != ""
+Release:	0.%{beta}.1
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/qtwebengine-opensource-src-%{version}-%{beta}.tar.xz
+%else
 Release:	1
+Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/qtwebengine-opensource-src-%{version}.tar.xz
+%endif
 License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
-Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/qtwebengine-opensource-src-%{version}.tar.xz
 Source1000:	%{name}.rpmlintrc
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -29,6 +35,7 @@ BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5Network)
 BuildRequires:	pkgconfig(Qt5Qml)
 BuildRequires:	pkgconfig(Qt5Quick)
+BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(x11)
@@ -161,7 +168,7 @@ Demo browser utilizing Qt WebEngine
 %{_iconsdir}/hicolor/*/apps/qtwebengine.png
 
 %prep
-%setup -qn qtwebengine-opensource-src-%{version}
+%setup -qn qtwebengine-opensource-src-%{version}%{?beta:-%{beta}}
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
@@ -184,6 +191,7 @@ export PATH=`pwd`:$PATH
 %make
 
 %install
+export PATH=`pwd`:$PATH
 %make install INSTALL_ROOT=%{buildroot}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
 install -c -m 755 examples/webenginewidgets/browser/browser %{buildroot}%{_bindir}/
