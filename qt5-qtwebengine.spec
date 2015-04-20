@@ -5,7 +5,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.5.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/qtwebengine-opensource-src-%{version}-%{beta}.tar.xz
 %else
 Release:	1
@@ -185,7 +185,7 @@ sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 export target_arch="arm"
 export GYP_DEFINES="target_arch=arm arm_float_abi=hard"
 %endif
-%qmake_qt5 qtwebengine.pro
+%qmake_qt5 qtwebengine.pro WEBENGINE_CONFIG="proprietary_codecs"
 
 %build
 export PATH=`pwd`:$PATH
