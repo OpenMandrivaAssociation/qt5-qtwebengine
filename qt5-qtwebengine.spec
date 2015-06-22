@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta
+%define beta rc
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
