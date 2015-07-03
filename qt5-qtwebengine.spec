@@ -1,11 +1,11 @@
 %define _disable_ld_no_undefined 1
-%define beta rc
+%define beta %nil
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.5.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	1.%{beta}.1
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/qtwebengine-opensource-src-%{version}-%{beta}.tar.xz
 %else
 Release:	1
