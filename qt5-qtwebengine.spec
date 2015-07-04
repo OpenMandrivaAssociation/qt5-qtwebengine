@@ -1,15 +1,17 @@
 %define _disable_ld_no_undefined 1
-%define beta
+%define beta %nil
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.5.0
 %if "%{beta}" != ""
 Release:	1.%{beta}.1
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/qtwebengine-opensource-src-%{version}-%{beta}.tar.xz
+%define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
-Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/qtwebengine-opensource-src-%{version}.tar.xz
+%define qttarballdir qtwebengine-opensource-src-%{version}
+Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
 License:	GPLv2
 Group:		System/Libraries
@@ -69,7 +71,7 @@ BuildRequires:	qt5-qtquick-private-devel
 %define widgetsd %{mklibname -d Qt5WebEngineWidgets}
 
 %description
-Chromium based web rendering engine for Qt
+Chromium based web rendering engine for Qt.
 
 %files
 %{_datadir}/qt5/icudtl.dat
@@ -85,7 +87,7 @@ Group:		Development/KDE and Qt
 Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
 
 %description -n %{engined}
-Development files for Qt WebEngine
+Development files for Qt WebEngine.
 
 %files -n %{engined}
 %{_libdir}/cmake/Qt5WebEngine
@@ -102,7 +104,7 @@ Group:		Development/KDE and Qt
 Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
 
 %description -n %{cored}
-Development files for Qt WebEngine Core
+Development files for Qt WebEngine Core.
 
 %files -n %{cored}
 %{_libdir}/cmake/Qt5WebEngineCore
@@ -118,7 +120,7 @@ Group:		Development/KDE and Qt
 Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
 
 %description -n %{widgetsd}
-Development files for Qt WebEngine Widgets
+Development files for Qt WebEngine Widgets.
 
 %files -n %{widgetsd}
 %{_libdir}/cmake/Qt5WebEngineWidgets
@@ -137,7 +139,7 @@ Requires:	%{cored} = %{EVRD}
 Requires:	%{widgetsd} = %{EVRD}
 
 %description devel
-Development files for Qt WebEngine
+Development files for Qt WebEngine.
 
 %files devel
 
@@ -147,7 +149,7 @@ Group:		Development/KDE and Qt
 Requires:	%{name}-devel = %{EVRD}
 
 %description examples
-Examples for QtWebEngine
+Examples for QtWebEngine.
 
 %files examples
 %{_libdir}/qt5/examples/webengine
@@ -161,7 +163,7 @@ Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
 Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
 
 %description demobrowser
-Demo browser utilizing Qt WebEngine
+Demo browser utilizing Qt WebEngine.
 
 %files demobrowser
 %{_bindir}/browser
@@ -169,7 +171,7 @@ Demo browser utilizing Qt WebEngine
 %{_iconsdir}/hicolor/*/apps/qtwebengine.png
 
 %prep
-%setup -qn qtwebengine-opensource-src-%{version}%{?beta:-%{beta}}
+%setup -qn %{qttarballdir}
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
