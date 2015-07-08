@@ -1,0 +1,13 @@
+diff --git a/src/core/gyp_run.pro b/src/core/gyp_run.pro
+index 4c6eb8c..ff5ea78 100644
+--- a/src/core/gyp_run.pro
++++ b/src/core/gyp_run.pro
+@@ -83,6 +83,8 @@ cross_compile {
+ 
+ contains(QT_ARCH, "x86_64"): GYP_ARGS += "-D target_arch=x64"
+ contains(QT_ARCH, "i386"): GYP_ARGS += "-D target_arch=ia32"
++contains(QT_ARCH, "arm64"): GYP_ARGS += "-D target_arch=arm64"
++contains(QT_ARCH, "arm"): GYP_ARGS += "-D target_arch=arm"
+ 
+ contains(WEBENGINE_CONFIG, proprietary_codecs): GYP_ARGS += "-Dproprietary_codecs=1 -Dffmpeg_branding=Chrome -Duse_system_ffmpeg=0"
+ 

@@ -17,6 +17,7 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
+Patch0:		add-arm64-arm-support-wo-crosscompile.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	python2
@@ -172,6 +173,7 @@ Demo browser utilizing Qt WebEngine.
 
 %prep
 %setup -qn %{qttarballdir}
+%apply_patches
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
