@@ -1,0 +1,25 @@
+diff -Naur qtwebengine-opensource-src-5.5.0/src/3rdparty/chromium/build/compiler_version.py qtwebengine-opensource-src-5.5.0.tpg/src/3rdparty/chromium/build/compiler_version.py
+--- qtwebengine-opensource-src-5.5.0/src/3rdparty/chromium/build/compiler_version.py	2015-09-02 17:40:08.954825074 +0000
++++ qtwebengine-opensource-src-5.5.0.tpg/src/3rdparty/chromium/build/compiler_version.py	2015-06-29 20:09:36.000000000 +0000
+@@ -56,7 +56,7 @@
+     if tool == "compiler":
+       compiler = compiler + " -dumpversion"
+       # 4.6
+-      version_re = re.compile(r"(\d+)")
++      version_re = re.compile(r"(\d+)\.(\d+)")
+     elif tool == "assembler":
+       compiler = compiler + " -Xassembler --version -x assembler -c /dev/null"
+       # Unmodified: GNU assembler (GNU Binutils) 2.24
+@@ -88,11 +88,7 @@
+       raise subprocess.CalledProcessError(pipe.returncode, compiler)
+ 
+     parsed_output = version_re.match(tool_output)
+-    if tool == "compiler":
+-      result = parsed_output.group(1) + "1"
+-    else:
+-      result = parsed_output.group(1) + parsed_output.group(2)
+-
++    result = parsed_output.group(1) + parsed_output.group(2)
+     compiler_version_cache[cache_key] = result
+     return result
+   except Exception, e:

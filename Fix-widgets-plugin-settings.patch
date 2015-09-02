@@ -1,0 +1,60 @@
+From ca7036c75c4682b28141bfca833514920a8bdb05 Mon Sep 17 00:00:00 2001
+From: Allan Sandfeld Jensen <allan.jensen@theqtcompany.com>
+Date: Wed, 15 Jul 2015 11:14:50 +0200
+Subject: [PATCH 1/1] Fix widgets plugin settings
+
+Connect the user setting to the webengine settings, and make it
+available in the demo browser
+
+Change-Id: Id4da8a4125a9f982cb687d433b6fce123e72c4c7
+Reviewed-by: Joerg Bornemann <joerg.bornemann@theqtcompany.com>
+---
+ examples/webenginewidgets/browser/browserapplication.cpp | 2 --
+ examples/webenginewidgets/browser/settings.cpp           | 2 --
+ src/webenginewidgets/api/qwebenginesettings.cpp          | 2 ++
+ 3 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/examples/webenginewidgets/browser/browserapplication.cpp b/examples/webenginewidgets/browser/browserapplication.cpp
+index ca28b2d0bf4e71f986e5806b186f06ef6ca105b5..d213ea871e248aa6fee39612ea70f90f8dcd45f0 100644
+--- a/examples/webenginewidgets/browser/browserapplication.cpp
++++ b/examples/webenginewidgets/browser/browserapplication.cpp
+@@ -283,9 +283,7 @@ void BrowserApplication::loadSettings()
+     defaultSettings->setAttribute(QWebEngineSettings::JavascriptEnabled, settings.value(QLatin1String("enableJavascript"), true).toBool());
+     defaultSettings->setAttribute(QWebEngineSettings::ScrollAnimatorEnabled, settings.value(QLatin1String("enableScrollAnimator"), true).toBool());
+ 
+-#if defined(QTWEBENGINE_PLUGINS)
+     defaultSettings->setAttribute(QWebEngineSettings::PluginsEnabled, settings.value(QLatin1String("enablePlugins"), true).toBool());
+-#endif
+ 
+     QString css = settings.value(QLatin1String("userStyleSheet")).toString();
+     setUserStyleSheet(defaultProfile, css, mainWindow());
+diff --git a/examples/webenginewidgets/browser/settings.cpp b/examples/webenginewidgets/browser/settings.cpp
+index 7ed5f707beedf9e938835c8d677ffc44783867f7..f5b0e30a9c1a48ac66359b0c972078b372c9a0b3 100644
+--- a/examples/webenginewidgets/browser/settings.cpp
++++ b/examples/webenginewidgets/browser/settings.cpp
+@@ -82,9 +82,7 @@ void SettingsDialog::loadDefaults()
+     downloadsLocation->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+ 
+     enableJavascript->setChecked(defaultSettings->testAttribute(QWebEngineSettings::JavascriptEnabled));
+-#if defined(QTWEBENGINE_PLUGINS)
+     enablePlugins->setChecked(defaultSettings->testAttribute(QWebEngineSettings::PluginsEnabled));
+-#endif
+ 
+     enableScrollAnimator->setChecked(defaultSettings->testAttribute(QWebEngineSettings::ScrollAnimatorEnabled));
+ 
+diff --git a/src/webenginewidgets/api/qwebenginesettings.cpp b/src/webenginewidgets/api/qwebenginesettings.cpp
+index dadc3bfe1894247f9159c440af1a8cbf654870ce..aaa93ab9f65dcf4fe9943ca77f0612675441d3bc 100644
+--- a/src/webenginewidgets/api/qwebenginesettings.cpp
++++ b/src/webenginewidgets/api/qwebenginesettings.cpp
+@@ -72,6 +72,8 @@ static WebEngineSettings::Attribute toWebEngineAttribute(QWebEngineSettings::Web
+         return WebEngineSettings::ScrollAnimatorEnabled;
+     case QWebEngineSettings::ErrorPageEnabled:
+         return WebEngineSettings::ErrorPageEnabled;
++    case QWebEngineSettings::PluginsEnabled:
++        return WebEngineSettings::PluginsEnabled;
+     default:
+         return WebEngineSettings::UnsupportedInCoreSettings;
+     }
+-- 
+2.4.6
+

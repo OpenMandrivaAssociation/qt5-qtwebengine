@@ -9,7 +9,7 @@ Release:	1.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	2
+Release:	3
 %define qttarballdir qtwebengine-opensource-src-%{version}
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
@@ -18,6 +18,10 @@ Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 Patch0:		add-arm64-arm-support-wo-crosscompile.patch
+Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
+Patch2:         gyp_conf.patch
+Patch3:         gcc50-fixes.diff
+Patch4:         Fix-widgets-plugin-settings.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	python2
@@ -174,6 +178,27 @@ Demo browser utilizing Qt WebEngine.
 %prep
 %setup -qn %{qttarballdir}
 %apply_patches
+
+# basic configuration
+myconf+=" -Duse_system_expat=1
+          -Duse_system_flac=1
+          -Duse_system_jsoncpp=1
+          -Duse_system_libevent=1
+          -Duse_system_libjpeg=1
+          -Duse_system_libpng=1
+          -Duse_system_libusb=1
+          -Duse_system_libxml=1
+          -Duse_system_libxslt=1
+          -Duse_system_opus=1
+          -Duse_system_snappy=1
+          -Duse_system_speex=1"
+
+pushd src/3rdparty/chromium/
+build/linux/unbundle/replace_gyp_files.py $myconf
+popd
+
+# reduce memory on linking
+export LDFLAGS="%{ldflags} -Wl,--reduce-memory-overheads -Wl,--no-keep-memory -Wl,--as-needed"
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python

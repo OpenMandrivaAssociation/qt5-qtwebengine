@@ -1,0 +1,37 @@
+diff --git a/src/core/config/desktop_linux.pri b/src/core/config/desktop_linux.pri
+index 679e555..1e8fd68 100644
+--- a/src/core/config/desktop_linux.pri
++++ b/src/core/config/desktop_linux.pri
+@@ -16,6 +16,32 @@ GYP_CONFIG += \
+     host_clang=0 \
+     clang=0 \
+     enable_plugins=1 \
++    use_pulseaudio=1 \
++    linux_link_libpci=1 \
++    linux_link_gsettings=1 \
++    linux_link_libspeechd=1 \
++    use_system_re2=1 \
++    use_system_yasm=1 \
++    use_system_opus=1 \
++    use_system_zlib=1 \
++    use_system_speex=1 \
++    use_system_expat=1 \
++    use_system_snappy=1 \
++    use_system_libpng=1 \
++    use_system_libxml=1 \
++    use_system_libjpeg=1 \
++    use_system_libwebp=1 \
++    use_system_libxslt=1 \
++    use_system_libsrtp=1 \
++    use_system_jsoncpp=1 \
++    use_system_libevent=1 \
++    use_system_protobuf=1 \
++    use_system_harfbuzz=1 \
++    use_system_xdg_utils=1 \
++    use_system_ffmpeg=0 \
++    build_ffmpegsumo=1 \
++    fastbuild=1 \
++    remove_webcore_debug_symbols=1 \
+ 
+ contains(QT_CONFIG, system-jpeg): GYP_CONFIG += use_system_libjpeg=1
+ 
