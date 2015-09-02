@@ -192,10 +192,12 @@ export GYP_DEFINES="target_arch=arm arm_float_abi=hard"
 %qmake_qt5 qtwebengine.pro WEBENGINE_CONFIG="proprietary_codecs"
 
 %build
+export STRIP=strip
 export PATH=`pwd`:$PATH
 %make
 
 %install
+export STRIP=strip
 export PATH=`pwd`:$PATH
 %make install INSTALL_ROOT=%{buildroot}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
