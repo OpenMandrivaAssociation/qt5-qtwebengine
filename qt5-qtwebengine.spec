@@ -20,7 +20,7 @@ Source1000:	%{name}.rpmlintrc
 Patch0:		add-arm64-arm-support-wo-crosscompile.patch
 Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
 Patch2:         gyp_conf.patch
-Patch3:         gcc50-fixes.diff
+#Patch3:         gcc50-fixes.diff
 Patch4:         Fix-widgets-plugin-settings.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
