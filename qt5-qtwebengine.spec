@@ -199,6 +199,9 @@ popd
 
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--reduce-memory-overheads -Wl,--no-keep-memory -Wl,--as-needed"
+export CC=gcc
+export CXX=g++
+export PYTHON=%{__python2}
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
