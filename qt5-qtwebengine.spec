@@ -188,6 +188,10 @@ Demo browser utilizing Qt WebEngine.
 %setup -qn %{qttarballdir}
 %apply_patches
 
+%if "%{__cc}" == "/usr/bin/clang"
+sed -i 's!host_clang=0!host_clang=1!g' src/core/config/desktop_linux.pri
+%endif
+
 # basic configuration
 myconf+=" -Duse_system_expat=1
           -Duse_system_flac=1
@@ -210,14 +214,10 @@ popd
 
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--reduce-memory-overheads -Wl,--no-keep-memory -Wl,--as-needed"
-#export CC=gcc
-#export CXX=g++
 export PYTHON=%{__python2}
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
-#ln -s %{_bindir}/gcc cc
-#ln -s %{_bindir}/g++ c++
 export PATH=`pwd`:$PATH
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
