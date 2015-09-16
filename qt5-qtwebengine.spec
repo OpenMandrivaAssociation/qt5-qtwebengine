@@ -21,7 +21,6 @@ Patch0:		add-arm64-arm-support-wo-crosscompile.patch
 Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
 Patch2:         gyp_conf.patch
 Patch3:		0001-allow-build-for-linux-clang-platform.patch
-#Patch3:         gcc50-fixes.diff
 Patch4:         Fix-widgets-plugin-settings.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -73,6 +72,7 @@ BuildRequires:	pkgconfig(flac)
 BuildRequires:	pkgconfig(libxslt)
 BuildRequires:	pkgconfig(libevent)
 BuildRequires:	snappy-devel
+BuildRequires:	srtp-devel
 BuildRequires:	re2c
 BuildRequires:	qt5-qtquick-private-devel
 
@@ -210,14 +210,14 @@ popd
 
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--reduce-memory-overheads -Wl,--no-keep-memory -Wl,--as-needed"
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 export PYTHON=%{__python2}
 
 # Yuuucccckkk... gyp
 ln -s %{_bindir}/python2 python
-ln -s %{_bindir}/gcc cc
-ln -s %{_bindir}/g++ c++
+#ln -s %{_bindir}/gcc cc
+#ln -s %{_bindir}/g++ c++
 export PATH=`pwd`:$PATH
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
