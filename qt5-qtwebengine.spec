@@ -72,6 +72,7 @@ BuildRequires:	pkgconfig(speex)
 BuildRequires:	pkgconfig(flac)
 BuildRequires:	pkgconfig(libxslt)
 BuildRequires:	pkgconfig(libevent)
+BuildRequires:	snappy-devel
 BuildRequires:	re2c
 BuildRequires:	qt5-qtquick-private-devel
 
@@ -199,6 +200,7 @@ myconf+=" -Duse_system_expat=1
           -Duse_system_libxslt=1
           -Duse_system_opus=1
           -Duse_system_libevent=1
+	  -Duse_system_snappy=1
           -Duse_system_snappy=1
           -Duse_system_speex=1"
 
