@@ -20,6 +20,7 @@ Source1000:	%{name}.rpmlintrc
 Patch0:		add-arm64-arm-support-wo-crosscompile.patch
 Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
 Patch2:         gyp_conf.patch
+Patch3:		0001-allow-build-for-linux-clang-platform.patch
 #Patch3:         gcc50-fixes.diff
 Patch4:         Fix-widgets-plugin-settings.patch
 BuildRequires:	git-core
@@ -65,6 +66,13 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(harfbuzz)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
+BuildRequires:	pkgconfig(opus)
+BuildRequires:	pkgconfig(protobuf)
+BuildRequires:	pkgconfig(speex)
+BuildRequires:	pkgconfig(flac)
+BuildRequires:	pkgconfig(libxslt)
+BuildRequires:	pkgconfig(libevent)
+BuildRequires:	re2c
 BuildRequires:	qt5-qtquick-private-devel
 
 %dependinglibpackage Qt5WebEngineWidgets 5
@@ -190,6 +198,7 @@ myconf+=" -Duse_system_expat=1
           -Duse_system_libxml=1
           -Duse_system_libxslt=1
           -Duse_system_opus=1
+          -Duse_system_libevent=1
           -Duse_system_snappy=1
           -Duse_system_speex=1"
 

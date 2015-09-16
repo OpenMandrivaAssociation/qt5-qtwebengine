@@ -1,0 +1,13 @@
+diff --git a/tools/qmake/mkspecs/features/functions.prf b/tools/qmake/mkspecs/features/functions.prf
+index ef0320d..bc3c2eb 100644
+--- a/tools/qmake/mkspecs/features/functions.prf
++++ b/tools/qmake/mkspecs/features/functions.prf
+@@ -14,7 +14,7 @@ defineTest(isPlatformSupported) {
+ 
+   linux-g++*:!isGCCVersionSupported(): return(false)
+   !isPythonVersionSupported(): return(false)
+-  linux-g++*|win32-msvc2013|macx-clang: return(true)
++  linux-g++*|win32-msvc2013|clang|macx-clang: return(true)
+   boot2qt: return(true)
+ 
+   skipBuild("Qt WebEngine can currently only be built for Linux (GCC), Windows (MSVC 2013), OS X (XCode 5.1+) or Qt for Device Creation.")
