@@ -71,6 +71,8 @@ BuildRequires:	pkgconfig(speex)
 BuildRequires:	pkgconfig(flac)
 BuildRequires:	pkgconfig(libxslt)
 BuildRequires:	pkgconfig(libevent)
+BuildRequires:	pkgconfig(minizip)
+BuildRequires:	pkgconfig(zlib)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
 BuildRequires:	re2c
@@ -187,6 +189,9 @@ Demo browser utilizing Qt WebEngine.
 %prep
 %setup -qn %{qttarballdir}
 %apply_patches
+mkdir -p bin
+ln -s %{_bindir}/python2 bin/python
+export PATH=$PWD/bin:$PATH
 
 %if "%{__cc}" == "/usr/bin/clang"
 sed -i 's!host_clang=0!host_clang=1!g' src/core/config/desktop_linux.pri
@@ -205,7 +210,7 @@ myconf+=" -Duse_system_expat=1
           -Duse_system_opus=1
           -Duse_system_libevent=1
 	  -Duse_system_snappy=1
-          -Duse_system_snappy=1
+          -Duse_system_zlib=1
           -Duse_system_speex=1"
 
 pushd src/3rdparty/chromium/
