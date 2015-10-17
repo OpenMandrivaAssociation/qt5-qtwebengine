@@ -1,11 +1,14 @@
-diff --git a/src/core/config/desktop_linux.pri b/src/core/config/desktop_linux.pri
-index 679e555..1e8fd68 100644
---- a/src/core/config/desktop_linux.pri
-+++ b/src/core/config/desktop_linux.pri
-@@ -16,6 +16,32 @@ GYP_CONFIG += \
-     host_clang=0 \
-     clang=0 \
-     enable_plugins=1 \
+diff -Naur qtwebengine-opensource-src-5.5.1/src/core/config/desktop_linux.pri qtwebengine-opensource-src-5.5.1.tpg/src/core/config/desktop_linux.pri
+--- qtwebengine-opensource-src-5.5.1/src/core/config/desktop_linux.pri	2015-10-13 04:36:54.000000000 +0000
++++ qtwebengine-opensource-src-5.5.1.tpg/src/core/config/desktop_linux.pri	2015-10-17 08:50:35.779275824 +0000
+@@ -13,8 +13,34 @@
+     use_gnome_keyring=0 \
+     use_kerberos=0 \
+     use_pango=0 \
+-    host_clang=0 \
+-    clang=0 \
++    host_clang=1 \
++    clang=1 \
 +    use_pulseaudio=1 \
 +    linux_link_libpci=1 \
 +    linux_link_gsettings=1 \
