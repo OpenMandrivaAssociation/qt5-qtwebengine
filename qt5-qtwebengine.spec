@@ -18,7 +18,7 @@ Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 Patch0:		add-arm64-arm-support-wo-crosscompile.patch
-Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
+#Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
 Patch2:         gyp_conf.patch
 Patch3:		0001-allow-build-for-linux-clang-platform.patch
 Patch4:         Fix-widgets-plugin-settings.patch
