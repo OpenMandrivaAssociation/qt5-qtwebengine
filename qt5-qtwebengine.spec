@@ -218,7 +218,7 @@ build/linux/unbundle/replace_gyp_files.py $myconf
 popd
 
 # reduce memory on linking
-export LDFLAGS="%{ldflags} -Wl,--reduce-memory-overheads -Wl,--no-keep-memory -Wl,--as-needed"
+export LDFLAGS="%{ldflags} -Wl,--as-needed"
 export PYTHON=%{__python2}
 
 # Yuuucccckkk... gyp
