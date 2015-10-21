@@ -18,7 +18,7 @@ Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 Patch0:		add-arm64-arm-support-wo-crosscompile.patch
-#Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
+Patch1:         Add-support-for-Shockwave-Flash-plugin.patch
 Patch2:         gyp_conf.patch
 Patch3:		0001-allow-build-for-linux-clang-platform.patch
 Patch4:         Fix-widgets-plugin-settings.patch
@@ -77,6 +77,12 @@ BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
 BuildRequires:	re2c
 BuildRequires:	qt5-qtquick-private-devel
+# FIXME this is evil - the build system should be fixed properly
+# instead of making sure there's no previous version floating
+# around.
+# But as of 5.5.1, QtWebEngine will find system Qt5WebEngine and
+# use its headers -- preventing it from accessing new APIs
+BuildConflicts:	pkgconfig(Qt5WebEngineCore)
 
 %dependinglibpackage Qt5WebEngineWidgets 5
 %dependinglibpackage Qt5WebEngineCore 5
@@ -92,7 +98,7 @@ Chromium based web rendering engine for Qt.
 %files
 %{_datadir}/qt5/icudtl.dat
 %{_datadir}/qt5/translations/qtwebengine_locales
-%{_datadir}/qt5/qtwebengine_resources.pak
+%{_datadir}/qt5/qtwebengine_resources*.pak
 %{_libdir}/qt5/qml/QtWebEngine
 %{_libdir}/qt5/plugins/qtwebengine
 %{_libdir}/qt5/libexec/QtWebEngineProcess
