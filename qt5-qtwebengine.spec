@@ -203,6 +203,11 @@ export PATH=$PWD/bin:$PATH
 sed -i 's!host_clang=0!host_clang=1!g' src/core/config/desktop_linux.pri
 %endif
 
+%ifarch %arm
+export CC_host="%{__cc}"
+export CXX_host="%{__cxx}"
+%endif
+
 %ifarch aarch64
 export CC=gcc
 export CXX=g++
