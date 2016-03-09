@@ -203,6 +203,10 @@ export PATH=$PWD/bin:$PATH
 sed -i 's!host_clang=0!host_clang=1!g' src/core/config/desktop_linux.pri
 %endif
 
+%ifarch aarch64
+export CC=gcc
+export CXX=g++
+%endif
 # basic configuration
 myconf+=" -Duse_system_expat=1
           -Duse_system_flac=1
