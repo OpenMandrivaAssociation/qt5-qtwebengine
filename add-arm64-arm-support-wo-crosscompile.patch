@@ -1,13 +1,10 @@
-diff --git a/src/core/gyp_run.pro b/src/core/gyp_run.pro
-index 4c6eb8c..ff5ea78 100644
---- a/src/core/gyp_run.pro
-+++ b/src/core/gyp_run.pro
-@@ -83,6 +83,8 @@ cross_compile {
+--- qtwebengine-opensource-src-5.6.0/src/core/gyp_run.pro.0000~	2016-03-23 19:25:31.540046684 +0100
++++ qtwebengine-opensource-src-5.6.0/src/core/gyp_run.pro	2016-03-23 19:29:01.648880320 +0100
+@@ -86,6 +86,7 @@ contains(QT_ARCH, "arm") {
+ contains(QT_ARCH, "x86_64"): GYP_CONFIG += target_arch=x64
+ contains(QT_ARCH, "i386"): GYP_CONFIG += target_arch=ia32
+ contains(QT_ARCH, "arm64"): GYP_CONFIG += target_arch=arm64
++contains(QT_ARCH, "arm"): GYP_CONFIG += target_arch=arm
  
- contains(QT_ARCH, "x86_64"): GYP_ARGS += "-D target_arch=x64"
- contains(QT_ARCH, "i386"): GYP_ARGS += "-D target_arch=ia32"
-+contains(QT_ARCH, "arm64"): GYP_ARGS += "-D target_arch=arm64"
-+contains(QT_ARCH, "arm"): GYP_ARGS += "-D target_arch=arm"
- 
- contains(WEBENGINE_CONFIG, proprietary_codecs): GYP_ARGS += "-Dproprietary_codecs=1 -Dffmpeg_branding=Chrome -Duse_system_ffmpeg=0"
+ contains(WEBENGINE_CONFIG, use_proprietary_codecs): GYP_CONFIG += proprietary_codecs=1 ffmpeg_branding=Chrome
  

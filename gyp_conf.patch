@@ -1,13 +1,8 @@
---- qtwebengine-opensource-src-5.5.1/src/core/config/desktop_linux.pri.0002~	2015-10-21 16:36:37.754302387 +0200
-+++ qtwebengine-opensource-src-5.5.1/src/core/config/desktop_linux.pri	2015-10-21 16:38:35.170383655 +0200
-@@ -13,9 +13,35 @@ GYP_CONFIG += \
-     use_gnome_keyring=0 \
-     use_kerberos=0 \
-     use_pango=0 \
--    host_clang=0 \
--    clang=0 \
-+    host_clang=1 \
-+    clang=0 \
+--- qtwebengine-opensource-src-5.6.0/src/core/config/desktop_linux.pri.0002~	2016-03-23 19:31:20.198091954 +0100
++++ qtwebengine-opensource-src-5.6.0/src/core/config/desktop_linux.pri	2016-03-23 19:44:19.303513385 +0100
+@@ -5,6 +5,34 @@ include(linux.pri)
+ GYP_CONFIG += \
+     desktop_linux=1 \
      enable_plugins=1 \
 +    use_pulseaudio=1 \
 +    linux_link_libpci=1 \
@@ -35,6 +30,8 @@
 +    build_ffmpegsumo=1 \
 +    fastbuild=1 \
 +    remove_webcore_debug_symbols=1 \
++    proprietary_codecs=1 \
++    ffmpeg_branding=Chrome
  
- contains(QT_CONFIG, system-jpeg): GYP_CONFIG += use_system_libjpeg=1
- 
+ linux-clang: GYP_CONFIG += clang=1 host_clang=1 clang_use_chrome_plugins=0 make_clang_dir=/usr
+ else: GYP_CONFIG += clang=0 host_clang=0
