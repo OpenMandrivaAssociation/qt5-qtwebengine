@@ -52,6 +52,7 @@ BuildRequires:	pkgconfig(xfixes)
 BuildRequires:	pkgconfig(xi)
 BuildRequires:	pkgconfig(xrandr)
 BuildRequires:	pkgconfig(xrender)
+BuildRequires:	pkgconfig(xscrnsaver)
 BuildRequires:	pkgconfig(xtst)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(libcap)
@@ -62,6 +63,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(harfbuzz)
 BuildRequires:	pkgconfig(libwebp)
 BuildRequires:	pkgconfig(libwebpdemux)
+BuildRequires:	pkgconfig(jsoncpp)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
 BuildRequires:	pkgconfig(opus)
@@ -71,6 +73,7 @@ BuildRequires:	pkgconfig(flac)
 BuildRequires:	pkgconfig(libxslt)
 BuildRequires:	pkgconfig(libevent)
 BuildRequires:	pkgconfig(minizip)
+BuildRequires:	pkgconfig(vpx)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
@@ -96,6 +99,7 @@ Chromium based web rendering engine for Qt.
 
 %files
 %dir %{_datadir}/qt5
+%dir %{_datadir}/qt5/translations
 %{_datadir}/qt5/translations/qtwebengine_locales
 %{_datadir}/qt5/resources
 %{_libdir}/qt5/qml/QtWebEngine
@@ -226,7 +230,9 @@ myconf+=" -Duse_system_expat=1
           -Duse_system_libevent=1
 	  -Duse_system_snappy=1
           -Duse_system_zlib=1
-          -Duse_system_speex=1"
+          -Duse_system_speex=1
+          -Duse_proprietary_codecs=1
+          -Dffmpeg_branding=Chrome"
 
 pushd src/3rdparty/chromium/
 build/linux/unbundle/replace_gyp_files.py $myconf
