@@ -69,7 +69,7 @@ BuildRequires:	imagemagick
 BuildRequires:	jpeg-devel
 # /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
 # not working, well gcc-cpp need only to detect version
-#BuildRequires:	gcc-c++
+BuildRequires:	gcc-c++
 BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
@@ -247,8 +247,13 @@ Demo browser utilizing Qt WebEngine.
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
+# /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
+# not working, well gcc-cpp need only to detect version
+# https://bugs.chromium.org/p/webrtc/issues/detail?id=4397
+unset CC
+unset CXX
 #sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-sed -i 's!-Xassembler!-Xassemble!g' src/3rdparty/chromium/build/compiler_version.py
+#sed -i 's!-Xassembler!-Xassemble!g' src/3rdparty/chromium/build/compiler_version.py
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
   src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
