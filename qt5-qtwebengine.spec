@@ -67,6 +67,9 @@ BuildRequires:	bison
 BuildRequires:	ninja
 BuildRequires:	imagemagick
 BuildRequires:	jpeg-devel
+# /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
+# not working, well gcc-cpp need only to detect version
+BuildRequires:	gcc-c++
 BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
