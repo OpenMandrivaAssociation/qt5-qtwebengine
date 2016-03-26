@@ -1,0 +1,12 @@
+diff -ur qtwebengine-opensource-src-5.6.0-beta/tools/qmake/mkspecs/features/functions.prf qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag/tools/qmake/mkspecs/features/functions.prf
+--- qtwebengine-opensource-src-5.6.0-beta/tools/qmake/mkspecs/features/functions.prf	2015-12-14 16:27:24.000000000 +0100
++++ qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag/tools/qmake/mkspecs/features/functions.prf	2016-01-10 18:15:23.942032985 +0100
+@@ -87,7 +87,7 @@
+ }
+ 
+ defineReplace(extractCFlag) {
+-    CFLAGS = $$QMAKE_CC $$QMAKE_CFLAGS
++    CFLAGS = $$QMAKE_CC $$QMAKE_CFLAGS $$QMAKE_CFLAGS_RELEASE
+     OPTION = $$find(CFLAGS, $$1)
+     OPTION = $$split(OPTION, =)
+     return ($$member(OPTION, 1))

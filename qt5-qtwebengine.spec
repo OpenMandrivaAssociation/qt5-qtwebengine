@@ -11,30 +11,66 @@ Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d.
 %else
 Release:	1
 %define qttarballdir qtwebengine-opensource-src-%{version}
+#Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
 License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
-Patch0:		add-arm64-arm-support-wo-crosscompile.patch
-Patch2:         gyp_conf.patch
+# do not compile with -Wno-format, which also bypasses -Werror-format-security
+Patch0: 	qtwebengine-opensource-src-5.6.0-beta-no-format.patch
+# some tweaks to linux.pri (system libs, link libpci, run unbundling script,
+# do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
+Patch1: 	qtwebengine-opensource-src-5.6.0-rc-linux-pri.patch
+# quick hack to avoid checking for the nonexistent icudtl.dat and silence the
+# resulting warnings - not upstreamable as is because it removes the fallback
+# mechanism for the ICU data directory (which is not used in our builds because
+# we use the system ICU, which embeds the data statically) completely
+Patch2: 	qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
+# fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
+# ARM flags with our %%qmake_qt5 macro, including for the next patch
+Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
+# disable NEON vector instructions on ARM for now, the NEON code FTBFS due to
+# GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
+Patch4:		qtwebengine-opensource-src-5.6.0-beta-no-neon.patch
+# use the system NSPR prtime (based on Debian patch)
+# We already depend on NSPR, so it is useless to copy these functions here.
+# Debian uses this just fine, and I don't see relevant modifications either.
+Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
+# use the system ICU UTF functions
+# We already depend on ICU, so it is useless to copy these functions here.
+# I checked the history of that directory, and other than the renames I am
+# undoing, there were no modifications at all. Must be applied after Patch5.
+Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
+# fix the NSS/BoringSSL "chimera build" to call EnsureNSSHttpIOInit
+# backport of https://codereview.chromium.org/1385473003
+Patch7:		qtwebengine-opensource-src-5.6.0-beta-chimera-nss-init.patch
+# do not require SSE2 on i686
+# cumulative revert of upstream reviews 187423002, 308003004, 511773002 (parts
+# relevant to QtWebEngine only), 516543004, 1152053004 and 1161853008, along
+# with some custom fixes and improvements
+# also build V8 shared and twice on i686 (once for x87, once for SSE2)
+Patch8:		qtwebengine-opensource-src-5.6.0-rc-no-sse2.patch
+Patch9:		add-arm64-arm-support-wo-crosscompile.patch
+
 BuildRequires:	git-core
 BuildRequires:	nasm
+BuildRequires:	re2-devel
+BuildRequires:	re2c
 BuildRequires:	python2
 BuildRequires:	qmake5
 BuildRequires:	yasm
 BuildRequires:	cups-devel
 BuildRequires:	gperf
 BuildRequires:	bison
+BuildRequires:	ninja
 BuildRequires:	imagemagick
 BuildRequires:	jpeg-devel
-BuildRequires:	pkgconfig(gconf-2.0)
-BuildRequires:	pkgconfig(gnome-keyring-1)
-BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
+# QT5 part
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5Network)
@@ -43,7 +79,12 @@ BuildRequires:	pkgconfig(Qt5Quick)
 BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
+BuildRequires:	pkgconfig(Qt5Sensors)
+BuildRequires:	pkgconfig(Qt5Location)
+# end
 BuildRequires:	pkgconfig(x11)
+BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(egl)
 BuildRequires:	pkgconfig(xcomposite)
 BuildRequires:	pkgconfig(xcursor)
 BuildRequires:	pkgconfig(xdamage)
@@ -77,7 +118,6 @@ BuildRequires:	pkgconfig(vpx)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
-BuildRequires:	re2c
 BuildRequires:	qt5-qtquick-private-devel
 # FIXME this is evil - the build system should be fixed properly
 # instead of making sure there's no previous version floating
@@ -199,66 +239,42 @@ Demo browser utilizing Qt WebEngine.
 %prep
 %setup -qn %{qttarballdir}
 %apply_patches
-mkdir -p bin
-ln -s %{_bindir}/python2 bin/python
-export PATH=$PWD/bin:$PATH
 
-%if "%{__cc}" == "/usr/bin/clang"
-sed -i 's!host_clang=0!host_clang=1!g' src/core/config/desktop_linux.pri
-%endif
-
-%ifarch %arm
-export CC_host="%{__cc}"
-export CXX_host="%{__cxx}"
-%endif
-
-%ifarch aarch64
-export CC=gcc
-export CXX=g++
-%endif
-# basic configuration
-myconf+=" -Duse_system_expat=1
-          -Duse_system_flac=1
-          -Duse_system_jsoncpp=1
-          -Duse_system_libevent=1
-          -Duse_system_libjpeg=1
-          -Duse_system_libpng=1
-          -Duse_system_libusb=1
-          -Duse_system_libxml=1
-          -Duse_system_libxslt=1
-          -Duse_system_opus=1
-          -Duse_system_libevent=1
-	  -Duse_system_snappy=1
-          -Duse_system_zlib=1
-          -Duse_system_speex=1
-          -Duse_proprietary_codecs=1
-          -Dffmpeg_branding=Chrome"
-
-pushd src/3rdparty/chromium/
-build/linux/unbundle/replace_gyp_files.py $myconf
-popd
-
-# reduce memory on linking
-export LDFLAGS="%{ldflags} -Wl,--as-needed"
-export PYTHON=%{__python2}
-
-# Yuuucccckkk... gyp
-ln -s %{_bindir}/python2 python
-export PATH=`pwd`:$PATH
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
 sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-%ifarch armv7hl
-export target_arch="arm"
-export GYP_DEFINES="target_arch=arm arm_float_abi=hard"
-%endif
-%qmake_qt5 qtwebengine.pro WEBENGINE_CONFIG="proprietary_codecs"
+# fix // in #include in content/renderer/gpu to avoid debugedit failure
+sed -i -e 's!gpu//!gpu/!g' \
+  src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
+# remove ./ from #line commands in ANGLE to avoid debugedit failure (?)
+sed -i -e 's!\./!!g' \
+  src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
+  src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
+
+# adapt internal ffmped to system headers
+#sed -i 's!s/PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
 
 %build
 export STRIP=strip
-export PATH=`pwd`:$PATH
+export NINJAFLAGS="-v %{_smp_mflags}"
+export NINJA_PATH=%{_bindir}/ninja
+export CXXFLAGS="%{optflags}"
+
+# most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
+export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g1 /g'`
+# reduce memory on linking
+export LDFLAGS="%{ldflags} -Wl,--as-needed"
+
+mkdir %{_target_platform}
+pushd %{_target_platform}
+mkdir bin
+ln -s /usr/bin/python2 bin/python
+export PATH=`pwd`/bin/:$PATH
+
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
+
 %make
 
 %install
@@ -283,3 +299,15 @@ for i in 16 22 32 48 64; do
 	mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
 	convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
 done
+
+## .prl/.la file love
+# nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
+pushd %{buildroot}%{_qt5_libdir}
+for prl_file in libQt5*.prl ; do
+  sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" ${prl_file}
+  if [ -f "$(basename ${prl_file} .prl).so" ]; then
+    rm -fv "$(basename ${prl_file} .prl).la"
+    sed -i -e "/^QMAKE_PRL_LIBS/d" ${prl_file}
+  fi
+done
+popd
