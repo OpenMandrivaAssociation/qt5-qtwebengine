@@ -250,7 +250,13 @@ Demo browser utilizing Qt WebEngine.
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
-sed -i 's!clang=0 host_clang=0!clang=1 host_clang=1!g' src/core/config/desktop_linux.pri
+%ifarch %armx %{ix86}
+# use gcc
+sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
+export CC=gcc
+export CXX=g++
+%endif
+
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
   src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
