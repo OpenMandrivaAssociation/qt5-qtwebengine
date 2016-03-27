@@ -1,5 +1,7 @@
 %define _disable_ld_no_undefined 1
 %define beta %nil
+%define	debug_package %nil
+%define _disable_lto %{nil}
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
@@ -250,10 +252,7 @@ sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/
 # /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
 # not working, well gcc-cpp need only to detect version
 # https://bugs.chromium.org/p/webrtc/issues/detail?id=4397
-unset CC
-unset CXX
 #sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-#sed -i 's!-Xassembler!-Xassemble!g' src/3rdparty/chromium/build/compiler_version.py
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
   src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
@@ -272,7 +271,7 @@ export NINJA_PATH=%{_bindir}/ninja
 export CXXFLAGS="%{optflags}"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
-export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g1 /g'`
+export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
@@ -280,16 +279,19 @@ mkdir %{_target_platform}
 pushd %{_target_platform}
 mkdir bin
 ln -s /usr/bin/python2 bin/python
+# ld
+ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 %qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
 
 %make
+popd
 
 %install
 export STRIP=strip
 export PATH=`pwd`:$PATH
-%make install INSTALL_ROOT=%{buildroot}
+%make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
 install -c -m 755 examples/webenginewidgets/demobrowser/demobrowser %{buildroot}%{_bindir}/
 cat >%{buildroot}%{_datadir}/applications/%{name}-browser.desktop <<EOF
