@@ -292,7 +292,9 @@ export STRIP=strip
 export PATH=`pwd`:$PATH
 %make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
+pushd %{_target_platform}
 install -c -m 755 examples/webenginewidgets/demobrowser/demobrowser %{buildroot}%{_bindir}/
+popd
 cat >%{buildroot}%{_datadir}/applications/%{name}-browser.desktop <<EOF
 [Desktop Entry]
 Name=QtWebEngine Browser
