@@ -249,10 +249,9 @@ Demo browser utilizing Qt WebEngine.
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
-# /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
-# not working, well gcc-cpp need only to detect version
-# https://bugs.chromium.org/p/webrtc/issues/detail?id=4397
-#sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
+# for unknown reason i386 build detect himself as crossbuild
+# and pick gcc as compiler, let's force clang on i586
+sed -i 's!clang=0 host_clang=0!clang=1 host_clang=1'
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
   src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
