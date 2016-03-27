@@ -85,7 +85,6 @@ BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
-BuildRequires:	pkgconfig(Qt5Location)
 # end
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(gl)
