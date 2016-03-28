@@ -248,15 +248,6 @@ Demo browser utilizing Qt WebEngine.
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
-# for unknown reason i386 build detect himself as crossbuild
-# and pick gcc as compiler, let's force clang on i586
-%ifarch %armx %{ix86}
-# use gcc
-sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
-export CC=gcc
-export CXX=g++
-%endif
 
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
@@ -280,6 +271,16 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
+# for unknown reason i386 build detect himself as crossbuild
+# and pick gcc as compiler, let's force clang on i586
+%ifarch %armx %{ix86}
+# use gcc
+sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
+sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
+export CC=gcc
+export CXX=g++
+%endif
+
 mkdir %{_target_platform}
 pushd %{_target_platform}
 mkdir bin
@@ -287,6 +288,7 @@ ln -s /usr/bin/python2 bin/python
 # ld
 ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
+
 
 %qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
 
