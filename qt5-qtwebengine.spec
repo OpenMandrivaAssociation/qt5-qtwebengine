@@ -252,6 +252,7 @@ sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/
 # and pick gcc as compiler, let's force clang on i586
 %ifarch %armx %{ix86}
 # use gcc
+sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
 export CC=gcc
 export CXX=g++
