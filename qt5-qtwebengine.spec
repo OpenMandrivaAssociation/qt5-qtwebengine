@@ -3,6 +3,10 @@
 %define	debug_package %nil
 %define _disable_lto %{nil}
 
+# do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
+%define __noautoprov ^lib.*plugin\\.so.*|libv8\\.so$
+%define __noautoreq ^libv8\\.so$
+
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.6.0
@@ -11,7 +15,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-opensource-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
