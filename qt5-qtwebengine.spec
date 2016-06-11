@@ -49,16 +49,6 @@ Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
 # I checked the history of that directory, and other than the renames I am
 # undoing, there were no modifications at all. Must be applied after Patch5.
 Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
-# fix the NSS/BoringSSL "chimera build" to call EnsureNSSHttpIOInit
-# backport of https://codereview.chromium.org/1385473003
-Patch7:		qtwebengine-opensource-src-5.6.0-beta-chimera-nss-init.patch
-# do not require SSE2 on i686
-# cumulative revert of upstream reviews 187423002, 308003004, 511773002 (parts
-# relevant to QtWebEngine only), 516543004, 1152053004 and 1161853008, along
-# with some custom fixes and improvements
-# also build V8 shared and twice on i686 (once for x87, once for SSE2)
-Patch8:		qtwebengine-opensource-src-5.6.0-rc-no-sse2.patch
-Patch9:		add-arm64-arm-support-wo-crosscompile.patch
 
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -208,6 +198,8 @@ Development files for Qt WebEngine Widgets.
 %{_libdir}/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri
 %{_libdir}/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri
 %{_includedir}/qt5/QtWebEngineWidgets
+%{_libdir}/cmake/Qt5Designer/Qt5Designer_QWebEngineViewPlugin.cmake
+%{_libdir}/qt5/plugins/designer/libqwebengineview.so
 
 %package devel
 Summary:	Metapackage pulling in all QtWebEngine development files
