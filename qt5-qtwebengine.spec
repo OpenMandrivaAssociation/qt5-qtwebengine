@@ -69,6 +69,7 @@ BuildRequires:	gcc-c++
 BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
+BuildRequires:	pkgconfig(libavcodec)
 # QT5 part
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
@@ -290,7 +291,7 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_system_ffmpeg" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
 
 %make
 popd
