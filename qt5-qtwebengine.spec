@@ -258,8 +258,8 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
-# adapt internal ffmped to system headers
-#sed -i 's!s/PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
+# adapt internal ffmpeg to system headers
+sed -i 's!s/PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
 
 %build
 export STRIP=strip
