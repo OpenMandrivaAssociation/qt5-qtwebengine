@@ -261,6 +261,9 @@ sed -i -e 's!\./!!g' \
 # adapt internal ffmpeg to system headers
 sed -i 's!s/PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
 
+# most arches run out of memory with full debuginfo
+sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
+
 %build
 export STRIP=strip
 export NINJAFLAGS="-v %{_smp_mflags}"
@@ -291,7 +294,7 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_system_ffmpeg" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" ../
 
 %make
 popd
