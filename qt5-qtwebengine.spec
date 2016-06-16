@@ -28,7 +28,7 @@ Source1000:	%{name}.rpmlintrc
 Patch0: 	qtwebengine-opensource-src-5.6.0-beta-no-format.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-Patch1: 	qtwebengine-opensource-src-5.6.0-rc-linux-pri.patch
+Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
@@ -317,8 +317,8 @@ MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/
 Terminal=false
 EOF
 for i in 16 22 32 48 64; do
-	mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
-	convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
+    mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
+    convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
 done
 
 ## .prl/.la file love

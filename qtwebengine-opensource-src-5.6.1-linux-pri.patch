@@ -1,6 +1,7 @@
---- qtwebengine-opensource-src-5.6.1/src/core/config/linux.pri.0001~	2016-06-09 21:14:06.321211059 +0200
-+++ qtwebengine-opensource-src-5.6.1/src/core/config/linux.pri	2016-06-09 21:21:37.479422703 +0200
-@@ -46,3 +46,25 @@ use?(system_vpx):      GYP_CONFIG += use
+diff -ur qtwebengine-opensource-src-5.6.1/src/core/config/linux.pri qtwebengine-opensource-src-5.6.1-linux-pri/src/core/config/linux.pri
+--- qtwebengine-opensource-src-5.6.1/src/core/config/linux.pri	2016-05-26 20:01:25.000000000 +0200
++++ qtwebengine-opensource-src-5.6.1-linux-pri/src/core/config/linux.pri	2016-06-11 01:17:26.494650774 +0200
+@@ -46,3 +46,25 @@
  use?(system_icu):      GYP_CONFIG += use_system_icu=1 icu_use_data_file_flag=0
  use?(system_ffmpeg):   GYP_CONFIG += use_system_ffmpeg=1
  
