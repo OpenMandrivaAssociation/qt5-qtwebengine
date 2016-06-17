@@ -259,7 +259,7 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
 # adapt internal ffmpeg to system headers
-sed -i 's!PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
+sed -i -e 's!PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
 
 # most arches run out of memory with full debuginfo
 sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
