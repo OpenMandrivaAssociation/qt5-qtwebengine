@@ -28,7 +28,7 @@ Source1000:	%{name}.rpmlintrc
 Patch0: 	qtwebengine-opensource-src-5.6.0-beta-no-format.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-Patch1: 	qtwebengine-opensource-src-5.6.0-rc-linux-pri.patch
+Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
@@ -264,6 +264,9 @@ sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_comm
 sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
 sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
 
+# most arches run out of memory with full debuginfo
+sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
+
 %build
 export STRIP=strip
 export CXXFLAGS="%{optflags} -std=gnu++14"
@@ -292,7 +295,7 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_system_ffmpeg" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" ../
 
 %make NINJA_PATH=ninja
 popd
@@ -318,8 +321,8 @@ MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/
 Terminal=false
 EOF
 for i in 16 22 32 48 64; do
-	mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
-	convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
+    mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
+    convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
 done
 
 ## .prl/.la file love
