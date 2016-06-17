@@ -259,13 +259,14 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
 # adapt internal ffmpeg to system headers
-sed -i 's!s/PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
+sed -i 's!PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
+sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
+sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
+sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
 
 %build
 export STRIP=strip
-export NINJAFLAGS="-v %{_smp_mflags}"
-export NINJA_PATH=%{_bindir}/ninja
-export CXXFLAGS="%{optflags}"
+export CXXFLAGS="%{optflags} -std=gnu++14"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
 export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
@@ -293,7 +294,7 @@ export PATH=`pwd`/bin/:$PATH
 
 %qmake_qt5 WEBENGINE_CONFIG+="use_system_icu" WEBENGINE_CONFIG+="use_system_ffmpeg" WEBENGINE_CONFIG+="use_proprietary_codecs" ../
 
-%make
+%make NINJA_PATH=ninja
 popd
 
 %install
