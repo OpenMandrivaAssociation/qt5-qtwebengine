@@ -266,6 +266,7 @@ sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_a
 
 # most arches run out of memory with full debuginfo
 sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
+sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
 export STRIP=strip
