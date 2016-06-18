@@ -80,6 +80,8 @@ BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
+# Designer plugin
+BuildRequires:	cmake(Qt5Designer)
 # end
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(gl)
