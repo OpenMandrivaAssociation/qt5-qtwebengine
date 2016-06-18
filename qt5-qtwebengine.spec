@@ -158,10 +158,6 @@ Development files for Qt WebEngine.
 %{_libdir}/cmake/Qt5WebEngine
 %{_libdir}/libQt5WebEngine.so
 %{_libdir}/libQt5WebEngine.prl
-%ifarch %{ix86}
-# shared V8 library and its SSE2 version
-%{_libdir}/qtwebengine/
-%endif
 %{_libdir}/pkgconfig/Qt5WebEngine.pc
 %{_libdir}/qt5/mkspecs/modules/qt_lib_webengine.pri
 %{_libdir}/qt5/mkspecs/modules/qt_lib_webengine_private.pri
