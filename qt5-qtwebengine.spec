@@ -9,7 +9,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.7.0
+Version:	5.6.2
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
@@ -24,6 +24,8 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
+# do not compile with -Wno-format, which also bypasses -Werror-format-security
+Patch0:		qtwebengine-opensource-src-5.6.0-beta-no-format.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
 Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
@@ -31,7 +33,7 @@ Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
 # we use the system ICU, which embeds the data statically) completely
-Patch2: 	qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
+Patch2:		qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
 Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
@@ -46,8 +48,13 @@ Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
 # undoing, there were no modifications at all. Must be applied after Patch5.
-# FIXME needs porting to 5.7
-#Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
+Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
+# do not require SSE2 on i686
+# cumulative revert of upstream reviews 187423002, 308003004, 511773002 (parts
+# relevant to QtWebEngine only), 516543004, 1152053004 and 1161853008, along
+# with some custom fixes and improvements
+# also build V8 shared and twice on i686 (once for x87, once for SSE2)
+Patch7:		qtwebengine-opensource-src-5.6.1-no-sse2.patch
 
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -256,10 +263,10 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
 # adapt internal ffmpeg to system headers
-#sed -i 's!PixelFormat !AVPixelFormat !g;s!VideoAVPixelFormat!VideoPixelFormat!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
-#sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
-#sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
-#sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
+sed -i 's!PixelFormat !AVPixelFormat !g;s!VideoAVPixelFormat!VideoPixelFormat!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
+sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
+sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
+sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
 
 # most arches run out of memory with full debuginfo
 sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
