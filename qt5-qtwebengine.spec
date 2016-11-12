@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta %nil
+%define beta beta
 %define	debug_package %nil
 %define _disable_lto %{nil}
 
@@ -9,7 +9,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.7.0
+Version:	5.8.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
@@ -35,13 +35,11 @@ Patch2: 	qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
 Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
-# disable NEON vector instructions on ARM for now, the NEON code FTBFS due to
-# GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
-Patch4:		qtwebengine-opensource-src-5.6.0-beta-no-neon.patch
 # use the system NSPR prtime (based on Debian patch)
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
-Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
+# FIXME port
+#Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
@@ -79,6 +77,7 @@ BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
+BuildRequires:	cmake(Qt5QuickWidgets)
 # Designer plugin
 BuildRequires:	cmake(Qt5Designer)
 # end
@@ -144,6 +143,7 @@ Chromium based web rendering engine for Qt.
 %{_datadir}/qt5/resources
 %{_libdir}/qt5/qml/QtWebEngine
 %{_libdir}/qt5/libexec/QtWebEngineProcess
+%{_libdir}/qt5/bin/qwebengine_convert_dict
 
 %package -n %{engined}
 Summary:	Development files for Qt WebEngine
@@ -293,7 +293,8 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" ../
+# use_system_icu <--- should be put back, currently disabled because of utrie2.h
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" ../
 
 %make NINJA_PATH=ninja
 popd
