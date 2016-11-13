@@ -263,7 +263,7 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
 # adapt internal ffmpeg to system headers
-sed -i 's!PixelFormat !AVPixelFormat !g;s!VideoAVPixelFormat!VideoPixelFormat!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
+sed -i 's!PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
 sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
 sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
 sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
@@ -283,13 +283,11 @@ export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
-%ifarch %armx %{ix86}
 # use gcc
 sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
 export CC=gcc
 export CXX=g++
-%endif
 
 mkdir %{_target_platform}
 pushd %{_target_platform}
