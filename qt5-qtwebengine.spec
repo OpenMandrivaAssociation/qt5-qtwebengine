@@ -263,10 +263,10 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
 # adapt internal ffmpeg to system headers
-sed -i 's!PixelFormat !AVPixelFormat !g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
-sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
-sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
-sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
+#sed -i 's!PixelFormat !AVPixelFormat !g;s!VideoAVPixelFormat!VideoPixelFormat!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
+#sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
+#sed -i 's!max_analyze_duration2!max_analyze_duration!g' src/3rdparty/chromium/media/filters/ffmpeg_demuxer.cc
+#sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
 
 # most arches run out of memory with full debuginfo
 sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
@@ -274,7 +274,7 @@ sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
 export STRIP=strip
-export CXXFLAGS="%{optflags} -std=gnu++14"
+export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
 export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
