@@ -151,6 +151,12 @@ Chromium based web rendering engine for Qt.
 %{_datadir}/qt5/resources
 %{_libdir}/qt5/qml/QtWebEngine
 %{_libdir}/qt5/libexec/QtWebEngineProcess
+%ifarch %{ix86}
+%dir %{_libdir}/qtwebengine
+%dir %{_libdir}/qtwebengine/sse2
+%{_libdir}/qtwebengine/libv8.so
+%{_libdir}/qtwebengine/sse2/libv8.so
+%endif
 
 %package -n %{engined}
 Summary:	Development files for Qt WebEngine
