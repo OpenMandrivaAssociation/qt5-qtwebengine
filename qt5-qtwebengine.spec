@@ -2,6 +2,7 @@
 %define beta beta
 %define	debug_package %nil
 %define _disable_lto %{nil}
+%global optflags %optflags -DUSING_SYSTEM_ICU=1
 
 # do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
 %define __noautoprov ^lib.*plugin\\.so.*|libv8\\.so$
@@ -11,7 +12,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.8.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -46,6 +47,8 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME needs porting to 5.7
 #Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
+Patch6:		qtwebengine-5.8-system-icu.patch
+Patch7:		qtwebengine-5.8.0-dont-crash-with-glibc-2.24.patch
 
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -294,7 +297,7 @@ export PATH=`pwd`/bin/:$PATH
 
 
 # use_system_icu <--- should be put back, currently disabled because of utrie2.h
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" ../
 
 %make NINJA_PATH=ninja
 popd
