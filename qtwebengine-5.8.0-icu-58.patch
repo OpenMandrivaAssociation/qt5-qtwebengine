@@ -1,0 +1,22 @@
+--- qtwebengine-opensource-src-5.8.0-beta/src/3rdparty/chromium/components/url_formatter/url_formatter.cc.omv~	2016-11-18 01:03:08.622418814 +0100
++++ qtwebengine-opensource-src-5.8.0-beta/src/3rdparty/chromium/components/url_formatter/url_formatter.cc	2016-11-18 01:03:46.923497823 +0100
+@@ -430,8 +430,8 @@ void IDNSpoofChecker::SetAllowedUnicodeS
+   // http://www.unicode.org/Public/security/latest/xidmodifications.txt) are
+   // are added to the allowed set. The list has to be updated when a new
+   // version of Unicode is released. The current version is 8.0.0 and ICU 58
+-  // will have Unicode 9.0 data.
+-#if U_ICU_VERSION_MAJOR_NUM < 58
++  // will have Unicode 10.0 data.
++#if U_ICU_VERSION_MAJOR_NUM < 60
+   const icu::UnicodeSet aspirational_scripts(
+       icu::UnicodeString(
+           // Unified Canadian Syllabics
+@@ -451,7 +451,7 @@ void IDNSpoofChecker::SetAllowedUnicodeS
+       *status);
+   allowed_set.addAll(aspirational_scripts);
+ #else
+-#error "Update aspirational_scripts per Unicode 9.0"
++#error "Update aspirational_scripts per Unicode 10.0"
+ #endif
+ 
+   // U+0338 is included in the recommended set, while U+05F4 and U+2027 are in
