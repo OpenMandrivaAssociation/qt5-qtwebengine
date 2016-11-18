@@ -45,9 +45,8 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
 # undoing, there were no modifications at all. Must be applied after Patch5.
-# FIXME needs porting to 5.7
-#Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
-Patch6:		qtwebengine-5.8-system-icu.patch
+# FIXME currently disabled because of linkage problems
+#Patch6:		qtwebengine-5.8-system-icu.patch
 Patch7:		qtwebengine-5.8.0-dont-crash-with-glibc-2.24.patch
 Patch8:		qtwebengine-5.8.0-icu-58.patch
 
@@ -259,6 +258,13 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
+# FIXME need to do/fix: Make sure we don't get an executable stack
+#find . -type f -name "*.asm" |while read r; do
+#	if ! grep -q GNU-stack $r; then
+#		echo '.section .note.GNU-stack noalloc noexec nowrite progbits' >>$r
+#	fi
+#done
+
 # adapt internal ffmpeg to system headers
 #sed -i 's!PixelFormat !AVPixelFormat !g;s!VideoAVPixelFormat!VideoPixelFormat!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
 #sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
@@ -297,8 +303,9 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
-# use_system_icu <--- should be put back, currently disabled because of utrie2.h
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" ../
+# use_system_icu <--- should be put back, currently disabled because of undefined reference
+# to base::i18n::GetRawIcuMemory()
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" ../
 
 %make NINJA_PATH=ninja
 popd
