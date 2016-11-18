@@ -20,3 +20,26 @@
  #endif
  
    // U+0338 is included in the recommended set, while U+05F4 and U+2027 are in
+--- qtwebengine-opensource-src-5.8.0-beta/src/3rdparty/chromium/third_party/WebKit/Source/platform/text/TextBreakIterator.cpp.omv~	2016-11-18 01:22:17.564024415 +0100
++++ qtwebengine-opensource-src-5.8.0-beta/src/3rdparty/chromium/third_party/WebKit/Source/platform/text/TextBreakIterator.cpp	2016-11-18 01:24:47.766387055 +0100
+@@ -123,6 +123,11 @@ static const unsigned char asciiLineBrea
+     { B(0, 0, 0, 0, 0, 0, 0, 0), B(0, 0, 0, 0, 0, 0, 0, 0), 0, B(0, 0, 0, 0, 0, 0, 0, 0), 0, 0, 0, B(0, 0, 0, 0, 0, 0, 0, 0), 0, 0, 0, B(0, 0, 0, 0, 0, 0, 0, 0) }, // DEL
+ };
+ 
++#if U_ICU_VERSION_MAJOR_NUM >= 58
++#define BA_LB_COUNT (U_LB_COUNT - 3)
++#else
++#define BA_LB_COUNT U_LB_COUNT
++#endif
+ // Line breaking table for CSS word-break: break-all. This table differs from
+ // asciiLineBreakTable in:
+ // - Indices are Line Breaking Classes defined in UAX#14 Unicode Line Breaking
+@@ -179,7 +184,7 @@ static const unsigned char breakAllLineB
+ #undef AL
+ 
+ static_assert(WTF_ARRAY_LENGTH(asciiLineBreakTable) == asciiLineBreakTableLastChar - asciiLineBreakTableFirstChar + 1, "asciiLineBreakTable should be consistent");
+-static_assert(WTF_ARRAY_LENGTH(breakAllLineBreakClassTable) == U_LB_COUNT, "breakAllLineBreakClassTable should be consistent");
++static_assert(WTF_ARRAY_LENGTH(breakAllLineBreakClassTable) == BA_LB_COUNT, "breakAllLineBreakClassTable should be consistent");
+ 
+ static inline bool shouldBreakAfter(UChar lastCh, UChar ch, UChar nextCh)
+ {
