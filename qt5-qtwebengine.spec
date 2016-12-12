@@ -49,6 +49,8 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 #Patch6:		qtwebengine-5.8-system-icu.patch
 Patch7:		qtwebengine-5.8.0-dont-crash-with-glibc-2.24.patch
 Patch8:		qtwebengine-5.8.0-icu-58.patch
+# (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
+Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 
 BuildRequires:	git-core
 BuildRequires:	nasm
