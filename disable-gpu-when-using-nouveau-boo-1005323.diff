@@ -1,19 +1,18 @@
-Index: qtwebengine-opensource-src-5.7.1/src/core/web_engine_context.cpp
+Index: qtwebengine-opensource-src-5.6.2/src/core/web_engine_context.cpp
 ===================================================================
---- qtwebengine-opensource-src-5.7.1.orig/src/core/web_engine_context.cpp
-+++ qtwebengine-opensource-src-5.7.1/src/core/web_engine_context.cpp
-@@ -87,6 +87,8 @@
+--- qtwebengine-opensource-src-5.6.2.orig/src/core/web_engine_context.cpp
++++ qtwebengine-opensource-src-5.6.2/src/core/web_engine_context.cpp
+@@ -78,6 +78,7 @@
+ #include "web_engine_library_info.h"
  #include <QFileInfo>
  #include <QGuiApplication>
- #include <QOpenGLContext>
 +#include <QOpenGLFunctions>
-+#include <QOffscreenSurface>
+ #include <QOffscreenSurface>
+ #include <QOpenGLContext>
  #include <QStringList>
- #include <QVector>
- #include <qpa/qplatformnativeinterface.h>
-@@ -158,6 +160,37 @@ void dummyGetPluginCallback(const std::v
+@@ -146,6 +147,37 @@ bool usingQtQuick2DRenderer()
+     return device == QLatin1String("softwarecontext");
  }
- #endif
  
 +QString openGLVendor()
 +{
@@ -48,12 +47,11 @@ Index: qtwebengine-opensource-src-5.7.1/src/core/web_engine_context.cpp
 +
  } // namespace
  
- namespace QtWebEngineCore {
-@@ -294,7 +327,20 @@ WebEngineContext::WebEngineContext()
+ void WebEngineContext::destroyBrowserContext()
+@@ -263,8 +295,21 @@ WebEngineContext::WebEngineContext()
  
      GLContextHelper::initialize();
  
--    if (usingANGLE() || usingSoftwareDynamicGL() || usingQtQuick2DRenderer()) {
 +    bool disableGpu = qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_GPU");
 +
 +    if (!qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND") && openGLVendor() == QStringLiteral("nouveau"))
@@ -67,7 +65,9 @@ Index: qtwebengine-opensource-src-5.7.1/src/core/web_engine_context.cpp
 +        disableGpu = true;
 +    }
 +
-+    if (usingANGLE() || usingSoftwareDynamicGL() || usingQtQuick2DRenderer() || disableGpu) {
-         parsedCommandLine->AppendSwitch(switches::kDisableGpu);
-     } else {
-         const char *glType = 0;
+     const char *glType = 0;
+-    if (!usingANGLE() && !usingSoftwareDynamicGL() && !usingQtQuick2DRenderer()) {
++    if (!usingANGLE() && !usingSoftwareDynamicGL() && !usingQtQuick2DRenderer() && !disableGpu) {
+         if (qt_gl_global_share_context()) {
+             if (!strcmp(qt_gl_global_share_context()->nativeHandle().typeName(), "QEGLNativeContext")) {
+                 if (qt_gl_global_share_context()->isOpenGLES()) {
