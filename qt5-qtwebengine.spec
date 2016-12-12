@@ -15,7 +15,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-opensource-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -55,7 +55,8 @@ Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
 # with some custom fixes and improvements
 # also build V8 shared and twice on i686 (once for x87, once for SSE2)
 Patch7:		qtwebengine-opensource-src-5.6.1-no-sse2.patch
-
+# (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
+Patch8:		disable-gpu-when-using-nouveau-boo-1005323.diff
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel

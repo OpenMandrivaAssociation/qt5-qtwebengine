@@ -1,0 +1,73 @@
+Index: qtwebengine-opensource-src-5.7.1/src/core/web_engine_context.cpp
+===================================================================
+--- qtwebengine-opensource-src-5.7.1.orig/src/core/web_engine_context.cpp
++++ qtwebengine-opensource-src-5.7.1/src/core/web_engine_context.cpp
+@@ -87,6 +87,8 @@
+ #include <QFileInfo>
+ #include <QGuiApplication>
+ #include <QOpenGLContext>
++#include <QOpenGLFunctions>
++#include <QOffscreenSurface>
+ #include <QStringList>
+ #include <QVector>
+ #include <qpa/qplatformnativeinterface.h>
+@@ -158,6 +160,37 @@ void dummyGetPluginCallback(const std::v
+ }
+ #endif
+ 
++QString openGLVendor()
++{
++    QString vendor;
++
++    QOpenGLContext *oldContext = QOpenGLContext::currentContext();
++    QSurface *oldSurface = 0;
++    if (oldContext)
++        oldSurface = oldContext->surface();
++
++    QScopedPointer<QOffscreenSurface> surface( new QOffscreenSurface );
++    surface->create();
++    QOpenGLContext context;
++    if (!context.create()) {
++        qDebug() << "Error creating openGL context";
++    }
++    else if (!context.makeCurrent(surface.data())) {
++        qDebug() << "Error making openGL context current context";
++    } else {
++        const GLubyte *p;
++        QOpenGLFunctions *f = context.functions();
++        if ((p = f->glGetString(GL_VENDOR)))
++            vendor = QString::fromLatin1(reinterpret_cast<const char *>(p));
++    }
++
++    context.doneCurrent();
++    if (oldContext && oldSurface)
++        oldContext->makeCurrent(oldSurface);
++
++    return vendor;
++}
++
+ } // namespace
+ 
+ namespace QtWebEngineCore {
+@@ -294,7 +327,20 @@ WebEngineContext::WebEngineContext()
+ 
+     GLContextHelper::initialize();
+ 
+-    if (usingANGLE() || usingSoftwareDynamicGL() || usingQtQuick2DRenderer()) {
++    bool disableGpu = qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_GPU");
++
++    if (!qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND") && openGLVendor() == QStringLiteral("nouveau"))
++    {
++        qWarning() << "Nouveau openGL driver detected. Qt WebEngine will disable usage of the GPU.\n"
++                      "Please consider using the propietary NVIDIA drivers.\n\n"
++                      "Alternatively, you can set the QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND\n"
++                      "environment variable before running this application, but this is \n"
++                      "not recommended since this usually causes applications to crash as\n"
++                      "Nouveau openGL drivers don't support multithreaded rendering";
++        disableGpu = true;
++    }
++
++    if (usingANGLE() || usingSoftwareDynamicGL() || usingQtQuick2DRenderer() || disableGpu) {
+         parsedCommandLine->AppendSwitch(switches::kDisableGpu);
+     } else {
+         const char *glType = 0;
