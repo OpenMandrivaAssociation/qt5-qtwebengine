@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta rc
+%define beta %{nil}
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -306,14 +306,14 @@ export PATH=`pwd`/bin/:$PATH
 
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs" ../
 
 %make NINJA_PATH=ninja
 popd
 
 %install
 export STRIP=strip
-export PATH=`pwd`:$PATH
+export PATH=`pwd`/bin:$PATH
 %make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
 pushd %{_target_platform}
