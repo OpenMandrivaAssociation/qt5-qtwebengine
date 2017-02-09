@@ -16,7 +16,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-opensource-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -25,6 +25,8 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
+# do not compile with -Wno-format, which also bypasses -Werror-format-security
+Patch0:		qtwebengine-opensource-src-5.6.0-beta-no-format.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
 Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
@@ -32,7 +34,7 @@ Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
 # we use the system ICU, which embeds the data statically) completely
-Patch2: 	qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
+Patch2:		qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
 Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
@@ -50,7 +52,6 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 Patch8:		qtwebengine-5.8.0-icu-58.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
-
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -278,7 +279,7 @@ sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
 export STRIP=strip
-export CXXFLAGS="%{optflags} -std=gnu++14"
+export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
 export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
@@ -287,13 +288,11 @@ export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
-%ifarch %armx %{ix86}
 # use gcc
 sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
 export CC=gcc
 export CXX=g++
-%endif
 
 mkdir %{_target_platform}
 pushd %{_target_platform}
