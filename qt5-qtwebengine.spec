@@ -1,7 +1,8 @@
 %define _disable_ld_no_undefined 1
-%define beta %nil
+%define beta %{nil}
 %define	debug_package %nil
 %define _disable_lto %{nil}
+%global optflags %optflags -DUSING_SYSTEM_ICU=1
 
 # do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
 %define __noautoprov ^lib.*plugin\\.so.*|libv8\\.so$
@@ -9,7 +10,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.6.2
+Version:	5.8.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
@@ -37,26 +38,20 @@ Patch2:		qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
 Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
-# disable NEON vector instructions on ARM for now, the NEON code FTBFS due to
-# GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
-Patch4:		qtwebengine-opensource-src-5.6.0-beta-no-neon.patch
 # use the system NSPR prtime (based on Debian patch)
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
-Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
+# FIXME port
+#Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
 # undoing, there were no modifications at all. Must be applied after Patch5.
-Patch6:		qtwebengine-opensource-src-5.6.0-beta-system-icu-utf.patch
-# do not require SSE2 on i686
-# cumulative revert of upstream reviews 187423002, 308003004, 511773002 (parts
-# relevant to QtWebEngine only), 516543004, 1152053004 and 1161853008, along
-# with some custom fixes and improvements
-# also build V8 shared and twice on i686 (once for x87, once for SSE2)
-Patch7:		qtwebengine-opensource-src-5.6.1-no-sse2.patch
+# FIXME currently disabled because of linkage problems
+#Patch6:		qtwebengine-5.8-system-icu.patch
+Patch8:		qtwebengine-5.8.0-icu-58.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
-Patch8:		disable-gpu-when-using-nouveau-boo-1005323.diff
+Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -87,6 +82,7 @@ BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
+BuildRequires:	cmake(Qt5QuickWidgets)
 # Designer plugin
 BuildRequires:	cmake(Qt5Designer)
 # end
@@ -152,12 +148,7 @@ Chromium based web rendering engine for Qt.
 %{_datadir}/qt5/resources
 %{_libdir}/qt5/qml/QtWebEngine
 %{_libdir}/qt5/libexec/QtWebEngineProcess
-%ifarch %{ix86}
-%dir %{_libdir}/qtwebengine
-%dir %{_libdir}/qtwebengine/sse2
-%{_libdir}/qtwebengine/libv8.so
-%{_libdir}/qtwebengine/sse2/libv8.so
-%endif
+%{_libdir}/qt5/bin/qwebengine_convert_dict
 
 %package -n %{engined}
 Summary:	Development files for Qt WebEngine
@@ -269,6 +260,13 @@ sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
   src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
+# FIXME need to do/fix: Make sure we don't get an executable stack
+#find . -type f -name "*.asm" |while read r; do
+#	if ! grep -q GNU-stack $r; then
+#		echo '.section .note.GNU-stack noalloc noexec nowrite progbits' >>$r
+#	fi
+#done
+
 # adapt internal ffmpeg to system headers
 #sed -i 's!PixelFormat !AVPixelFormat !g;s!VideoAVPixelFormat!VideoPixelFormat!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.{h,cc}
 #sed -i 's!PIX_FMT_!AV_PIX_FMT_!g' src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.cc
@@ -305,14 +303,16 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" ../
+# use_system_icu <--- should be put back, currently disabled because of undefined reference
+# to base::i18n::GetRawIcuMemory()
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs" ../
 
 %make NINJA_PATH=ninja
 popd
 
 %install
 export STRIP=strip
-export PATH=`pwd`:$PATH
+export PATH=`pwd`/bin:$PATH
 %make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
 pushd %{_target_platform}
