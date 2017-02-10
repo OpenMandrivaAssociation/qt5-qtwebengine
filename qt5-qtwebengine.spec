@@ -25,8 +25,6 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
-# do not compile with -Wno-format, which also bypasses -Werror-format-security
-Patch0:		qtwebengine-opensource-src-5.6.0-beta-no-format.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
 Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
