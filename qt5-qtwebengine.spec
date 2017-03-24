@@ -70,6 +70,7 @@ BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(libavcodec)
+BuildRequires:	pkgconfig(atk)
 # QT5 part
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
