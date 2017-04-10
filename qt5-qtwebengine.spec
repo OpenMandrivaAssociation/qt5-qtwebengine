@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta alpha
+%define beta beta
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -27,7 +27,7 @@ Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
+#Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
@@ -47,7 +47,6 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
-Patch8:		qtwebengine-5.8.0-icu-58.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 BuildRequires:	git-core
@@ -249,7 +248,7 @@ Demo browser utilizing Qt WebEngine.
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
-sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
+sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi
 
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
@@ -273,7 +272,6 @@ sed -i -e 's!\./!!g' \
 #sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
 
 # most arches run out of memory with full debuginfo
-sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
 sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
