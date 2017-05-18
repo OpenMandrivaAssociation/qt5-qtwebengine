@@ -1,5 +1,5 @@
---- qtwebengine-opensource-src-5.8.0-rc/src/core/web_engine_context.cpp.0009~	2016-12-15 08:01:45.000000000 +0100
-+++ qtwebengine-opensource-src-5.8.0-rc/src/core/web_engine_context.cpp	2016-12-29 15:40:24.645008688 +0100
+--- qtwebengine-opensource-src-5.9.0-beta4/src/core/web_engine_context.cpp.0009~	2017-05-05 11:15:06.000000000 +0200
++++ qtwebengine-opensource-src-5.9.0-beta4/src/core/web_engine_context.cpp	2017-05-18 17:03:44.145165378 +0200
 @@ -90,6 +90,8 @@
  #include <QOffscreenSurface>
  #ifndef QT_NO_OPENGL
@@ -7,9 +7,9 @@
 +# include <QOpenGLFunctions>
 +# include <QOffscreenSurface>
  #endif
+ #include <QQuickWindow>
  #include <QStringList>
- #include <QSurfaceFormat>
-@@ -172,6 +174,37 @@ void dummyGetPluginCallback(const std::v
+@@ -177,6 +179,37 @@ void dummyGetPluginCallback(const std::v
  }
  #endif
  
@@ -47,7 +47,7 @@
  } // namespace
  
  namespace QtWebEngineCore {
-@@ -327,7 +360,18 @@ WebEngineContext::WebEngineContext()
+@@ -341,7 +374,18 @@ WebEngineContext::WebEngineContext()
  
      const char *glType = 0;
  #ifndef QT_NO_OPENGL

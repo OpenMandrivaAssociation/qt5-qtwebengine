@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta
+%define beta beta4
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
