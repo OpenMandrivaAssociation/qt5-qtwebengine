@@ -25,6 +25,8 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
+# Needed to get gn to recognize aarch64
+Patch0:		qt5-qtwebengine-5.9.0b4-aarch64.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
 #Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
