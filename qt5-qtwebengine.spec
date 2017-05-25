@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta4
+%define beta rc
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -27,6 +27,8 @@ Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 # Needed to get gn to recognize aarch64
 Patch0:		qt5-qtwebengine-5.9.0b4-aarch64.patch
+# Make it build...
+Patch1:		qtwebengine-5.9.0-rc-compile.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
 #Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
@@ -289,8 +291,8 @@ export LDFLAGS="%{ldflags} -Wl,--as-needed"
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
 # use gcc
-sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
+#sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
+#sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
 export CC=gcc
 export CXX=g++
 
@@ -303,9 +305,10 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
+export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs system-ffmpeg" ..
 
 %make NINJA_PATH=ninja
 popd
