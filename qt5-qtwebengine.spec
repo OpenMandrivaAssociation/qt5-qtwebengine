@@ -25,8 +25,6 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
-# Make it build...
-Patch1:		qtwebengine-5.9.0-rc-compile.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
 #Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
