@@ -1,15 +1,5 @@
---- qtwebengine-opensource-src-5.9.0-rc/src/core/config/linux.pri.omv~	2017-05-25 00:23:00.573812001 +0200
-+++ qtwebengine-opensource-src-5.9.0-rc/src/core/config/linux.pri	2017-05-25 00:23:05.404866808 +0200
-@@ -19,7 +19,6 @@ use?(nss) {
-         use_nss_certs=false \
-         use_openssl_certs=true
- }
--gcc:!clang: greaterThan(QT_GCC_MAJOR_VERSION, 5): gn_args += no_delete_null_pointer_checks=true
- 
- clang {
-     clang_full_path = $$which($${QMAKE_CXX})
---- qtwebengine-opensource-src-5.9.0-rc/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~	2017-05-25 00:25:30.011505676 +0200
-+++ qtwebengine-opensource-src-5.9.0-rc/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2017-05-25 00:25:46.906696959 +0200
+--- qtwebengine-opensource-src-5.9.1/src/3rdparty/chromium/build/config/compiler/BUILD.gn.0001~	2017-06-20 11:10:02.000000000 +0200
++++ qtwebengine-opensource-src-5.9.1/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2017-06-30 22:14:35.052972394 +0200
 @@ -440,10 +440,6 @@ config("compiler") {
      ldflags += [ "-stdlib=libc++" ]
    }
@@ -21,37 +11,9 @@
    # Add flags for link-time optimization. These flags enable
    # optimizations/transformations that require whole-program visibility at link
    # time, so they need to be applied to all translation units, and we may end up
---- qtwebengine-opensource-src-5.9.0-rc/src/core/api/qtbug-60565.cpp.omv~	2017-05-25 12:57:26.598573311 +0200
-+++ qtwebengine-opensource-src-5.9.0-rc/src/core/api/qtbug-60565.cpp	2017-05-25 13:02:48.940615356 +0200
-@@ -50,6 +50,27 @@
- 
- extern "C" {
- 
-+static void* __shimCppNew(size_t size);
-+static void* __shimCppNewArray(size_t size);
-+static void __shimCppDelete(void *address);
-+static void __shimCppDeleteArray(void *address);
-+
-+__attribute__((used)) void* ShimCppNew(size_t size) {
-+    return __shimCppNew(size);
-+}
-+
-+__attribute__((used)) void* ShimCppNewArray(size_t size) {
-+    return __shimCppNewArray(size);
-+}
-+
-+__attribute__((used)) void ShimCppDelete(void* address) {
-+    __shimCppDelete(address);
-+}
-+
-+__attribute__((used)) void ShimCppDeleteArray(void* address) {
-+    __shimCppDeleteArray(address);
-+}
-+
- __asm__(".symver __ShimCppNew, _Znw" SIZE_T_MANGLING "@Qt_5");
- void* __ShimCppNew(size_t size)
-     SHIM_ALIAS_SYMBOL(ShimCppNew);
-@@ -82,26 +103,6 @@ __asm__(".symver __ShimCppDeleteArrayNoT
+--- qtwebengine-opensource-src-5.9.1/src/core/api/qtbug-60565.cpp.0001~	2017-06-23 08:29:46.000000000 +0200
++++ qtwebengine-opensource-src-5.9.1/src/core/api/qtbug-60565.cpp	2017-06-30 22:16:39.849391278 +0200
+@@ -83,26 +83,6 @@ __asm__(".symver __ShimCppDeleteArrayNoT
  void __ShimCppDeleteArrayNoThrow(void* address, const std::nothrow_t&) noexcept
      SHIM_ALIAS_SYMBOL(ShimCppDeleteArray);
  
@@ -60,21 +22,31 @@
 -static void __shimCppDelete(void *address);
 -static void __shimCppDeleteArray(void *address);
 -
--static void* ShimCppNew(size_t size) {
+-SHIM_HIDDEN void* ShimCppNew(size_t size) {
 -    return __shimCppNew(size);
 -}
 -
--static void* ShimCppNewArray(size_t size) {
+-SHIM_HIDDEN void* ShimCppNewArray(size_t size) {
 -    return __shimCppNewArray(size);
 -}
 -
--static void ShimCppDelete(void* address) {
+-SHIM_HIDDEN void ShimCppDelete(void* address) {
 -    __shimCppDelete(address);
 -}
 -
--static void ShimCppDeleteArray(void* address) {
+-SHIM_HIDDEN void ShimCppDeleteArray(void* address) {
 -    __shimCppDeleteArray(address);
 -}
  } // extern "C"
  
  static void* __shimCppNew(size_t size) {
+--- qtwebengine-opensource-src-5.9.1/src/core/config/linux.pri.0001~	2017-06-23 08:29:46.000000000 +0200
++++ qtwebengine-opensource-src-5.9.1/src/core/config/linux.pri	2017-06-30 22:14:35.052972394 +0200
+@@ -19,7 +19,6 @@ use?(nss) {
+         use_nss_certs=false \
+         use_openssl_certs=true
+ }
+-gcc:!clang: greaterThan(QT_GCC_MAJOR_VERSION, 5): gn_args += no_delete_null_pointer_checks=true
+ 
+ clang {
+     clang_full_path = $$which($${QMAKE_CXX})

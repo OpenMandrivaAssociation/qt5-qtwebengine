@@ -10,7 +10,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.9.0
+Version:	5.9.1
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
@@ -25,8 +25,6 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
-# Needed to get gn to recognize aarch64
-Patch0:		qt5-qtwebengine-5.9.0b4-aarch64.patch
 # Make it build...
 Patch1:		qtwebengine-5.9.0-rc-compile.patch
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
