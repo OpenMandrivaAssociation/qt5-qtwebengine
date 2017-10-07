@@ -1,6 +1,6 @@
---- qtwebengine-opensource-src-5.9.0-beta4/src/core/web_engine_context.cpp.0009~	2017-05-05 11:15:06.000000000 +0200
-+++ qtwebengine-opensource-src-5.9.0-beta4/src/core/web_engine_context.cpp	2017-05-18 17:03:44.145165378 +0200
-@@ -90,6 +90,8 @@
+--- qtwebengine-opensource-src-5.9.2/src/core/web_engine_context.cpp.0009~	2017-10-03 11:06:38.000000000 +0200
++++ qtwebengine-opensource-src-5.9.2/src/core/web_engine_context.cpp	2017-10-07 09:50:11.254650368 +0200
+@@ -91,6 +91,8 @@
  #include <QOffscreenSurface>
  #ifndef QT_NO_OPENGL
  # include <QOpenGLContext>
@@ -9,7 +9,7 @@
  #endif
  #include <QQuickWindow>
  #include <QStringList>
-@@ -177,6 +179,37 @@ void dummyGetPluginCallback(const std::v
+@@ -165,6 +167,37 @@ void dummyGetPluginCallback(const std::v
  }
  #endif
  
@@ -47,14 +47,12 @@
  } // namespace
  
  namespace QtWebEngineCore {
-@@ -341,7 +374,18 @@ WebEngineContext::WebEngineContext()
+@@ -366,6 +399,16 @@ WebEngineContext::WebEngineContext()
  
      const char *glType = 0;
  #ifndef QT_NO_OPENGL
--    if (!usingANGLE() && !usingSoftwareDynamicGL() && !usingQtQuick2DRenderer()) {
 +    bool disableGpu = qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_GPU");
-+    if (!qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND") && openGLVendor() == QStringLiteral("nouveau"))
-+    {
++    if (!qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND") && openGLVendor() == QStringLiteral("nouveau")) {
 +	    qWarning() << "Nouveau openGL driver detected. Qt WebEngine will disable usage of the GPU.\n"
 +		          "Please consider getting hardware not made by NVIDIA.\n\n"
 +			  "Alternatively, you can set the QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND\n"
@@ -63,7 +61,15 @@
 +			  "Nouveau openGL drivers don't support multithreaded rendering";
 +	    disableGpu = true;
 +    }
-+    if (!usingANGLE() && !usingSoftwareDynamicGL() && !usingQtQuick2DRenderer() && !disableGpu) {
+ 
+     bool tryGL =
+             !usingANGLE()
+@@ -377,7 +420,7 @@ WebEngineContext::WebEngineContext()
+                 || enableWebGLSoftwareRendering
+ #endif
+                 )
+-            && !usingQtQuick2DRenderer();
++            && !usingQtQuick2DRenderer() && !disableGpu;
+ 
+     if (tryGL) {
          if (qt_gl_global_share_context() && qt_gl_global_share_context()->isValid()) {
-             // If the native handle is QEGLNativeContext try to use GL ES/2, if there is no native handle
-             // assume we are using wayland and try GL ES/2, and finally Ozone demands GL ES/2 too.
