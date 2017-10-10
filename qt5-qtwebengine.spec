@@ -121,6 +121,7 @@ BuildRequires:	pkgconfig(vpx)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
+BuildRequires:	qt5-qtquickcontrols2
 BuildRequires:	qt5-qtquick-private-devel
 # FIXME this is evil - the build system should be fixed properly
 # instead of making sure there's no previous version floating
