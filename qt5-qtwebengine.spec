@@ -305,7 +305,7 @@ export PATH=`pwd`/bin/:$PATH
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs system-ffmpeg" ..
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" ..
 
 %make NINJA_PATH=ninja
 popd
