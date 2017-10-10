@@ -82,6 +82,7 @@ BuildRequires:	pkgconfig(Qt5Positioning)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
 BuildRequires:	cmake(Qt5QuickWidgets)
+BuildRequires:	cmake(Qt5QuickControls2)
 # Designer plugin
 BuildRequires:	cmake(Qt5Designer)
 # end
