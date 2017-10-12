@@ -47,12 +47,14 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
+Patch7:		0002-WebKit-fix-build-with-gcc7.patch
 Patch8:		qtwebengine-5.8.0-icu-58.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	freetype2_api_fix_harmony_diff.patch
 Patch11:	0001-v8-fix-build-with-gcc7.patch
 Patch12:	0003-pdfium-fix-build-with-gcc7.patch
+
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
