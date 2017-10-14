@@ -59,6 +59,7 @@ BuildRequires:	yasm
 BuildRequires:	cups-devel
 BuildRequires:	gperf
 BuildRequires:	bison
+BuildRequires:	flex
 BuildRequires:	ninja
 BuildRequires:	imagemagick
 BuildRequires:	jpeg-devel
