@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta %{nil}
+%define beta beta
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -10,10 +10,10 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.9.2
+Version:	5.10.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
-%define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
+%define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
@@ -221,6 +221,7 @@ Development files for Qt WebEngine.
 Summary:	Examples for QtWebEngine
 Group:		Development/KDE and Qt
 Requires:	%{name}-devel = %{EVRD}
+Obsoletes:	%{name}-demobrowser < %{EVRD}
 
 %description examples
 Examples for QtWebEngine.
@@ -228,21 +229,6 @@ Examples for QtWebEngine.
 %files examples
 %{_libdir}/qt5/examples/webengine
 %{_libdir}/qt5/examples/webenginewidgets
-
-%package demobrowser
-Summary:	Demo browser utilizing Qt WebEngine
-Group:		Networking/WWW
-Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
-Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
-Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
-
-%description demobrowser
-Demo browser utilizing Qt WebEngine.
-
-%files demobrowser
-%{_bindir}/demobrowser
-%{_datadir}/applications/*.desktop
-%{_iconsdir}/hicolor/*/apps/qtwebengine.png
 
 %prep
 %setup -qn %{qttarballdir}
@@ -315,26 +301,6 @@ popd
 export STRIP=strip
 export PATH=`pwd`/bin:$PATH
 %make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
-pushd %{_target_platform}
-install -c -m 755 examples/webenginewidgets/demobrowser/demobrowser %{buildroot}%{_bindir}/
-popd
-cat >%{buildroot}%{_datadir}/applications/%{name}-browser.desktop <<EOF
-[Desktop Entry]
-Name=QtWebEngine Browser
-Type=Application
-Icon=qtwebengine
-Categories=Network;WebBrowser;
-Comment=A fast web browser
-GenericName=Web Browser
-Exec=%{_bindir}/demobrowser %%u
-MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
-Terminal=false
-EOF
-for i in 16 22 32 48 64; do
-    mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
-    convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
-done
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
