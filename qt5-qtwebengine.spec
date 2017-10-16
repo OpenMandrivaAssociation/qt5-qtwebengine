@@ -16,7 +16,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	5
+Release:	6
 %define qttarballdir qtwebengine-opensource-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -54,6 +54,7 @@ Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	freetype2_api_fix_harmony_diff.patch
 Patch11:	0001-v8-fix-build-with-gcc7.patch
 Patch12:	0003-pdfium-fix-build-with-gcc7.patch
+Patch14:	freetype-glyph-fix.patch
 
 BuildRequires:	git-core
 BuildRequires:	nasm
