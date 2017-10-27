@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta
+%define beta beta2
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -13,7 +13,7 @@ Name:		qt5-qtwebengine
 Version:	5.10.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
-%define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
+%define qttarballdir qtwebengine-everywhere-src-%{version}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
