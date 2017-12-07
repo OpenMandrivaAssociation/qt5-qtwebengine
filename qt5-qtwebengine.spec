@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta rc3
+%define beta %{nil}
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -17,7 +17,7 @@ Release:	0.%{beta}.1
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
-%define qttarballdir qtwebengine-opensource-src-%{version}
+%define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
@@ -27,20 +27,20 @@ Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-#Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
+#Patch1:		qtwebengine-everywhere-src-5.6.1-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
 # we use the system ICU, which embeds the data statically) completely
-Patch2:		qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
+Patch2:		qtwebengine-everywhere-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
-Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
+Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
 # use the system NSPR prtime (based on Debian patch)
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
 # FIXME port
-#Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
+#Patch5:		qtwebengine-everywhere-src-5.6.0-beta-system-nspr-prtime.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
