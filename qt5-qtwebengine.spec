@@ -49,6 +49,8 @@ Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
 #Patch6:		qtwebengine-5.8-system-icu.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
+# Support ffmpeg 3.5
+Patch10:	chromium-63-ffmpeg-3.5.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
