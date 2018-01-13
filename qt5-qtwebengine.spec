@@ -280,8 +280,8 @@ export LDFLAGS="%{ldflags} -Wl,--as-needed"
 # use gcc
 #sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 #sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
 mkdir %{_target_platform}
 pushd %{_target_platform}
@@ -295,7 +295,7 @@ export PATH=`pwd`/bin/:$PATH
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" ..
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" ..
 
 %make NINJA_PATH=ninja
 popd
