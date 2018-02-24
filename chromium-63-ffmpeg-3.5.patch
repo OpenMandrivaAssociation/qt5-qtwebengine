@@ -68,3 +68,14 @@
  
    AVCodec* codec = avcodec_find_decoder(codec_context_->codec_id);
    if (!codec || avcodec_open2(codec_context_.get(), codec, NULL) < 0) {
+--- qtwebengine-everywhere-src-5.10.1/src/3rdparty/chromium/media/base/decoder_buffer.h.orig	2018-02-24 13:07:36.606759211 +0000
++++ qtwebengine-everywhere-src-5.10.1/src/3rdparty/chromium/media/base/decoder_buffer.h	2018-02-24 13:07:52.062228225 +0000
+@@ -37,7 +37,7 @@
+     : public base::RefCountedThreadSafe<DecoderBuffer> {
+  public:
+   enum {
+-    kPaddingSize = 32,
++    kPaddingSize = 64,
+ #if defined(ARCH_CPU_ARM_FAMILY)
+     kAlignmentSize = 16
+ #else
