@@ -48,7 +48,7 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
 Patch7:		0002-WebKit-fix-build-with-gcc7.patch
-Patch8:		qtwebengine-5.8.0-icu-60.patch
+#Patch8:		qtwebengine-5.8.0-icu-60.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	freetype2_api_fix_harmony_diff.patch
@@ -309,7 +309,7 @@ export PATH=`pwd`/bin/:$PATH
 
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs" ../
 
 %make NINJA_PATH=ninja
 popd
