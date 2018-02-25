@@ -16,7 +16,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	9
+Release:	10
 %define qttarballdir qtwebengine-opensource-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -250,6 +250,10 @@ Demo browser utilizing Qt WebEngine.
 %prep
 %setup -qn %{qttarballdir}
 %apply_patches
+
+# http://bugzilla.redhat.com/1337585
+# can't just delete, but we'll overwrite with system headers to be on the safe side
+cp -bv /usr/include/re2/*.h src/3rdparty/chromium/third_party/re2/src/re2/
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
