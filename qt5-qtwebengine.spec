@@ -251,6 +251,10 @@ Demo browser utilizing Qt WebEngine.
 %setup -qn %{qttarballdir}
 %apply_patches
 
+# http://bugzilla.redhat.com/1337585
+# can't just delete, but we'll overwrite with system headers to be on the safe side
+cp -bv /usr/include/re2/*.h src/3rdparty/chromium/third_party/re2/src/re2/
+
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
