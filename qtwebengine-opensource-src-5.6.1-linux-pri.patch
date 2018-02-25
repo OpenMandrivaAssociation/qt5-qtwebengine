@@ -8,7 +8,7 @@
 +# some more system packages, that are not checked for for some reason
 +GYP_CONFIG += \
 +    use_system_expat=1 \
-+    use_system_re2=1 \
++    use_system_re2=0 \
 +    use_system_protobuf=1
 +
 +# yasm is only used on x86, and passing use_system_yasm makes the build fail on
