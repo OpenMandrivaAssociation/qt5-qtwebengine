@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta %{nil}
+%define beta beta3
 %define	debug_package %nil
 %define _disable_lto %{nil}
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
@@ -10,13 +10,13 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.10.1
+Version:	5.11.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	2
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -50,7 +50,7 @@ Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 # Support ffmpeg 3.5
-Patch10:	chromium-63-ffmpeg-3.5.patch
+Patch10:	chromium-65-ffmpeg-3.5.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -84,10 +84,10 @@ BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5Positioning)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
-BuildRequires:	cmake(Qt5QuickWidgets)
-BuildRequires:	cmake(Qt5QuickControls2)
+BuildRequires:	pkgconfig(Qt5QuickWidgets)
+BuildRequires:	pkgconfig(Qt5QuickControls2)
 # Designer plugin
-BuildRequires:	cmake(Qt5Designer)
+BuildRequires:	pkgconfig(Qt5Designer)
 # end
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(gl)
