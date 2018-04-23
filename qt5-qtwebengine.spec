@@ -1,7 +1,8 @@
 %define _disable_ld_no_undefined 1
 %define beta beta4
 %define	debug_package %nil
-%define _disable_lto %{nil}
+# FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
+%define _disable_lto 1
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
 
 # do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
@@ -51,6 +52,7 @@ Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 # Support ffmpeg 3.5
 Patch10:	chromium-65-ffmpeg-3.5.patch
+Patch11:	ffmpeg-linkage.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -275,6 +277,16 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
+# FIXME -fuse-ld=bfd is a workaround for
+# /usr/bin/ld.gold: internal error in override_version, at ../../gold/resolve.cc:61
+# during final link. Remove when fixed.
+# Probably caused by https://sourceware.org/bugzilla/show_bug.cgi?id=16504
+export LDFLAGS="${LDFLAGS} -fuse-ld=bfd"
+sed -i -e 's,fuse-ld=gold,fuse-ld=bfd,g' src/3rdparty/chromium/v8/gypfiles/toolchain.gypi \
+	src/3rdparty/chromium/build/config/compiler/BUILD.gn \
+	src/3rdparty/chromium/third_party/perfetto/gn/standalone/BUILD.gn \
+	src/3rdparty/chromium/third_party/boringssl/src/third_party/android-cmake/android.toolchain.cmake
+
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
 # use gcc
@@ -295,7 +307,7 @@ export PATH=`pwd`/bin/:$PATH
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" ..
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" QMAKE_LFLAGS_USE_GOLD="-fuse-ld=bfd" LFLAGS="${LDFLAGS}" ..
 
 %make NINJA_PATH=ninja
 popd

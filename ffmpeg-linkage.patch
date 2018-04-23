@@ -1,0 +1,66 @@
+diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h.omv~ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h
+--- qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h.omv~	2018-04-23 20:03:34.946351005 +0200
++++ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h	2018-04-23 20:03:39.434248335 +0200
+@@ -8,7 +8,9 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ 
++extern "C" {
+ #include <libavcodec/avcodec.h>
++}
+ 
+ #include <memory>
+ #include <string>
+diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h.omv~ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
+diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn.omv~ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn
+--- qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn.omv~	2018-04-23 19:44:52.637482329 +0200
++++ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn	2018-04-23 19:48:17.030928003 +0200
+@@ -138,6 +138,11 @@ source_set("filters") {
+       "in_memory_url_protocol.cc",
+       "in_memory_url_protocol.h",
+     ]
++    libs += [
++      "avcodec",
++      "avformat",
++      "avutil",
++    ]
+     if (!is_android) {
+       sources += [
+         "audio_video_metadata_extractor.cc",
+@@ -173,11 +178,23 @@ source_set("filters") {
+         "ffmpeg_h264_to_annex_b_bitstream_converter.h",
+       ]
+ 
++      libs += [
++        "avcodec",
++        "avformat",
++        "avutil",
++      ]
++
+       if (enable_hevc_demuxing) {
+         sources += [
+           "ffmpeg_h265_to_annex_b_bitstream_converter.cc",
+           "ffmpeg_h265_to_annex_b_bitstream_converter.h",
+         ]
++
++        libs += [
++          "avcodec",
++          "avformat",
++          "avutil",
++        ]
+       }
+     }
+ 
+@@ -186,6 +203,12 @@ source_set("filters") {
+         "ffmpeg_video_decoder.cc",
+         "ffmpeg_video_decoder.h",
+       ]
++
++      libs += [
++        "avcodec",
++        "avformat",
++        "avutil",
++      ]
+     }
+   }
+ 
