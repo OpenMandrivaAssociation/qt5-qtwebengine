@@ -277,16 +277,6 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
-# FIXME -fuse-ld=bfd is a workaround for
-# /usr/bin/ld.gold: internal error in override_version, at ../../gold/resolve.cc:61
-# during final link. Remove when fixed.
-# Probably caused by https://sourceware.org/bugzilla/show_bug.cgi?id=16504
-export LDFLAGS="${LDFLAGS} -fuse-ld=bfd"
-sed -i -e 's,fuse-ld=gold,fuse-ld=bfd,g' src/3rdparty/chromium/v8/gypfiles/toolchain.gypi \
-	src/3rdparty/chromium/build/config/compiler/BUILD.gn \
-	src/3rdparty/chromium/third_party/perfetto/gn/standalone/BUILD.gn \
-	src/3rdparty/chromium/third_party/boringssl/src/third_party/android-cmake/android.toolchain.cmake
-
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
 # use gcc
@@ -299,15 +289,13 @@ mkdir %{_target_platform}
 pushd %{_target_platform}
 mkdir bin
 ln -s /usr/bin/python2 bin/python
-# ld
-ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" QMAKE_LFLAGS_USE_GOLD="-fuse-ld=bfd" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" LFLAGS="${LDFLAGS}" ..
 
 %make NINJA_PATH=ninja
 popd
