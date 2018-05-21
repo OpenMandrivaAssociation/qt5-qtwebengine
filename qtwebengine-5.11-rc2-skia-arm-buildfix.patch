@@ -1,0 +1,17 @@
+diff -up qtwebengine-everywhere-src-5.11.0-rc2/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp.omv~ qtwebengine-everywhere-src-5.11.0-rc2/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp
+--- qtwebengine-everywhere-src-5.11.0-rc2/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp.omv~	2018-05-21 16:15:06.128382078 +0200
++++ qtwebengine-everywhere-src-5.11.0-rc2/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp	2018-05-21 16:20:18.147261205 +0200
+@@ -689,10 +689,9 @@ SI F from_half(U16 h) {
+ 
+ SI U16 to_half(F f) {
+ #if defined(__ARM_FP16_FORMAT_IEEE)
+-    __fp16 fp16 = __fp16(f);
+-    U16 u16;
+-    memcpy(&u16, &fp16, sizeof(U16));
+-    return u16;
++    auto v = widen_cast<float32x4_t>(f);
++    uint16x4_t h = vcvt_f16_f32(v);
++    return unaligned_load<U16>(&h);
+ 
+ #elif defined(JUMPER_IS_HSW) || defined(JUMPER_IS_AVX512)
+     return _mm256_cvtps_ph(f, _MM_FROUND_CUR_DIRECTION);
