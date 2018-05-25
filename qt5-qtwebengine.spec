@@ -54,6 +54,7 @@ Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
 Patch12:	qtwebengine-5.11.0-rc2-gcc-8.1.0.patch
+Patch13:	qtwebengine-5.11.0-aarch64-buildfix.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
