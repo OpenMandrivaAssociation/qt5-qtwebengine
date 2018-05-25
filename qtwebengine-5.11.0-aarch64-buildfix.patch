@@ -1,0 +1,12 @@
+diff -up qtwebengine-everywhere-src-5.11.0/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp.omv~ qtwebengine-everywhere-src-5.11.0/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp
+--- qtwebengine-everywhere-src-5.11.0/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp.omv~	2018-05-25 00:00:29.541898857 +0000
++++ qtwebengine-everywhere-src-5.11.0/src/3rdparty/chromium/third_party/skia/src/jumper/SkJumper_stages.cpp	2018-05-25 00:04:04.279004952 +0000
+@@ -688,7 +688,7 @@ SI F from_half(U16 h) {
+ }
+ 
+ SI U16 to_half(F f) {
+-#if defined(__ARM_FP16_FORMAT_IEEE)
++#if defined(__ARM_FP16_FORMAT_IEEE) && 0
+     __fp16 fp16 = __fp16(f);
+     U16 u16;
+     memcpy(&u16, &fp16, sizeof(U16));
