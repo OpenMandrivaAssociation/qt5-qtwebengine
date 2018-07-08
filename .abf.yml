@@ -1,2 +1,4 @@
+removed_sources:
+  qtwebengine-opensource-src-5.9.2.tar.xz: 52a596c651517eee4b1235666a324159c60d4f55
 sources:
-  qtwebengine-opensource-src-5.8.0.tar.xz: a832f9c9024f6147632da75cc8270a0da114fc75
+  qtwebengine-opensource-src-5.9.6.tar.xz: d7026002e92984f941f960b77c35ee5f399336ea

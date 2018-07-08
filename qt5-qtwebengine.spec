@@ -10,13 +10,13 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.8.0
+Version:	5.9.6
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-opensource-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	10
+Release:	1
 %define qttarballdir qtwebengine-opensource-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -27,7 +27,7 @@ Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
+#Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
@@ -47,14 +47,9 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
-Patch7:		0002-WebKit-fix-build-with-gcc7.patch
-#Patch8:		qtwebengine-5.8.0-icu-60.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	freetype2_api_fix_harmony_diff.patch
-Patch11:	0001-v8-fix-build-with-gcc7.patch
-Patch12:	0003-pdfium-fix-build-with-gcc7.patch
-Patch14:	freetype-glyph-fix.patch
 
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -76,6 +71,7 @@ BuildRequires:	pkgconfig(libpci)
 BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(libavcodec)
+BuildRequires:	pkgconfig(atk)
 # QT5 part
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
@@ -84,6 +80,7 @@ BuildRequires:	pkgconfig(Qt5Qml)
 BuildRequires:	pkgconfig(Qt5Quick)
 BuildRequires:	pkgconfig(Qt5WebChannel)
 BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt5Positioning)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
 BuildRequires:	cmake(Qt5QuickWidgets)
@@ -258,7 +255,7 @@ cp -bv /usr/include/re2/*.h src/3rdparty/chromium/third_party/re2/src/re2/
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
-sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi src/3rdparty/chromium/android_webview/android_webview.gyp
+sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi
 
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
@@ -282,7 +279,6 @@ sed -i -e 's!\./!!g' \
 #sed -i 's!CODEC_ID_!AV_CODEC_ID_!g' src/3rdparty/chromium/media/filters/ffmpeg_aac_bitstream_converter.cc
 
 # most arches run out of memory with full debuginfo
-sed -i -e 's/=-g$/=-g0/g' src/core/gyp_run.pro
 sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
@@ -297,8 +293,8 @@ export LDFLAGS="%{ldflags} -Wl,--as-needed"
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
 # use gcc
-sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
+#sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
+#sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
 export CC=gcc
 export CXX=g++
 
@@ -311,9 +307,10 @@ ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
+export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs" ../
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs system-ffmpeg" ..
 
 %make NINJA_PATH=ninja
 popd
@@ -345,7 +342,7 @@ done
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
-pushd %{buildroot}%{_qt5_libdir}
+pushd %{buildroot}%{_libdir}
 for prl_file in libQt5*.prl ; do
   sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" ${prl_file}
   if [ -f "$(basename ${prl_file} .prl).so" ]; then

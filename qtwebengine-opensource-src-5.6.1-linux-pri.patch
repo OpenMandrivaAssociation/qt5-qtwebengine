@@ -1,29 +1,17 @@
---- qtwebengine-opensource-src-5.8.0/src/core/config/linux.pri	2017-01-03 10:35:11.000000000 +0000
-+++ qtwebengine-opensource-src-5.8.0/src/core/config/linux.pri.tpg	2017-02-09 22:51:04.994417231 +0000
-@@ -63,3 +63,26 @@
- use?(system_icu):      GYP_CONFIG += use_system_icu=1 icu_use_data_file_flag=0
- use?(system_ffmpeg):   GYP_CONFIG += use_system_ffmpeg=1
- use?(system_protobuf): GYP_CONFIG += use_system_protobuf=1
-+
-+# some more system packages, that are not checked for for some reason
-+GYP_CONFIG += \
-+    use_system_expat=1 \
-+    use_system_re2=0 \
-+    use_system_protobuf=1
-+
-+# yasm is only used on x86, and passing use_system_yasm makes the build fail on
-+# other architectures (e.g., ARM), so make it conditional on the architecture
-+contains(QT_ARCH, "x86_64")|contains(QT_ARCH, "i386") {
-+    GYP_CONFIG += use_system_yasm=1
-+}
+--- qtwebengine-opensource-src-5.9.0-beta/src/core/config/linux.pri.0001~	2017-04-09 20:47:09.587401731 +0200
++++ qtwebengine-opensource-src-5.9.0-beta/src/core/config/linux.pri	2017-04-09 20:48:21.377930931 +0200
+@@ -148,3 +148,14 @@ host_build {
+     use?(system_ffmpeg):   gn_args += use_system_ffmpeg=true
+     #use?(system_protobuf): gn_args += use_system_protobuf=true
+ }
 +
 +# link libpci instead of dlopening it, our Qt packaging depends on it anyway
-+GYP_CONFIG += linux_link_libpci=1
++#gn_args += linux_link_libpci=true
 +
 +# run the unbundling script Chromium provides
 +CHROMIUM_SRC_DIR = "$$QTWEBENGINE_ROOT/$$getChromiumSrcDir()"
-+R_G_F_PY = "$$CHROMIUM_SRC_DIR/build/linux/unbundle/replace_gyp_files.py"
-+R_G_F_PY_ARGS =
-+for (config, GYP_CONFIG): R_G_F_PY_ARGS += "-D $$config"
++R_G_F_PY = "$$CHROMIUM_SRC_DIR/build/linux/unbundle/replace_gn_files.py"
++R_G_F_PY_ARGS = "--system-libraries re2 yasm"
++#for (config, GYP_CONFIG): R_G_F_PY_ARGS += "-D $$config"
 +log("Running python $$R_G_F_PY $$R_G_F_PY_ARGS$${EOL}")
 +!system("python $$R_G_F_PY $$R_G_F_PY_ARGS"): error("-- unbundling failed")
