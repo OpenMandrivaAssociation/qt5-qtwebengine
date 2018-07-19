@@ -1,7 +1,8 @@
 %define _disable_ld_no_undefined 1
 %define beta %{nil}
 %define	debug_package %nil
-%define _disable_lto %{nil}
+# FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
+%define _disable_lto 1
 %global optflags %optflags -DUSING_SYSTEM_ICU=1
 
 # do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
@@ -10,13 +11,13 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.10.1
+Version:	5.11.1
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	2
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -27,20 +28,20 @@ Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
 # some tweaks to linux.pri (system libs, link libpci, run unbundling script,
 # do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-#Patch1:		qtwebengine-opensource-src-5.6.1-linux-pri.patch
+#Patch1:		qtwebengine-everywhere-src-5.6.1-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
 # we use the system ICU, which embeds the data statically) completely
-Patch2:		qtwebengine-opensource-src-5.6.0-no-icudtl-dat.patch
+Patch2:		qtwebengine-everywhere-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
-Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
+Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
 # use the system NSPR prtime (based on Debian patch)
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
 # FIXME port
-#Patch5:		qtwebengine-opensource-src-5.6.0-beta-system-nspr-prtime.patch
+#Patch5:		qtwebengine-everywhere-src-5.6.0-beta-system-nspr-prtime.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
@@ -49,9 +50,10 @@ Patch3:		qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag.patch
 #Patch6:		qtwebengine-5.8-system-icu.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
-Patch10:	freetype2_api_fix_harmony_diff.patch
-Patch11:	qtwebengine-ffmpeg4.patch
-
+# Support ffmpeg 3.5
+Patch10:	chromium-65-ffmpeg-3.5.patch
+Patch11:	ffmpeg-linkage.patch
+Patch13:	qtwebengine-5.11.0-aarch64-buildfix.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -62,6 +64,7 @@ BuildRequires:	yasm
 BuildRequires:	cups-devel
 BuildRequires:	gperf
 BuildRequires:	bison
+BuildRequires:	flex
 BuildRequires:	ninja
 BuildRequires:	imagemagick
 BuildRequires:	jpeg-devel
@@ -84,9 +87,10 @@ BuildRequires:	pkgconfig(Qt5Widgets)
 BuildRequires:	pkgconfig(Qt5Positioning)
 BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
-BuildRequires:	cmake(Qt5QuickWidgets)
+BuildRequires:	pkgconfig(Qt5QuickWidgets)
+BuildRequires:	pkgconfig(Qt5QuickControls2)
 # Designer plugin
-BuildRequires:	cmake(Qt5Designer)
+BuildRequires:	pkgconfig(Qt5Designer)
 # end
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(gl)
@@ -114,7 +118,7 @@ BuildRequires:	pkgconfig(jsoncpp)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
 BuildRequires:	pkgconfig(opus)
-BuildRequires:	pkgconfig(protobuf) >= 3.3.2
+BuildRequires:	pkgconfig(protobuf)
 BuildRequires:	pkgconfig(speex)
 BuildRequires:	pkgconfig(flac)
 BuildRequires:	pkgconfig(libxslt)
@@ -124,6 +128,7 @@ BuildRequires:	pkgconfig(vpx)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
+BuildRequires:	qt5-qtquickcontrols2
 BuildRequires:	qt5-qtquick-private-devel
 # FIXME this is evil - the build system should be fixed properly
 # instead of making sure there's no previous version floating
@@ -222,6 +227,7 @@ Development files for Qt WebEngine.
 Summary:	Examples for QtWebEngine
 Group:		Development/KDE and Qt
 Requires:	%{name}-devel = %{EVRD}
+Obsoletes:	%{name}-demobrowser < %{EVRD}
 
 %description examples
 Examples for QtWebEngine.
@@ -230,28 +236,9 @@ Examples for QtWebEngine.
 %{_libdir}/qt5/examples/webengine
 %{_libdir}/qt5/examples/webenginewidgets
 
-%package demobrowser
-Summary:	Demo browser utilizing Qt WebEngine
-Group:		Networking/WWW
-Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
-Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
-Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
-
-%description demobrowser
-Demo browser utilizing Qt WebEngine.
-
-%files demobrowser
-%{_bindir}/demobrowser
-%{_datadir}/applications/*.desktop
-%{_iconsdir}/hicolor/*/apps/qtwebengine.png
-
 %prep
 %setup -qn %{qttarballdir}
 %apply_patches
-
-# http://bugzilla.redhat.com/1337585
-# can't just delete, but we'll overwrite with system headers to be on the safe side
-cp -bv /usr/include/re2/*.h src/3rdparty/chromium/third_party/re2/src/re2/
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
@@ -288,30 +275,36 @@ export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
 export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
+# Use of vfp instructions is hardcoded in SkBlurMaskFilter.cpp
+export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-mfpu=neon$/-mfpu=neon-vfpv4/'`
+
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
+%ifarch %{ix86} %{arm}
+# FIXME Undefined reference to __mulodi4 (ix86+arm) and __gnu_h2f_ieee (arm) during final link
+export CXXFLAGS="$CXXFLAGS --rtlib=compiler-rt"
+export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
+%endif
 
 # for unknown reason i386 build detect himself as crossbuild
 # and pick gcc as compiler, let's force clang on i586
 # use gcc
 #sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 #sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
 mkdir %{_target_platform}
 pushd %{_target_platform}
 mkdir bin
 ln -s /usr/bin/python2 bin/python
-# ld
-ln -s %{_bindir}/ld.bfd bin/ld
 export PATH=`pwd`/bin/:$PATH
 
 
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_ffmpeg use_proprietary_codecs" QT_CONFIG+="proprietary-codecs system-ffmpeg" ..
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" LFLAGS="${LDFLAGS}" ..
 
 %make NINJA_PATH=ninja
 popd
@@ -320,26 +313,6 @@ popd
 export STRIP=strip
 export PATH=`pwd`/bin:$PATH
 %make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_datadir}/applications
-pushd %{_target_platform}
-install -c -m 755 examples/webenginewidgets/demobrowser/demobrowser %{buildroot}%{_bindir}/
-popd
-cat >%{buildroot}%{_datadir}/applications/%{name}-browser.desktop <<EOF
-[Desktop Entry]
-Name=QtWebEngine Browser
-Type=Application
-Icon=qtwebengine
-Categories=Network;WebBrowser;
-Comment=A fast web browser
-GenericName=Web Browser
-Exec=%{_bindir}/demobrowser %%u
-MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
-Terminal=false
-EOF
-for i in 16 22 32 48 64; do
-    mkdir -p %{buildroot}%{_iconsdir}/hicolor/${i}x${i}/apps
-    convert examples/webenginewidgets/demobrowser/data/defaulticon.png -scale ${i}x${i} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/qtwebengine.png
-done
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
