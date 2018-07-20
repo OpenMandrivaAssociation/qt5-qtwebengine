@@ -245,6 +245,9 @@ Examples for QtWebEngine.
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi
 
+# bug 620444 - ensure local headers are used
+find . -type f -name "*.pr[fio]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
+
 # fix // in #include in content/renderer/gpu to avoid debugedit failure
 sed -i -e 's!gpu//!gpu/!g' \
   src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
@@ -304,7 +307,7 @@ export PATH=`pwd`/bin/:$PATH
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus -pulseaudio -alsa -webp -printing-and-pdf" LFLAGS="${LDFLAGS}" ..
 
 %make NINJA_PATH=ninja
 popd
