@@ -294,8 +294,8 @@ export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
 # use gcc
 #sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
 #sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
-#export CC=gcc
-#export CXX=g++
+export CC=gcc
+export CXX=g++
 
 mkdir %{_target_platform}
 pushd %{_target_platform}
