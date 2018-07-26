@@ -3,7 +3,6 @@
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 %define _disable_lto 1
-%global optflags %optflags -DUSING_SYSTEM_ICU=1
 
 # do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
 %define __noautoprov ^lib.*plugin\\.so.*|libv8\\.so$
@@ -305,9 +304,7 @@ export PATH=`pwd`/bin/:$PATH
 
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-# use_system_icu <--- should be put back, currently disabled because of undefined reference
-# to base::i18n::GetRawIcuMemory()
-%qmake_qt5 WEBENGINE_CONFIG+="use_system_icu use_system_protobuf use_spellchecker use_system_icu" QMAKE_EXTRA_ARGS="-proprietary-codecs -system-ffmpeg -system-opus -pulseaudio -alsa -webp -printing-and-pdf" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 CONFIG-='use_gold_linker' QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
 
 %make NINJA_PATH=ninja
 popd
