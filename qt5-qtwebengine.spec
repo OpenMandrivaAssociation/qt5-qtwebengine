@@ -284,8 +284,8 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
 %ifarch %{ix86} %{arm}
 # FIXME Undefined reference to __mulodi4 (ix86+arm) and __gnu_h2f_ieee (arm) during final link
-export CXXFLAGS="$CXXFLAGS --rtlib=compiler-rt"
-export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
+#export CXXFLAGS="$CXXFLAGS --rtlib=compiler-rt"
+#export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
 %endif
 
 # for unknown reason i386 build detect himself as crossbuild
