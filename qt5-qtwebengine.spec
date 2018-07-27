@@ -304,7 +304,7 @@ export PATH=`pwd`/bin/:$PATH
 
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-%qmake_qt5 CONFIG-='use_gold_linker' QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
 
 %make NINJA_PATH=ninja
 popd
