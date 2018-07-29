@@ -1,0 +1,28 @@
+diff -ur qtwebengine-opensource-src-5.6.0/src/core/web_engine_library_info.cpp qtwebengine-opensource-src-5.6.0-no-icudtl-dat/src/core/web_engine_library_info.cpp
+--- qtwebengine-opensource-src-5.6.0/src/core/web_engine_library_info.cpp	2016-03-03 17:02:28.000000000 +0100
++++ qtwebengine-opensource-src-5.6.0-no-icudtl-dat/src/core/web_engine_library_info.cpp	2016-03-18 03:08:24.385444415 +0100
+@@ -207,24 +207,7 @@
+ #if defined(OS_MACOSX) && defined(QT_MAC_FRAMEWORK_BUILD)
+     return getResourcesPath(frameworkBundle());
+ #else
+-    static bool initialized = false;
+     static QString potentialResourcesPath = QLibraryInfo::location(QLibraryInfo::DataPath) % QLatin1String("/resources");
+-    if (!initialized) {
+-        initialized = true;
+-        if (!QFileInfo::exists(potentialResourcesPath % QLatin1String("/icudtl.dat"))) {
+-            qWarning("Qt WebEngine ICU data not found at %s. Trying parent directory...", qPrintable(potentialResourcesPath));
+-            potentialResourcesPath = QLibraryInfo::location(QLibraryInfo::DataPath);
+-        }
+-        if (!QFileInfo::exists(potentialResourcesPath % QLatin1String("/icudtl.dat"))) {
+-            qWarning("Qt WebEngine ICU data not found at %s. Trying application directory...", qPrintable(potentialResourcesPath));
+-            potentialResourcesPath = QCoreApplication::applicationDirPath();
+-        }
+-        if (!QFileInfo::exists(potentialResourcesPath % QLatin1String("/icudtl.dat"))) {
+-            qWarning("Qt WebEngine ICU data not found at %s. Trying fallback directory... The application MAY NOT work.", qPrintable(potentialResourcesPath));
+-            potentialResourcesPath = fallbackDir();
+-        }
+-    }
+-
+     return potentialResourcesPath;
+ #endif
+ }
