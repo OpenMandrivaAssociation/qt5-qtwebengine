@@ -10,7 +10,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.11.1
+Version:	5.11.2
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
