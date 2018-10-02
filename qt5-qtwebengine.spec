@@ -236,8 +236,7 @@ Examples for QtWebEngine.
 %{_libdir}/qt5/examples/webenginewidgets
 
 %prep
-%setup -qn %{qttarballdir}
-%apply_patches
+%autosetup -n %{qttarballdir} -p1
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
@@ -297,21 +296,20 @@ mkdir %{_target_platform}
 pushd %{_target_platform}
 mkdir bin
 ln -s /usr/bin/python2 bin/python
-export PATH=`pwd`/bin/:$PATH
-
+export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
 %qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
 
-%make NINJA_PATH=ninja
+%make_build NINJA_PATH=ninja
 popd
 
 %install
 export STRIP=strip
-export PATH=`pwd`/bin:$PATH
-%make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
+export PATH="$(pwd)/bin:$PATH"
+%make_install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
