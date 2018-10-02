@@ -4,9 +4,10 @@
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 %define _disable_lto 1
 
-# do not provide and require plugins (all architectures) and libv8.so (i586 only lib)
-%define __noautoprov ^lib.*plugin\\.so.*|libv8\\.so$
-%define __noautoreq ^libv8\\.so$
+# exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
+%define  __provides_exclude  ^lib.*plugin\\.so.*|libv8\\.so$
+# exclude libv8.so and devel(libv8) (i686, it's static everywhere else)
+%define __requires_exclude  ^(libv8\\.so|devel\\(libv8.*)$
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
@@ -53,6 +54,7 @@ Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
 Patch13:	qtwebengine-5.11.0-aarch64-buildfix.patch
+Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -88,6 +90,7 @@ BuildRequires:	pkgconfig(Qt5PrintSupport)
 BuildRequires:	pkgconfig(Qt5Sensors)
 BuildRequires:	pkgconfig(Qt5QuickWidgets)
 BuildRequires:	pkgconfig(Qt5QuickControls2)
+BuildRequires:	pkgconfig(Qt5Location)
 # Designer plugin
 BuildRequires:	pkgconfig(Qt5Designer)
 # end
@@ -269,7 +272,7 @@ sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
 export STRIP=strip
-export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks"
+export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks -Wno-class-memaccess -Wno-packed-not-aligned"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
 export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`

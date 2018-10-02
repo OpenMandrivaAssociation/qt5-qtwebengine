@@ -1,0 +1,13 @@
+diff -up ./src/3rdparty/chromium/build/config/compiler/BUILD.gn.orig ./src/3rdparty/chromium/build/config/compiler/BUILD.gn
+--- ./src/3rdparty/chromium/build/config/compiler/BUILD.gn.orig	2018-08-01 17:11:18.550817788 +0300
++++ ./src/3rdparty/chromium/build/config/compiler/BUILD.gn	2018-08-01 17:12:46.974996118 +0300
+@@ -1290,6 +1290,9 @@ config("default_warnings") {
+       # [1] https://gcc.gnu.org/gcc-6/porting_to.html#this-cannot-be-null
+       # [2] https://crbug.com/784492#c13
+       cflags += [ "-fno-delete-null-pointer-checks" ]
++
++      cflags += [ "-Wno-class-memaccess" ]
++      cflags += [ "-Wno-packed-not-aligned" ]
+     }
+   }
+ 
