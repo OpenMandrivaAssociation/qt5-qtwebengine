@@ -1,0 +1,85 @@
+diff --git a/src/3rdparty/chromium/base/BUILD.gn b/src/3rdparty/chromium/base/BUILD.gn
+index cd438e914..de7ce186c 100644
+--- a/src/3rdparty/chromium/base/BUILD.gn
++++ b/src/3rdparty/chromium/base/BUILD.gn
+@@ -69,6 +69,9 @@ config("base_flags") {
+       "-Wno-char-subscripts",
+     ]
+   }
++  ldflags = [
++    "-lnspr4",
++  ]
+ }
+ 
+ config("base_implementation") {
+@@ -874,8 +877,6 @@ jumbo_component("base") {
+     "third_party/dmg_fp/g_fmt.cc",
+     "third_party/icu/icu_utf.cc",
+     "third_party/icu/icu_utf.h",
+-    "third_party/nspr/prtime.cc",
+-    "third_party/nspr/prtime.h",
+     "third_party/superfasthash/superfasthash.c",
+     "threading/platform_thread.h",
+     "threading/platform_thread_android.cc",
+diff --git a/src/3rdparty/chromium/base/time/pr_time_unittest.cc b/src/3rdparty/chromium/base/time/pr_time_unittest.cc
+index 3f1a348ae..8f1a11e51 100644
+--- a/src/3rdparty/chromium/base/time/pr_time_unittest.cc
++++ b/src/3rdparty/chromium/base/time/pr_time_unittest.cc
+@@ -7,7 +7,7 @@
+ 
+ #include "base/compiler_specific.h"
+ #include "base/macros.h"
+-#include "base/third_party/nspr/prtime.h"
++#include <nspr4/prtime.h>
+ #include "base/time/time.h"
+ #include "build/build_config.h"
+ #include "testing/gtest/include/gtest/gtest.h"
+diff --git a/src/3rdparty/chromium/base/time/time.cc b/src/3rdparty/chromium/base/time/time.cc
+index 2f888d1ed..fd01b0bda 100644
+--- a/src/3rdparty/chromium/base/time/time.cc
++++ b/src/3rdparty/chromium/base/time/time.cc
+@@ -14,7 +14,7 @@
+ #include "base/logging.h"
+ #include "base/macros.h"
+ #include "base/strings/stringprintf.h"
+-#include "base/third_party/nspr/prtime.h"
++#include <nspr4/prtime.h>
+ #include "build/build_config.h"
+ 
+ namespace base {
+diff --git a/src/3rdparty/chromium/tools/gn/BUILD.gn b/src/3rdparty/chromium/tools/gn/BUILD.gn
+index c9d12b3a2..205e2faa9 100644
+--- a/src/3rdparty/chromium/tools/gn/BUILD.gn
++++ b/src/3rdparty/chromium/tools/gn/BUILD.gn
+@@ -276,6 +276,10 @@ executable("gn") {
+     "//build/config:exe_and_shlib_deps",
+     "//build/win:default_exe_manifest",
+   ]
++
++  libs = [
++    "nspr4",
++  ]
+ }
+ 
+ test("gn_unittests") {
+diff --git a/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py b/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+index 93c6446f2..092002be8 100755
+--- a/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
++++ b/src/3rdparty/chromium/tools/gn/bootstrap/bootstrap.py
+@@ -567,7 +567,6 @@ def write_gn_ninja(path, root_gen_dir, options):
+       'base/third_party/dmg_fp/dtoa_wrapper.cc',
+       'base/third_party/dmg_fp/g_fmt.cc',
+       'base/third_party/icu/icu_utf.cc',
+-      'base/third_party/nspr/prtime.cc',
+       'base/threading/post_task_and_reply_impl.cc',
+       'base/threading/scoped_blocking_call.cc',
+       'base/threading/sequence_local_storage_map.cc',
+@@ -714,7 +713,7 @@ def write_gn_ninja(path, root_gen_dir, options):
+         'base/allocator/allocator_shim.cc',
+         'base/allocator/allocator_shim_default_dispatch_to_glibc.cc',
+       ])
+-      libs.extend(['-lrt'])
++      libs.extend(['-lrt', '-lnspr4'])
+       static_libraries['libevent']['include_dirs'].extend([
+           os.path.join(SRC_ROOT, 'base', 'third_party', 'libevent', 'linux')
+       ])
