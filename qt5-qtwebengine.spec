@@ -5,9 +5,11 @@
 %define _disable_lto 1
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
-%define  __provides_exclude  ^lib.*plugin\\.so.*|libv8\\.so$
-# exclude libv8.so and devel(libv8) (i686, it's static everywhere else)
-%define __requires_exclude  ^(libv8\\.so|devel\\(libv8.*)$
+%global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
+# exclude libv8.so (i686, it's static everywhere else)
+%global __requires_exclude ^libv8\\.so$
+# and designer plugins
+%global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
@@ -41,7 +43,7 @@ Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
 # FIXME port
-#Patch5:		qtwebengine-everywhere-src-5.6.0-beta-system-nspr-prtime.patch
+Patch5:		qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
@@ -272,6 +274,8 @@ sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 
 %build
 export STRIP=strip
+export NINJAFLAGS="%{__ninja_common_opts}"
+export NINJA_PATH=%{__ninja}
 export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks -Wno-class-memaccess -Wno-packed-not-aligned"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
