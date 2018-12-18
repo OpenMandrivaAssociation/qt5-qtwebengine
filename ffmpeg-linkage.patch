@@ -1,6 +1,6 @@
-diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h.omv~ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h
---- qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h.omv~	2018-04-23 20:03:34.946351005 +0200
-+++ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/base/decoder_buffer.h	2018-04-23 20:03:39.434248335 +0200
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/base/decoder_buffer.h.6~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/base/decoder_buffer.h
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/base/decoder_buffer.h.6~	2018-12-17 03:19:05.294678112 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/base/decoder_buffer.h	2018-12-17 03:19:05.311678346 +0100
 @@ -8,7 +8,9 @@
  #include <stddef.h>
  #include <stdint.h>
@@ -11,23 +11,22 @@ diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/bas
  
  #include <memory>
  #include <string>
-diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h.omv~ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/ffmpeg/ffmpeg_common.h
-diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn.omv~ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn
---- qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn.omv~	2018-04-23 19:44:52.637482329 +0200
-+++ qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/filters/BUILD.gn	2018-04-23 19:48:17.030928003 +0200
-@@ -138,6 +138,11 @@ source_set("filters") {
-       "in_memory_url_protocol.cc",
-       "in_memory_url_protocol.h",
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/filters/BUILD.gn.6~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/filters/BUILD.gn
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/filters/BUILD.gn.6~	2018-11-13 19:25:11.000000000 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/media/filters/BUILD.gn	2018-12-17 03:20:03.375479407 +0100
+@@ -142,6 +142,11 @@ source_set("filters") {
+       "media_file_checker.cc",
+       "media_file_checker.h",
      ]
 +    libs += [
 +      "avcodec",
 +      "avformat",
 +      "avutil",
 +    ]
-     if (!is_android) {
-       sources += [
-         "audio_video_metadata_extractor.cc",
-@@ -173,11 +178,23 @@ source_set("filters") {
+   }
+ 
+   if (media_use_libvpx) {
+@@ -169,11 +174,23 @@ source_set("filters") {
          "ffmpeg_h264_to_annex_b_bitstream_converter.h",
        ]
  
@@ -51,7 +50,7 @@ diff -up qtwebengine-everywhere-src-5.11.0-beta4/src/3rdparty/chromium/media/fil
        }
      }
  
-@@ -186,6 +203,12 @@ source_set("filters") {
+@@ -182,6 +199,12 @@ source_set("filters") {
          "ffmpeg_video_decoder.cc",
          "ffmpeg_video_decoder.h",
        ]

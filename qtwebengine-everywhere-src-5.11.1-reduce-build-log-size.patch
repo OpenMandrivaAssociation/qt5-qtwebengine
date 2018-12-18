@@ -1,13 +1,11 @@
-diff -up ./src/3rdparty/chromium/build/config/compiler/BUILD.gn.orig ./src/3rdparty/chromium/build/config/compiler/BUILD.gn
---- ./src/3rdparty/chromium/build/config/compiler/BUILD.gn.orig	2018-08-01 17:11:18.550817788 +0300
-+++ ./src/3rdparty/chromium/build/config/compiler/BUILD.gn	2018-08-01 17:12:46.974996118 +0300
-@@ -1290,6 +1290,9 @@ config("default_warnings") {
-       # [1] https://gcc.gnu.org/gcc-6/porting_to.html#this-cannot-be-null
-       # [2] https://crbug.com/784492#c13
-       cflags += [ "-fno-delete-null-pointer-checks" ]
-+
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/compiler/BUILD.gn.7~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/compiler/BUILD.gn.7~	2018-12-17 03:27:57.625953208 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2018-12-17 03:39:04.999789661 +0100
+@@ -1432,6 +1432,7 @@ config("default_warnings") {
+       # of Chromium and GCC bugs.
+       cflags += [ "-Wno-dangling-else" ]
+       cflags += [ "-Wno-packed-not-aligned" ]
 +      cflags += [ "-Wno-class-memaccess" ]
-+      cflags += [ "-Wno-packed-not-aligned" ]
-     }
-   }
- 
+       cflags_cc += [ "-Wno-attributes" ]
+       cflags_cc += [ "-Wno-class-memaccess" ]
+       cflags_cc += [ "-Wno-subobject-linkage" ]

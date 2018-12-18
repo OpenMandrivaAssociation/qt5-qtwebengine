@@ -1,0 +1,138 @@
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/chromecast/BUILD.gn.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/chromecast/BUILD.gn
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/chromecast/BUILD.gn.omv~	2018-12-17 06:58:18.079022130 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/config/chromecast/BUILD.gn	2018-12-17 06:58:37.842310555 +0100
+@@ -14,15 +14,6 @@ config("static_config") {
+       # http://b/26390825
+       "-Wl,--exclude-libs=libffmpeg.a",
+     ]
+-
+-    if (!is_android) {
+-      ldflags += [
+-        # We want to statically link libstdc++/libgcc on Linux.
+-        # (On Android, libstdc++ and libgcc aren't used.)
+-        "-static-libstdc++",
+-        "-static-libgcc",
+-      ]
+-    }
+   }
+ }
+ 
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/glslang/src/CMakeLists.txt.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/glslang/src/CMakeLists.txt
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/mesa/src/scons/gallium.py.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/mesa/src/scons/gallium.py
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/shaderc/src/cmake/utils.cmake.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/shaderc/src/cmake/utils.cmake
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/SPIRV-Tools/src/CMakeLists.txt.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/SPIRV-Tools/src/CMakeLists.txt
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/build/gen.py.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/build/gen.py
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/build/gen.py.omv~	2018-12-17 07:00:02.601528378 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/build/gen.py	2018-12-17 07:00:15.199706927 +0100
+@@ -373,7 +373,6 @@ def WriteGNNinja(path, platform, host, o
+         cflags.append('--sysroot=' + linux_sysroot)
+         ldflags.append('--sysroot=' + linux_sysroot)
+       ldflags.extend([
+-          '-static-libstdc++',
+           '-Wl,--as-needed',
+       ])
+       libs.extend([
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json.omv~	2018-12-17 06:58:51.799513179 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json	2018-12-17 06:59:08.782758588 +0100
+@@ -97,7 +97,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "debug.build.generate",
+     "~followup_annotations": [
+@@ -115,7 +115,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "debug.build.ninja",
+     "~followup_annotations": [
+@@ -153,7 +153,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "release.build.generate",
+     "~followup_annotations": [
+@@ -171,7 +171,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "release.build.ninja",
+     "~followup_annotations": [
+@@ -251,4 +251,4 @@
+     "recipe_result": null,
+     "status_code": 0
+   }
+-]
+\ No newline at end of file
++]
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json.omv~	2018-12-17 06:59:19.709915834 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json	2018-12-17 06:59:35.289139175 +0100
+@@ -97,7 +97,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "debug.build.generate",
+     "~followup_annotations": [
+@@ -115,7 +115,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "debug.build.ninja",
+     "~followup_annotations": [
+@@ -153,7 +153,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "release.build.generate",
+     "~followup_annotations": [
+@@ -171,7 +171,7 @@
+       "AR": "[START_DIR]/cipd/bin/llvm-ar",
+       "CC": "[START_DIR]/cipd/bin/clang",
+       "CXX": "[START_DIR]/cipd/bin/clang++",
+-      "LDFLAGS": "-static-libstdc++ -ldl -lpthread"
++      "LDFLAGS": "-ldl -lpthread"
+     },
+     "name": "release.build.ninja",
+     "~followup_annotations": [
+@@ -267,4 +267,4 @@
+     "recipe_result": null,
+     "status_code": 0
+   }
+-]
+\ No newline at end of file
++]
+diff -up qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.py.omv~ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.py
+--- qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.py.omv~	2018-12-17 06:59:42.672244673 +0100
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/gn/infra/recipes/gn.py	2018-12-17 06:59:56.114436201 +0100
+@@ -61,7 +61,7 @@ def RunSteps(api, repository):
+           'CC': cipd_dir.join('bin', 'clang'),
+           'CXX': cipd_dir.join('bin', 'clang++'),
+           'AR': cipd_dir.join('bin', 'llvm-ar'),
+-          'LDFLAGS': '-static-libstdc++ -ldl -lpthread',
++          'LDFLAGS': '-ldl -lpthread',
+       },
+       'mac': {},
+       'win': {},

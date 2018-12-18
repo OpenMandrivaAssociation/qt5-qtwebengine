@@ -2,7 +2,7 @@
 %define beta %{nil}
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
-%define _disable_lto 1
+#define _disable_lto 1
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -13,13 +13,13 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.11.2
+Version:	5.12.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	3
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -50,12 +50,12 @@ Patch5:		qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
+Patch7:		qtwebengine-5.12-no-static-libstdc++.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 # Support ffmpeg 3.5
 Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
-Patch13:	qtwebengine-5.11.0-aarch64-buildfix.patch
 Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -251,9 +251,6 @@ Examples for QtWebEngine.
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi
 
-# fix // in #include in content/renderer/gpu to avoid debugedit failure
-sed -i -e 's!gpu//!gpu/!g' \
-  src/3rdparty/chromium/content/renderer/gpu/compositor_forwarding_message_filter.cc
 # remove ./ from #line commands in ANGLE to avoid debugedit failure (?)
 sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
