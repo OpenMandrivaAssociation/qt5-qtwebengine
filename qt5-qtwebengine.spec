@@ -19,7 +19,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -291,13 +291,14 @@ export CXXFLAGS="$CXXFLAGS --rtlib=compiler-rt"
 export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
 %endif
 
-# for unknown reason i386 build detect himself as crossbuild
-# and pick gcc as compiler, let's force clang on i586
-# use gcc
-#sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-#sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
-#export CC=gcc
-#export CXX=g++
+%ifarch %{aarch64}
+# As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
+# with clang
+sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
+sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
+export CC=gcc
+export CXX=g++
+%endif
 
 mkdir %{_target_platform}
 pushd %{_target_platform}
