@@ -57,6 +57,7 @@ Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
 Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
+Patch15:	qtwebengine-5.12.0-armfixes.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -294,10 +295,10 @@ export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
 %ifarch %{aarch64}
 # As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
 # with clang
-sed -i 's/c++/g++/g' src/3rdparty/chromium/build/compiler_version.py
-sed -i 's!clang=1 host_clang=1!clang=0 host_clang=0!g' src/core/config/desktop_linux.pri
 export CC=gcc
 export CXX=g++
+export QMAKE_CC=gcc
+export QMAKE_CXX=g++
 %endif
 
 mkdir %{_target_platform}
