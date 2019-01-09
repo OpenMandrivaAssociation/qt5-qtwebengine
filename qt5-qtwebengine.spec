@@ -252,6 +252,9 @@ Examples for QtWebEngine.
 # into --fatal-warnings mode...
 sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi
 
+# fix missing (bogus but required) file duplication
+cp src/3rdparty/chromium/base/numerics/safe_conversions_arm_impl.h src/3rdparty/gn/base/numerics/
+
 # remove ./ from #line commands in ANGLE to avoid debugedit failure (?)
 sed -i -e 's!\./!!g' \
   src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
