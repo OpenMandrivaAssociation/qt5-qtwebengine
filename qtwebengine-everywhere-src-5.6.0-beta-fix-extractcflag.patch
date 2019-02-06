@@ -1,7 +1,7 @@
-diff -ur qtwebengine-opensource-src-5.6.0-beta/tools/qmake/mkspecs/features/functions.prf qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag/tools/qmake/mkspecs/features/functions.prf
---- qtwebengine-opensource-src-5.6.0-beta/mkspecs/features/functions.prf	2015-12-14 16:27:24.000000000 +0100
-+++ qtwebengine-opensource-src-5.6.0-beta-fix-extractcflag/mkspecs/features/functions.prf	2016-01-10 18:15:23.942032985 +0100
-@@ -87,7 +87,7 @@
+diff -up qtwebengine-everywhere-src-5.12.1/mkspecs/features/functions.prf.2~ qtwebengine-everywhere-src-5.12.1/mkspecs/features/functions.prf
+--- qtwebengine-everywhere-src-5.12.1/mkspecs/features/functions.prf.2~	2019-02-06 12:40:23.693716277 +0100
++++ qtwebengine-everywhere-src-5.12.1/mkspecs/features/functions.prf	2019-02-06 12:42:37.285854197 +0100
+@@ -11,7 +11,7 @@ defineReplace(getChromiumSrcDir) {
  }
  
  defineReplace(extractCFlag) {
@@ -9,4 +9,4 @@ diff -ur qtwebengine-opensource-src-5.6.0-beta/tools/qmake/mkspecs/features/func
 +    CFLAGS = $$QMAKE_CC $$QMAKE_CFLAGS $$QMAKE_CFLAGS_RELEASE
      OPTION = $$find(CFLAGS, $$1)
      OPTION = $$split(OPTION, =)
-     return ($$member(OPTION, 1))
+     PARAM = $$member(OPTION, 1)
