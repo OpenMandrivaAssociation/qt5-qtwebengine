@@ -58,6 +58,8 @@ Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
 Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 Patch15:	qtwebengine-5.12.0-armfixes.patch
+# Keep in sync with the patch in Chromium...
+Patch16:	enable-vaapi.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -313,7 +315,7 @@ export PATH="$(pwd)/bin:$PATH"
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 -d -- QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
 
 %make_build NINJA_PATH=ninja
 popd
