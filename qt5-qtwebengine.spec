@@ -320,7 +320,14 @@ export NINJAFLAGS="-v %{_smp_mflags}"
 # to base::i18n::GetRawIcuMemory()
 %qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
 
-%make_build NINJA_PATH=ninja
+if ! %make_build NINJA_PATH=ninja; then
+	# Let's try to see what's wrong with armv7hnl builds...
+	pwd
+	ls -l src/3rdparty/gn/out/Release/gn
+	src/3rdparty/gn/out/Release/gn gen */src/core/release --script-executable=/usr/bin/python2 --args='use_qt=true is_component_build=false is_shared=true enable_message_center=false enable_mus=false enable_nacl=false enable_remoting=false enable_reporting=false enable_web_speech=false enable_widevine=true has_native_accessibility=false use_allocator_shim=false use_allocator="none" v8_use_external_startup_data=false treat_warnings_as_errors=false enable_swiftshader=false use_custom_libcxx=false use_jumbo_build=true jumbo_file_merge_limit=8 jumbo_build_excluded=["browser"] enable_basic_printing=true enable_print_preview=true enable_pdf=true enable_plugins=true enable_spellcheck=true enable_webrtc=true proprietary_codecs=true ffmpeg_branding="Chrome" enable_precompiled_headers=false is_debug=false symbol_level=0 remove_webcore_debug_symbols=true remove_v8base_debug_symbols=true v8_use_snapshot=true use_kerberos=false enable_iterator_debugging=false use_cups=false use_gio=false use_gnome_keyring=false linux_use_bundled_binutils=false use_udev=true use_bundled_fontconfig=false use_sysroot=false enable_session_service=false toolkit_views=false use_ozone=true ozone_auto_platforms=false ozone_platform_headless=false ozone_platform_external=true ozone_platform="qt" is_clang=true clang_use_chrome_plugins=false clang_base_path="/usr" use_lld=false arm_float_abi="hard" arm_arch="armv7-a" arm_version=7 arm_use_neon=true arm_use_thumb=false custom_toolchain="/builddir/build/BUILD/qtwebengine-everywhere-src-5.12.1/armv7hnl-openmandriva-linux-gnueabihf/src/toolchain:target" host_toolchain="/builddir/build/BUILD/qtwebengine-everywhere-src-5.12.1/armv7hnl-openmandriva-linux-gnueabihf/src/toolchain:host" host_cpu="arm" pkg_config="pkg-config" host_pkg_config="/usr/bin/pkg-config" use_system_zlib=true use_system_minizip=true pdfium_use_system_zlib=true use_system_libpng=true pdfium_use_system_libpng=true use_system_libjpeg=true use_system_freetype=true use_system_harfbuzz=true use_pulseaudio=true use_alsa=true ozone_platform_x11=true use_xscrnsaver=true use_system_libevent=true use_system_libwebp=true use_system_opus=true use_system_snappy=true use_system_libvpx=true use_system_icu=true icu_use_data_file=false use_system_ffmpeg=true use_system_re2=true use_system_lcms2=true qtwebengine_target="/builddir/build/BUILD/qtwebengine-everywhere-src-5.12.1/armv7hnl-openmandriva-linux-gnueabihf/src/core/release:QtWebEngineCore"' --root=/build/BUILD/qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium
+	exit 1
+fi
+
 popd
 
 %install
