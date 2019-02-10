@@ -292,15 +292,17 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-
 
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
-%ifarch %{ix86} %{arm}
+%ifarch %{arm}
 # FIXME Undefined reference to __mulodi4 (ix86+arm) and __gnu_h2f_ieee (arm) during final link
 export CXXFLAGS="$CXXFLAGS --rtlib=compiler-rt"
 export LDFLAGS="$LDFLAGS --rtlib=compiler-rt"
 %endif
 
-%ifarch %{aarch64}
+%ifarch %{aarch64} i686
 # As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
-# with clang
+# with clang on aarch64
+# On i686, we get a build time error (undefined reference to
+# __atomic_load_8) with Qt 5.12.1, clang 7.0.1
 export CC=gcc
 export CXX=g++
 export QMAKE_CC=gcc
@@ -316,7 +318,7 @@ export PATH="$(pwd)/bin:$PATH"
 export NINJAFLAGS="-v %{_smp_mflags}"
 # use_system_icu <--- should be put back, currently disabled because of undefined reference
 # to base::i18n::GetRawIcuMemory()
-%qmake_qt5 -d QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
 
 %make_build NINJA_PATH=ninja
 popd
