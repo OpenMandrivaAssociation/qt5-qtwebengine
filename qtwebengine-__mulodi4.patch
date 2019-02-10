@@ -1,7 +1,7 @@
 diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.omv~ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c
 --- qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.omv~	2019-02-10 23:23:23.342045940 +0100
 +++ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c	2019-02-10 23:26:53.536586646 +0100
-@@ -5,6 +5,51 @@
+@@ -5,6 +5,50 @@
  // This is a shim that injects Chrome-specific defitions into sqlite3.c
  // BUILD.gn uses this instead of building the sqlite3 amalgamation directly.
  
@@ -10,11 +10,10 @@ diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sql
 +// based on
 +// https://llvm.org/svn/llvm-project/compiler-rt/branches/release_80/lib/builtins/mulodi4.c
 +// with internal data types removed.
-+#include <limits.h>
 +long long
 +__mulodi4(long long a, long long b, int* overflow)
 +{
-+    const int N = (int)(sizeof(long long) * CHAR_BIT);
++    const int N = (int)(sizeof(long long) * 8 /*CHAR_BIT*/);
 +    const long long MIN = (long long)1 << (N-1);
 +    const long long MAX = ~MIN;
 +    *overflow = 0; 
