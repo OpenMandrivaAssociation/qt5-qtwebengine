@@ -1,0 +1,54 @@
+diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.omv~ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c
+--- qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.omv~	2019-02-10 23:23:23.342045940 +0100
++++ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c	2019-02-10 23:26:53.536586646 +0100
+@@ -5,6 +5,50 @@
+ // This is a shim that injects Chrome-specific defitions into sqlite3.c
+ // BUILD.gn uses this instead of building the sqlite3 amalgamation directly.
+ 
++// __mulodi4 is injected by clang, but not exported by libgcc, so let's
++// inject a variant of its definition here.
++// based on
++// https://llvm.org/svn/llvm-project/compiler-rt/branches/release_80/lib/builtins/mulodi4.c
++// with internal data types removed.
++long long
++__mulodi4(long long a, long long b, int* overflow)
++{
++    const int N = (int)(sizeof(long long) * CHAR_BIT);
++    const long long MIN = (long long)1 << (N-1);
++    const long long MAX = ~MIN;
++    *overflow = 0; 
++    const long long result = a * b;
++    if (a == MIN)
++    {
++        if (b != 0 && b != 1)
++	    *overflow = 1;
++	return result;
++    }
++    if (b == MIN)
++    {
++        if (a != 0 && a != 1)
++	    *overflow = 1;
++        return result;
++    }
++    const long long sa = a >> (N - 1);
++    const long long abs_a = (a ^ sa) - sa;
++    const long long sb = b >> (N - 1);
++    const long long abs_b = (b ^ sb) - sb;
++    if (abs_a < 2 || abs_b < 2)
++        return result;
++    if (sa == sb)
++    {
++        if (abs_a > MAX / abs_b)
++            *overflow = 1;
++    }
++    else
++    {
++        if (abs_a > MIN / -abs_b)
++            *overflow = 1;
++    }
++    return result;
++}
++
+ // We prefix chrome_ to SQLite's exported symbols, so that we don't clash with
+ // other SQLite libraries loaded by the system libraries. This only matters when
+ // using the component build, where our SQLite's symbols are visible to the

@@ -39,6 +39,8 @@ Patch2:		qtwebengine-everywhere-src-5.6.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
 Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
+# Define __mulodi4 when building with clang but without compiler-rt
+Patch4:		qtwebengine-__mulodi4.patch
 # use the system NSPR prtime (based on Debian patch)
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
@@ -304,7 +306,6 @@ export CC=gcc
 export CXX=g++
 export QMAKE_CC=gcc
 export QMAKE_CXX=g++
-export QMAKESPEC=%{_libdir}/qt5/mkspecs/linux-g++
 %endif
 
 mkdir %{_target_platform}
