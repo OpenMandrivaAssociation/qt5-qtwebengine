@@ -306,6 +306,8 @@ export CC=gcc
 export CXX=g++
 export QMAKE_CC=gcc
 export QMAKE_CXX=g++
+export QMAKE_XSPEC=linux-g++
+export QMAKESPEC=%{_libdir}/qt5/mkspecs/${QMAKE_XSPEC}
 %endif
 
 mkdir %{_target_platform}
