@@ -52,3 +52,54 @@ diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sql
  // We prefix chrome_ to SQLite's exported symbols, so that we don't clash with
  // other SQLite libraries loaded by the system libraries. This only matters when
  // using the component build, where our SQLite's symbols are visible to the
+diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp.omv~ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp
+--- qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp.omv~	2019-02-11 18:22:22.164827490 +0100
++++ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp	2019-02-11 18:34:39.271899070 +0100
+@@ -136,3 +136,47 @@ namespace SkOpts {
+         once(init);
+     }
+ }  // namespace SkOpts
++
++#ifdef __arm__
++// based on https://reviews.llvm.org/D4927
++float __gnu_h2f_ieee(short param) {
++    unsigned short expHalf16 = param & 0x7C00;
++    int exp1 = (int)expHalf16;
++    unsigned short mantissa16 = param & 0x03FF;
++    int mantissa1 = (int)mantissa16;
++    int sign = (int)(param & 0x8000);
++    sign = sign << 16;
++
++    // nan or inf
++    if (expHalf16 == 0x7C00) {
++        // nan
++        if (mantissa16 > 0) {
++            int res = (0x7FC00000 | sign);
++            float fres = *((float*)(&res));
++            return fres;
++        }
++        // inf
++        int res = (0x7F800000 | sign);
++        float fres = *((float*)(&res));
++        return fres;
++    }
++    if (expHalf16 != 0) {
++        exp1 += ((127 - 15) << 10); //exponents converted to float32 bias
++        int res = (exp1 | mantissa1);
++        res = res << 13 ;
++        res = ( res | sign );
++        float fres = *((float*)(&res));
++        return fres;
++    }
++
++    int xmm1 = exp1 > (1 << 10) ? exp1 : (1 << 10);
++    xmm1 = (xmm1 << 13);
++    xmm1 += ((127 - 15 - 10) << 23);  // add the bias difference to xmm1
++    xmm1 = xmm1 | sign; // Combine with the sign mask
++
++    float res = (float)mantissa1;  // Convert mantissa to float
++    res *= *((float*) (&xmm1));
++
++    return res;
++}
++#endif
