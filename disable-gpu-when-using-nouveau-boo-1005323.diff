@@ -1,7 +1,7 @@
-diff -up qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp.5~ qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp
---- qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp.5~	2019-01-16 23:42:58.000000000 +0100
-+++ qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp	2019-02-06 12:45:52.942746708 +0100
-@@ -102,6 +102,8 @@
+diff -up qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp.6~ qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp
+--- qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp.6~	2019-03-07 08:21:22.000000000 +0000
++++ qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp	2019-03-19 13:54:40.770760133 +0000
+@@ -108,6 +108,8 @@
  #include <QOffscreenSurface>
  #ifndef QT_NO_OPENGL
  # include <QOpenGLContext>
@@ -10,7 +10,7 @@ diff -up qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp.5~ qt
  #endif
  #include <QQuickWindow>
  #include <QStringList>
-@@ -161,6 +163,37 @@ void dummyGetPluginCallback(const std::v
+@@ -167,6 +169,37 @@ void dummyGetPluginCallback(const std::v
  }
  #endif
  
@@ -48,10 +48,11 @@ diff -up qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp.5~ qt
  } // namespace
  
  namespace QtWebEngineCore {
-@@ -448,6 +481,16 @@ WebEngineContext::WebEngineContext()
+@@ -500,9 +533,19 @@ WebEngineContext::WebEngineContext()
  
      const char *glType = 0;
  #ifndef QT_NO_OPENGL
+-
 +    bool disableGpu = qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_GPU");
 +    if (!qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND") && openGLVendor() == QStringLiteral("nouveau")) {
 +	    qWarning() << "Nouveau openGL driver detected. Qt WebEngine will disable usage of the GPU.\n"
@@ -62,15 +63,10 @@ diff -up qtwebengine-everywhere-src-5.12.1/src/core/web_engine_context.cpp.5~ qt
 +			  "Nouveau openGL drivers don't support multithreaded rendering";
 +	    disableGpu = true;
 +    }
- 
-     bool tryGL =
-             !usingANGLE()
-@@ -457,7 +500,7 @@ WebEngineContext::WebEngineContext()
-                 // performant, but at least provides WebGL support.
-                 || enableWebGLSoftwareRendering
-                 )
--            && !usingQtQuick2DRenderer();
-+            && !usingQtQuick2DRenderer() && !disableGpu;
- 
+     const bool tryGL = (usingDefaultSGBackend() && !usingSoftwareDynamicGL() &&
+-                        QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
++                        QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL)
++			&& !disableGpu)
+                         || enableGLSoftwareRendering;
      if (tryGL) {
          if (qt_gl_global_share_context() && qt_gl_global_share_context()->isValid()) {

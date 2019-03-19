@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta %{nil}
+%define beta beta1
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -13,11 +13,11 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.12.2
+Version:	5.13.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
@@ -59,7 +59,6 @@ Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
 Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
-Patch15:	qtwebengine-5.12.0-armfixes.patch
 # Keep in sync with the patch in Chromium...
 # NOT YET READY
 #Patch16:	enable-vaapi.patch
