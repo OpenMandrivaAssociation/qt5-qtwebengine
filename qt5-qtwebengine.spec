@@ -60,8 +60,7 @@ Patch10:	chromium-65-ffmpeg-3.5.patch
 Patch11:	ffmpeg-linkage.patch
 Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 # Keep in sync with the patch in Chromium...
-# NOT YET READY
-#Patch16:	enable-vaapi.patch
+Patch16:	enable-vaapi.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
