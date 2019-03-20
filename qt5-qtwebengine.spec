@@ -15,7 +15,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.13.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -343,3 +343,9 @@ for prl_file in libQt5*.prl ; do
   fi
 done
 popd
+
+# Allow QtWebEngine 5.13.0-beta* to coexist with other Qt modules from 5.12.x
+# In general, we want stable Qt, but QtWebEngine 5.13 is significantly better
+# than 5.12 due to the Chromium 73 sync...
+sed -i -e 's,5.13.0 \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.12.0 ${_Qt5WebEngineCore_FIND_VERSION_EXACT},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
+sed -i -e 's,5.13.0 \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.12.0 ${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
