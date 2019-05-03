@@ -1,0 +1,12 @@
+diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/buildtools/gn.pro.6~ qtwebengine-everywhere-src-5.13.0-beta3/src/buildtools/gn.pro
+--- qtwebengine-everywhere-src-5.13.0-beta3/src/buildtools/gn.pro.6~	2019-05-02 21:53:00.257586608 +0200
++++ qtwebengine-everywhere-src-5.13.0-beta3/src/buildtools/gn.pro	2019-05-02 21:55:14.917286233 +0200
+@@ -18,7 +18,7 @@ build_pass|!debug_and_release {
+             src_3rd_party_dir = $$absolute_path("$${getChromiumSrcDir()}/../", "$$QTWEBENGINE_ROOT")
+             gn_bootstrap = $$system_path($$absolute_path(gn/build/gen.py, $$src_3rd_party_dir))
+ 
+-            gn_configure = $$system_quote($$gn_bootstrap) --no-last-commit-position --out-path $$out_path \
++            gn_configure = $$system_quote($$gn_bootstrap) --verbose --no-last-commit-position --out-path $$out_path \
+                            --cc \"$$which($$QMAKE_CC)\" --cxx \"$$which($$QMAKE_CXX)\" \
+                            --ld \"$$which($$QMAKE_LINK)\"
+             macos {

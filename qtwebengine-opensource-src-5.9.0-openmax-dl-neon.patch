@@ -1,0 +1,97 @@
+diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn.5~ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn
+--- qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn.5~	2019-05-02 21:50:17.318567710 +0200
++++ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn	2019-05-02 21:51:45.262928030 +0200
+@@ -207,14 +207,6 @@ if (current_cpu == "arm") {
+       "sp/src/arm/armv7/omxSP_FFTInv_CCSToR_F32_Sfs_s.S",
+     ]
+     if (arm_optionally_use_neon) {
+-      # Run-time NEON detection.
+-      deps = [
+-        "//third_party/android_tools:cpu_features",
+-      ]
+-
+-      # To get the __android_log_print routine
+-      libs = [ "log" ]
+-
+       # Detection routine
+       sources += [ "sp/src/arm/detect.c" ]
+     }
+diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c.5~ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c
+--- qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c.5~	2019-04-10 14:24:58.000000000 +0200
++++ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c	2019-05-02 21:50:17.318567710 +0200
+@@ -9,13 +9,57 @@
+  *
+  */
+ 
+-#include <cpu-features.h>
+-
+-#include "android/log.h"
+ #include "dl/sp/api/omxSP.h"
+ 
++// For ArmCpuCaps()
++#include <stdio.h>
++#include <string.h>
++
++// based on libvpx arm_cpudetect.c
++static int ArmCpuCaps(const char* cpuinfo_name) {
++  char cpuinfo_line[512];
++  FILE* f = fopen(cpuinfo_name, "r");
++  if (!f) {
++    // Assume Neon if /proc/cpuinfo is unavailable.
++    // This will occur for Chrome sandbox for Pepper or Render process.
++    return 1;
++  }
++  while (fgets(cpuinfo_line, sizeof(cpuinfo_line) - 1, f)) {
++    if (memcmp(cpuinfo_line, "Features", 8) == 0) {
++      char* p = strstr(cpuinfo_line, " neon");
++      if (p && (p[5] == ' ' || p[5] == '\n')) {
++        fclose(f);
++        return 1;
++      }
++      // aarch64 uses asimd for Neon.
++      p = strstr(cpuinfo_line, " asimd");
++      if (p && (p[6] == ' ' || p[6] == '\n')) {
++        fclose(f);
++        return 1;
++      }
++    }
++  }
++  fclose(f);
++  return 0;
++}
++
+ int omxSP_HasArmNeon() {
+-  return (android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON) != 0;
++#if defined(__arm__) || defined(__aarch64__)
++// gcc -mfpu=neon defines __ARM_NEON__
++// __ARM_NEON__ generates code that requires Neon.  NaCL also requires Neon.
++// For Linux, /proc/cpuinfo can be tested but without that assume Neon.
++#if defined(__ARM_NEON__) || defined(__native_client__) || !defined(__linux__)
++  return 1;
++// For aarch64(arm64), /proc/cpuinfo's feature is not complete, e.g. no neon
++// flag in it.
++// So for aarch64, neon enabling is hard coded here.
++#elif defined(__aarch64__)
++  return 1;
++#else
++  // Linux arm parse text file for neon detect.
++  return ArmCpuCaps("/proc/cpuinfo");
++#endif
++#endif  // __arm__
+ }
+ 
+ static void SetFFTRoutines() {
+@@ -24,13 +68,9 @@ static void SetFFTRoutines() {
+    * forward and inverse FFTs
+    */
+   if (omxSP_HasArmNeon()) {
+-    __android_log_print(ANDROID_LOG_INFO, "OpenMAX DL FFT",
+-                        "Using NEON FFT");
+     omxSP_FFTFwd_RToCCS_F32 = omxSP_FFTFwd_RToCCS_F32_Sfs;
+     omxSP_FFTInv_CCSToR_F32 = omxSP_FFTInv_CCSToR_F32_Sfs;
+   } else {
+-    __android_log_print(ANDROID_LOG_INFO, "OpenMAX DL FFT",
+-                        "Using non-NEON FFT");
+     omxSP_FFTFwd_RToCCS_F32 = omxSP_FFTFwd_RToCCS_F32_Sfs_vfp;
+     omxSP_FFTInv_CCSToR_F32 = omxSP_FFTInv_CCSToR_F32_Sfs_vfp;
+   }

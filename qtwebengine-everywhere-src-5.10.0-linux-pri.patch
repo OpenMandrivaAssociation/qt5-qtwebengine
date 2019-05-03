@@ -1,0 +1,23 @@
+diff -ur qtwebengine-everywhere-src-5.10.0/src/core/config/linux.pri qtwebengine-everywhere-src-5.10.0-linux-pri/src/core/config/linux.pri
+--- qtwebengine-everywhere-src-5.10.0/src/core/config/linux.pri	2017-11-29 09:42:29.000000000 +0100
++++ qtwebengine-everywhere-src-5.10.0-linux-pri/src/core/config/linux.pri	2017-12-25 12:07:40.262411459 +0100
+@@ -157,3 +157,19 @@
+     #qtConfig(webengine-system-jsoncpp): gn_args += use_system_jsoncpp=true
+     #qtConfig(webengine-system-libsrtp: gn_args += use_system_libsrtp=true
+ }
++
++# yasm is only used on x86, and passing use_system_yasm makes the build fail on
++# other architectures (e.g., ARM), so make it conditional on the architecture
++contains(QT_ARCH, "x86_64")|contains(QT_ARCH, "i386") {
++    gn_args += use_system_yasm=true
++}
++
++# link libpci instead of dlopening it, our Qt packaging depends on it anyway
++gn_args += linux_link_libpci=true
++
++# run the unbundling script Chromium provides
++CHROMIUM_SRC_DIR = "$$QTWEBENGINE_ROOT/$$getChromiumSrcDir()"
++R_G_F_PY = "$$CHROMIUM_SRC_DIR/build/linux/unbundle/replace_gn_files.py"
++R_G_F_PY_ARGS = "--system-libraries yasm"
++log("Running python2 $$R_G_F_PY $$R_G_F_PY_ARGS$${EOL}")
++!system("python2 $$R_G_F_PY $$R_G_F_PY_ARGS"): error("-- unbundling failed")

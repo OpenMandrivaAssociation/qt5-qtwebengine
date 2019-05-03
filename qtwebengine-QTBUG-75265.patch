@@ -1,0 +1,21 @@
+diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+--- qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~	2019-05-02 20:46:13.773104238 +0200
++++ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2019-05-02 20:46:52.372749012 +0200
+@@ -2173,17 +2173,6 @@ config("default_optimization") {
+ }
+ 
+ _clang_sample_profile = ""
+-if (is_clang && is_a_target_toolchain) {
+-  if (clang_sample_profile_path != "") {
+-    _clang_sample_profile = clang_sample_profile_path
+-  } else if (clang_use_default_sample_profile) {
+-    assert(build_with_chromium,
+-           "Our default profiles currently only apply to Chromium")
+-    assert(is_android || is_desktop_linux,
+-           "The current platform has no default profile")
+-    _clang_sample_profile = "//chrome/android/profiles/afdo.prof"
+-  }
+-}
+ 
+ # Clang offers a way to assert that AFDO profiles are accurate, which causes it
+ # to optimize functions not represented in a profile more aggressively for size.

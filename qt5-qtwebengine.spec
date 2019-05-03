@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta1
+%define beta beta3
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -15,7 +15,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.13.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.2
+Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -28,39 +28,56 @@ License:	GPLv2
 Group:		System/Libraries
 Url:		http://qtwebengine.sf.net/
 Source1000:	%{name}.rpmlintrc
-# some tweaks to linux.pri (system libs, link libpci, run unbundling script,
-# do an NSS/BoringSSL "chimera build", see Provides: bundled(boringssl) comment)
-#Patch1:		qtwebengine-everywhere-src-5.6.1-linux-pri.patch
+# Patches "borrowed" from rpmfusion
+# https://github.com/rpmfusion/qt5-qtwebengine-freeworld
+# some tweaks to linux.pri (system yasm, link libpci, run unbundling script)
+Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
 # quick hack to avoid checking for the nonexistent icudtl.dat and silence the
 # resulting warnings - not upstreamable as is because it removes the fallback
 # mechanism for the ICU data directory (which is not used in our builds because
 # we use the system ICU, which embeds the data statically) completely
-Patch2:		qtwebengine-everywhere-src-5.6.0-no-icudtl-dat.patch
+Patch1:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.11.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
-Patch3:		qtwebengine-everywhere-src-5.6.0-beta-fix-extractcflag.patch
+Patch2:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.12.1-fix-extractcflag.patch
+# disable NEON vector instructions on ARM where the NEON code FTBFS due to
+# GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
+Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
+# remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
+Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
+# Force verbose output from the GN bootstrap process
+# Needs porting
+#Patch21: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.12.0-gn-bootstrap-verbose.patch
+# Fix/workaround FTBFS on aarch64 with newer glibc
+Patch24: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.11.3-aarch64-new-stat.patch
+# borrow fix from chromium packaging
+Patch26: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-gcc9-drop-rsp-clobber.patch
+# ====================
+# OpenMandriva patches
+# ====================
 # Define __mulodi4 when building with clang but without compiler-rt
-Patch4:		qtwebengine-__mulodi4.patch
+Patch1000:	qtwebengine-__mulodi4.patch
 # use the system NSPR prtime (based on Debian patch)
 # We already depend on NSPR, so it is useless to copy these functions here.
 # Debian uses this just fine, and I don't see relevant modifications either.
 # FIXME port
-Patch5:		qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
+Patch1001:	qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
-Patch7:		qtwebengine-5.12-no-static-libstdc++.patch
+Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
-Patch9:		disable-gpu-when-using-nouveau-boo-1005323.diff
+Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 # Support ffmpeg 3.5
-Patch10:	chromium-65-ffmpeg-3.5.patch
-Patch11:	ffmpeg-linkage.patch
-Patch14:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
+Patch1010:	chromium-65-ffmpeg-3.5.patch
+Patch1011:	ffmpeg-linkage.patch
+Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
+Patch1015:	qtwebengine-QTBUG-75265.patch
 # Keep in sync with the patch in Chromium...
-Patch16:	enable-vaapi.patch
+Patch1016:	enable-vaapi.patch
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
@@ -319,9 +336,9 @@ export NINJAFLAGS="-v %{_smp_mflags}"
 # to base::i18n::GetRawIcuMemory()
 %ifarch %{arm}
 # FIXME figure out why -alsa fails to build on armv7hnl
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %else
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %endif
 
 %make_build NINJA_PATH=ninja
