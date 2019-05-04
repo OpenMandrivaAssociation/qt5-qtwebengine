@@ -11,6 +11,9 @@
 # and designer plugins
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
+# Build with gcc instead of clang
+%bcond_with gcc
+
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.13.0
@@ -310,7 +313,7 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-
 # reduce memory on linking
 export LDFLAGS="%{ldflags} -Wl,--as-needed"
 
-%ifarch %{arm} %{aarch64} %{ix86}
+%if %{with gcc}
 # As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
 # with clang on aarch64
 # On i686, we get a build time error (undefined reference to
