@@ -1,0 +1,87 @@
+From 395e61ff2e51dc7c34ee05debd450846f027ea56 Mon Sep 17 00:00:00 2001
+From: =?utf8?q?Michael=20Br=C3=BCning?= <michael.bruning@qt.io>
+Date: Wed, 24 Apr 2019 00:38:24 +0200
+Subject: [PATCH] Remove the distinction between resources path and icu data
+ path
+
+Also, unconditionally override DIR_QT_LIBRARY_DATA to make the path
+available to extensions even if we are using static or shared icu
+data instead of a data file.
+
+[ChangeLog][Behavioral Changes] Qt WebEngine will assume that the
+resources and the icu data files are in the same directory when
+deploying the application.
+
+Fixes: QTBUG-74586
+Change-Id: I563b74a19fbd1334358f9cfe7c1824706cdca03a
+Reviewed-by: Allan Sandfeld Jensen <allan.jensen@qt.io>
+---
+ src/core/content_main_delegate_qt.cpp |  2 --
+ src/core/web_engine_library_info.cpp  | 30 +-----------------------------
+ 2 files changed, 1 insertion(+), 31 deletions(-)
+
+diff --git a/src/core/content_main_delegate_qt.cpp b/src/core/content_main_delegate_qt.cpp
+index dc32bb8c1..57f8af63c 100644
+--- a/src/core/content_main_delegate_qt.cpp
++++ b/src/core/content_main_delegate_qt.cpp
+@@ -226,9 +226,7 @@ static void SafeOverridePathImpl(const char *keyName, int key, const base::FileP
+ bool ContentMainDelegateQt::BasicStartupComplete(int *exit_code)
+ {
+     SafeOverridePath(base::FILE_EXE, WebEngineLibraryInfo::getPath(base::FILE_EXE));
+-#if ICU_UTIL_DATA_IMPL == ICU_UTIL_DATA_FILE
+     SafeOverridePath(base::DIR_QT_LIBRARY_DATA, WebEngineLibraryInfo::getPath(base::DIR_QT_LIBRARY_DATA));
+-#endif
+     SafeOverridePath(ui::DIR_LOCALES, WebEngineLibraryInfo::getPath(ui::DIR_LOCALES));
+ #if QT_CONFIG(webengine_spellchecker)
+     SafeOverridePath(base::DIR_APP_DICTIONARIES, WebEngineLibraryInfo::getPath(base::DIR_APP_DICTIONARIES));
+diff --git a/src/core/web_engine_library_info.cpp b/src/core/web_engine_library_info.cpp
+index 12ffd91e6..1c8316430 100644
+--- a/src/core/web_engine_library_info.cpp
++++ b/src/core/web_engine_library_info.cpp
+@@ -257,34 +257,6 @@ QString dictionariesPath()
+ }
+ #endif // QT_CONFIG(webengine_spellchecker)
+ 
+-QString icuDataPath()
+-{
+-    static bool initialized = false;
+-    static QString potentialResourcesPath =
+-#if defined(OS_MACOSX) && defined(QT_MAC_FRAMEWORK_BUILD)
+-            getResourcesPath(frameworkBundle());
+-#else
+-            QLibraryInfo::location(QLibraryInfo::DataPath) % QLatin1String("/resources");
+-#endif
+-    if (!initialized) {
+-        initialized = true;
+-        if (!QFileInfo::exists(potentialResourcesPath % QLatin1String("/icudtl.dat"))) {
+-            qWarning("Qt WebEngine ICU data not found at %s. Trying parent directory...", qPrintable(potentialResourcesPath));
+-            potentialResourcesPath = QLibraryInfo::location(QLibraryInfo::DataPath);
+-        }
+-        if (!QFileInfo::exists(potentialResourcesPath % QLatin1String("/icudtl.dat"))) {
+-            qWarning("Qt WebEngine ICU data not found at %s. Trying application directory...", qPrintable(potentialResourcesPath));
+-            potentialResourcesPath = QCoreApplication::applicationDirPath();
+-        }
+-        if (!QFileInfo::exists(potentialResourcesPath % QLatin1String("/icudtl.dat"))) {
+-            qWarning("Qt WebEngine ICU data not found at %s. Trying fallback directory... The application MAY NOT work.", qPrintable(potentialResourcesPath));
+-            potentialResourcesPath = fallbackDir();
+-        }
+-    }
+-
+-    return potentialResourcesPath;
+-}
+-
+ QString resourcesDataPath()
+ {
+     static bool initialized = false;
+@@ -341,7 +313,7 @@ base::FilePath WebEngineLibraryInfo::getPath(int key)
+         directory = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+         break;
+     case base::DIR_QT_LIBRARY_DATA:
+-        return toFilePath(icuDataPath());
++        return toFilePath(resourcesDataPath());
+     case ui::DIR_LOCALES:
+         return toFilePath(localesPath());
+ #if QT_CONFIG(webengine_spellchecker)
+-- 
+2.16.3
+

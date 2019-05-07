@@ -18,7 +18,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.13.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -74,6 +74,11 @@ Patch1001:	qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
 Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
+# Fix PDF viewer
+# https://bugreports.qt.io/browse/QTBUG-74586
+# https://codereview.qt-project.org/#/c/259520/
+# https://codereview.qt-project.org/gitweb?p=qt/qtwebengine.git;a=patch;h=395e61ff2e51dc7c34ee05debd450846f027ea56
+Patch1004:	qtwebengine.git-395e61ff2e51dc7c34ee05debd450846f027ea56.patch
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
