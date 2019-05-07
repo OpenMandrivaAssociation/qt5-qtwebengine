@@ -35,11 +35,6 @@ Source1000:	%{name}.rpmlintrc
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
 # some tweaks to linux.pri (system yasm, link libpci, run unbundling script)
 Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
-# quick hack to avoid checking for the nonexistent icudtl.dat and silence the
-# resulting warnings - not upstreamable as is because it removes the fallback
-# mechanism for the ICU data directory (which is not used in our builds because
-# we use the system ICU, which embeds the data statically) completely
-Patch1:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.11.0-no-icudtl-dat.patch
 # fix extractCFlag to also look in QMAKE_CFLAGS_RELEASE, needed to detect the
 # ARM flags with our %%qmake_qt5 macro, including for the next patch
 Patch2:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.12.1-fix-extractcflag.patch
