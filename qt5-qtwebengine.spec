@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta3
+%define beta beta4
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -69,11 +69,8 @@ Patch1001:	qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
 Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
-# Fix PDF viewer
-# https://bugreports.qt.io/browse/QTBUG-74586
-# https://codereview.qt-project.org/#/c/259520/
-# https://codereview.qt-project.org/gitweb?p=qt/qtwebengine.git;a=patch;h=395e61ff2e51dc7c34ee05debd450846f027ea56
-Patch1004:	qtwebengine.git-395e61ff2e51dc7c34ee05debd450846f027ea56.patch
+# https://bugreports.qt.io/browse/QTBUG-59769
+Patch1004:	881ef63.diff
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
