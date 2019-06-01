@@ -78,6 +78,9 @@ Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 Patch1015:	qtwebengine-QTBUG-75265.patch
 # Keep in sync with the patch in Chromium...
 Patch1016:	enable-vaapi.patch
+# Make it build with clang on i686
+Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
+BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
 BuildRequires:	re2-devel
