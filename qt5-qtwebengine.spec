@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta4
+%define beta rc
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -18,7 +18,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.13.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.2
+Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -325,6 +325,13 @@ export CXX=g++
 export QMAKE_CC=gcc
 export QMAKE_CXX=g++
 export QMAKE_XSPEC=linux-g++
+export QMAKESPEC=%{_libdir}/qt5/mkspecs/${QMAKE_XSPEC}
+%else
+export CC=clang
+export CXX=clang++
+export QMAKE_CC=clang
+export QMAKE_CXX=clang++
+export QMAKE_XSPEC=linux-clang
 export QMAKESPEC=%{_libdir}/qt5/mkspecs/${QMAKE_XSPEC}
 %endif
 
