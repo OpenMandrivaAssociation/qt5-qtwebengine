@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta rc
+%define beta rc3
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -20,7 +20,7 @@ Version:	5.13.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
