@@ -183,6 +183,7 @@ Chromium based web rendering engine for Qt.
 %dir %{_datadir}/qt5
 %dir %{_datadir}/qt5/translations
 %{_datadir}/qt5/translations/qtwebengine_locales
+%dir %{_datadir}/qt5/qtwebengine_dictionaries
 %{_datadir}/qt5/resources
 %{_libdir}/qt5/qml/QtWebEngine
 %{_libdir}/qt5/libexec/QtWebEngineProcess
@@ -376,3 +377,5 @@ popd
 # than 5.12 due to the Chromium 73 sync...
 sed -i -e 's,5.13.0 \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.12.0 ${_Qt5WebEngineCore_FIND_VERSION_EXACT},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
 sed -i -e 's,5.13.0 \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.12.0 ${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
+
+mkdir -p %{buildroot}%{_datadir}/qt5/qtwebengine_dictionaries
