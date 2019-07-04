@@ -1,0 +1,22 @@
+diff -up qtwebengine-everywhere-src-5.13.0/src/3rdparty/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc.omv~ qtwebengine-everywhere-src-5.13.0/src/3rdparty/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc
+--- qtwebengine-everywhere-src-5.13.0/src/3rdparty/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc.omv~	2019-07-04 09:55:08.777764216 +0200
++++ qtwebengine-everywhere-src-5.13.0/src/3rdparty/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc	2019-07-04 09:56:02.526761608 +0200
+@@ -28,6 +28,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/select.h>
+ #include <sys/time.h>
++#include <sys/socket.h>
+ #include <unistd.h>
+ #endif
+ 
+@@ -90,6 +91,10 @@ int64_t GetSocketRecvTimestamp(int socke
+ typedef char* SockOptArg;
+ #endif
+ 
++#ifndef SIOCGSTAMP
++#define SIOCGSTAMP 0x8906
++#endif
++
+ #if defined(WEBRTC_USE_EPOLL)
+ // POLLRDHUP / EPOLLRDHUP are only defined starting with Linux 2.6.17.
+ #if !defined(POLLRDHUP)

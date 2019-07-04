@@ -50,6 +50,8 @@ Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 Patch24: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.11.3-aarch64-new-stat.patch
 # borrow fix from chromium packaging
 Patch26: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-gcc9-drop-rsp-clobber.patch
+# Fix build with SIOCGSTAMP missing
+Patch27: qtwebengine-5.13-SIOCGSTAMP-compile.patch
 # ====================
 # OpenMandriva patches
 # ====================
