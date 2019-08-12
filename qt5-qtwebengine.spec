@@ -14,6 +14,11 @@
 # Build with gcc instead of clang
 %bcond_with gcc
 
+%ifarch %{ix86}
+%global optflags %{optflags} -Wl,-z,notext
+%global ldflags %{ldflags} -Wl,-z,notext
+%endif
+
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.13.0
@@ -41,6 +46,13 @@ Patch2:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
 # GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
 Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
+# ../../../../src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h:734:5: warning: 'memcpy' will always overflow; destination buffer has size 2, but size argument is 8 [-Wfortify-source]
+#     memcpy(&fp16, &h, sizeof(U16));
+#     ^
+# ../../../../src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h:755:19: error: functional-style cast from 'neon::F' (aka 'V<float>') to '__fp16' is not allowed
+#     __fp16 fp16 = __fp16(f);
+#                   ^~~~~~~~
+Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
 # remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
 Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
 # Force verbose output from the GN bootstrap process
