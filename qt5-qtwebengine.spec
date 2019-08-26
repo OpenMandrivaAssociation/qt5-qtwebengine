@@ -27,7 +27,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	5
+Release:	6
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -181,6 +181,9 @@ BuildRequires:	qt5-qtquick-private-devel
 # But as of 5.5.1, QtWebEngine will find system Qt5WebEngine and
 # use its headers -- preventing it from accessing new APIs
 BuildConflicts:	pkgconfig(Qt5WebEngineCore)
+# dlopened
+Requires:	%mklibname freebl 3
+Requires:	nss-shlibsign
 
 %dependinglibpackage Qt5WebEngineWidgets 5
 %dependinglibpackage Qt5WebEngineCore 5
