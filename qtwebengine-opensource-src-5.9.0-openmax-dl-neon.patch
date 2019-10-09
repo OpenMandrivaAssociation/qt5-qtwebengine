@@ -1,13 +1,13 @@
-diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn.5~ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn
---- qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn.5~	2019-05-02 21:50:17.318567710 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn	2019-05-02 21:51:45.262928030 +0200
+diff -up qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn.4~ qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn
+--- qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn.4~	2019-10-10 00:18:41.655287805 +0200
++++ qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/BUILD.gn	2019-10-10 00:19:20.767505486 +0200
 @@ -207,14 +207,6 @@ if (current_cpu == "arm") {
        "sp/src/arm/armv7/omxSP_FFTInv_CCSToR_F32_Sfs_s.S",
      ]
      if (arm_optionally_use_neon) {
 -      # Run-time NEON detection.
 -      deps = [
--        "//third_party/android_tools:cpu_features",
+-        "//third_party/android_sdk:cpu_features",
 -      ]
 -
 -      # To get the __android_log_print routine
@@ -16,9 +16,9 @@ diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_par
        # Detection routine
        sources += [ "sp/src/arm/detect.c" ]
      }
-diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c.5~ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c
---- qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c.5~	2019-04-10 14:24:58.000000000 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c	2019-05-02 21:50:17.318567710 +0200
+diff -up qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c.4~ qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c
+--- qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c.4~	2019-09-23 14:24:20.000000000 +0200
++++ qtwebengine-everywhere-src-5.14.0-beta1/src/3rdparty/chromium/third_party/openmax_dl/dl/sp/src/arm/detect.c	2019-10-10 00:18:41.655287805 +0200
 @@ -9,13 +9,57 @@
   *
   */

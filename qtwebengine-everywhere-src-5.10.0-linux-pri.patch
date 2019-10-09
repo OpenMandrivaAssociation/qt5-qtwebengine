@@ -1,6 +1,6 @@
-diff -ur qtwebengine-everywhere-src-5.10.0/src/core/config/linux.pri qtwebengine-everywhere-src-5.10.0-linux-pri/src/core/config/linux.pri
---- qtwebengine-everywhere-src-5.10.0/src/core/config/linux.pri	2017-11-29 09:42:29.000000000 +0100
-+++ qtwebengine-everywhere-src-5.10.0-linux-pri/src/core/config/linux.pri	2017-12-25 12:07:40.262411459 +0100
+diff -ur qtwebengine-everywhere-src-5.10.0/src/buildtools/config/linux.pri qtwebengine-everywhere-src-5.10.0-linux-pri/src/buildtools/config/linux.pri
+--- qtwebengine-everywhere-src-5.10.0/src/buildtools/config/linux.pri	2017-11-29 09:42:29.000000000 +0100
++++ qtwebengine-everywhere-src-5.10.0-linux-pri/src/buildtools/config/linux.pri	2017-12-25 12:07:40.262411459 +0100
 @@ -157,3 +157,19 @@
      #qtConfig(webengine-system-jsoncpp): gn_args += use_system_jsoncpp=true
      #qtConfig(webengine-system-libsrtp: gn_args += use_system_libsrtp=true

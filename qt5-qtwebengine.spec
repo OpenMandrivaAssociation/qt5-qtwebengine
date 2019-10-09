@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta %{nil}
+%define beta beta1
 %define	debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -21,11 +21,11 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.13.1
+Version:	5.14.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%(echo %{beta} |sed -e "s,1$,,")/submodules/%{qttarballdir}.tar.xz
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
@@ -288,7 +288,7 @@ Examples for QtWebEngine.
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
-sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn src/3rdparty/chromium/build/common.gypi
+sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn
 
 # fix missing (bogus but required) file duplication
 cp src/3rdparty/chromium/base/numerics/*_arm_impl.h src/3rdparty/gn/base/numerics/
@@ -357,13 +357,12 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-# use_system_icu <--- should be put back, currently disabled because of undefined reference
-# to base::i18n::GetRawIcuMemory()
+# -system-webengine-icu should go back into QMAKE_EXTRA_ARGS once adapted
 %ifarch %{arm}
 # FIXME figure out why -alsa fails to build on armv7hnl
 %qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %else
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -verbose" LFLAGS="${LDFLAGS}" ..
 %endif
 
 %make_build NINJA_PATH=ninja
