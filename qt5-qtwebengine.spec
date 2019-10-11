@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 %define beta beta1
-%define	debug_package %nil
+%define debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
 
@@ -14,9 +14,12 @@
 # Build with gcc instead of clang
 %bcond_with gcc
 
+
 %ifarch %{ix86}
-%global optflags %{optflags} -Wl,-z,notext
+%global optflags %{optflags} -O2 -Wl,-z,notext
 %global ldflags %{ldflags} -Wl,-z,notext
+%else
+%global optflags %{optflags} -O2
 %endif
 
 Summary:	Qt WebEngine
@@ -174,6 +177,7 @@ BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
 BuildRequires:	qt5-qtquickcontrols2
 BuildRequires:	qt5-qtquick-private-devel
+BuildRequires:	qt5-qtqmlmodels-private-devel
 # FIXME this is evil - the build system should be fixed properly
 # instead of making sure there's no previous version floating
 # around.
@@ -353,7 +357,7 @@ export QMAKESPEC=%{_libdir}/qt5/mkspecs/${QMAKE_XSPEC}
 %endif
 
 mkdir %{_target_platform}
-pushd %{_target_platform}
+cd %{_target_platform}
 mkdir bin
 ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
@@ -368,7 +372,7 @@ export NINJAFLAGS="-v %{_smp_mflags}"
 %endif
 
 %make_build NINJA_PATH=ninja
-popd
+cd -
 
 %install
 export STRIP=strip
@@ -377,7 +381,7 @@ export PATH="$(pwd)/bin:$PATH"
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
-pushd %{buildroot}%{_libdir}
+cd %{buildroot}%{_libdir}
 for prl_file in libQt5*.prl ; do
   sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" ${prl_file}
   if [ -f "$(basename ${prl_file} .prl).so" ]; then
@@ -385,7 +389,7 @@ for prl_file in libQt5*.prl ; do
     sed -i -e "/^QMAKE_PRL_LIBS/d" ${prl_file}
   fi
 done
-popd
+cd -
 
 # Allow QtWebEngine 5.13.0-beta* to coexist with other Qt modules from 5.12.x
 # In general, we want stable Qt, but QtWebEngine 5.13 is significantly better
