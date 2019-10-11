@@ -129,6 +129,8 @@ BuildRequires:	pkgconfig(Qt5QuickWidgets)
 BuildRequires:	pkgconfig(Qt5QuickControls2)
 BuildRequires:	pkgconfig(Qt5Location)
 BuildRequires:	cmake(Qt5XcbQpa)
+BuildRequires:	cmake(Qt5QmlModels)
+BuildRequires:	qt5-qtqmlmodels-private-devel
 # Designer plugin
 BuildRequires:	pkgconfig(Qt5Designer)
 # end
