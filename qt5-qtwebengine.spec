@@ -134,6 +134,7 @@ BuildRequires:	qt5-qtqmlmodels-private-devel
 # Designer plugin
 BuildRequires:	pkgconfig(Qt5Designer)
 # end
+BuildRequires:	pkgconfig(libdrm)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(egl)
