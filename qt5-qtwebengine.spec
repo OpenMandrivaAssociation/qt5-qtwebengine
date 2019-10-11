@@ -128,6 +128,7 @@ BuildRequires:	pkgconfig(Qt5Sensors)
 BuildRequires:	pkgconfig(Qt5QuickWidgets)
 BuildRequires:	pkgconfig(Qt5QuickControls2)
 BuildRequires:	pkgconfig(Qt5Location)
+BuildRequires:	cmake(Qt5XcbQpa)
 # Designer plugin
 BuildRequires:	pkgconfig(Qt5Designer)
 # end
