@@ -26,7 +26,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.14.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -94,6 +94,8 @@ Patch1015:	qtwebengine-QTBUG-75265.patch
 Patch1016:	enable-vaapi.patch
 # Make it build with clang on i686
 Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
+# https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
+Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -365,12 +367,11 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-# -system-webengine-icu should go back into QMAKE_EXTRA_ARGS once adapted
 %ifarch %{arm}
 # FIXME figure out why -alsa fails to build on armv7hnl
 %qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %else
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -verbose" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %endif
 
 %make_build NINJA_PATH=ninja
