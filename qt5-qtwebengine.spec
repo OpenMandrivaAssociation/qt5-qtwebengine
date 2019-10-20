@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta1
+%define beta 20191020
 %define debug_package %nil
 # FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
 #define _disable_lto 1
@@ -24,11 +24,14 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.14.0
+Version:	5.15.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.2
+Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
+# git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
+# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 77-based
+Source1:	qtwebengine-chromium-77-%{beta}.tar.xz
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
@@ -52,9 +55,9 @@ Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 # ../../../../src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h:755:19: error: functional-style cast from 'neon::F' (aka 'V<float>') to '__fp16' is not allowed
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
-Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
+#Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
 # remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
-Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
+#Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
 # Force verbose output from the GN bootstrap process
 # Needs porting
 #Patch21: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.12.0-gn-bootstrap-verbose.patch
@@ -88,14 +91,14 @@ Patch1004:	881ef63.diff
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
-Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
+#Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 Patch1015:	qtwebengine-QTBUG-75265.patch
 # Keep in sync with the patch in Chromium...
 Patch1016:	enable-vaapi.patch
 # Make it build with clang on i686
 Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
-Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
+#Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -293,7 +296,14 @@ Examples for QtWebEngine.
 %{_libdir}/qt5/examples/webenginewidgets
 
 %prep
-%autosetup -n %{qttarballdir} -p1
+%setup -n %{qttarballdir}
+%if "%{beta}" != ""
+cd src/3rdparty
+tar xf %{S:1}
+cd -
+%{_libdir}/qt5/bin/syncqt.pl -version %{version}
+%endif
+%autopatch -p1
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
@@ -394,10 +404,10 @@ for prl_file in libQt5*.prl ; do
 done
 cd -
 
-# Allow QtWebEngine 5.13.0-beta* to coexist with other Qt modules from 5.12.x
-# In general, we want stable Qt, but QtWebEngine 5.13 is significantly better
-# than 5.12 due to the Chromium 73 sync...
-sed -i -e 's,5.13.0 \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.12.0 ${_Qt5WebEngineCore_FIND_VERSION_EXACT},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
-sed -i -e 's,5.13.0 \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.12.0 ${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
+# Allow QtWebEngine 5.15.0-* to coexist with other Qt modules from 5.14.x
+# In general, we want stable Qt, but QtWebEngine 5.15 is significantly better
+# than 5.14 due to the Chromium 77 sync...
+sed -i -e 's,5.15.0 \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.14.0 ${_Qt5WebEngineCore_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
+sed -i -e 's,5.15.0 \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.14.0 ${_Qt5WebEngineWidgets_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
 
 mkdir -p %{buildroot}%{_datadir}/qt5/qtwebengine_dictionaries
