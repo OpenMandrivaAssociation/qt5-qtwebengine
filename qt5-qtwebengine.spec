@@ -1,8 +1,6 @@
 %define _disable_ld_no_undefined 1
-%define beta 20191020
+%define beta 20191101
 %define debug_package %nil
-# FIXME build failure w/ 5.11.0beta4, clang 6.0, binutils 2.30
-#define _disable_lto 1
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
