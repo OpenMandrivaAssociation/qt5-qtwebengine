@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta 20191114
+%define beta 20191213
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
