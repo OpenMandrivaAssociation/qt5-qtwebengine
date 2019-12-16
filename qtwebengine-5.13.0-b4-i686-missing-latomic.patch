@@ -10,3 +10,15 @@ diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/chromium/media/aud
      sources += [
        "alsa/alsa_input.cc",
        "alsa/alsa_input.h",
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn.omv~	2019-12-16 02:18:45.514693754 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn	2019-12-16 02:20:23.953688978 +0100
+@@ -3824,6 +3824,8 @@ if (v8_use_snapshot && current_toolchain
+ 
+     configs = [ ":internal_config" ]
+ 
++    libs = [ "atomic" ]
++
+     deps = [
+       ":v8_base_without_compiler",
+       ":v8_compiler_for_mksnapshot",
