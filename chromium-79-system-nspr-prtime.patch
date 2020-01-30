@@ -1,0 +1,46 @@
+diff -up chromium/base/BUILD.gn.7~ chromium/base/BUILD.gn
+--- chromium/base/BUILD.gn.7~	2020-01-23 17:25:15.000000000 +0100
++++ chromium/base/BUILD.gn	2020-01-25 17:23:45.504973412 +0100
+@@ -94,6 +94,9 @@ config("base_flags") {
+       "-Wglobal-constructors",
+     ]
+   }
++  ldflags = [
++    "-lnspr4",
++  ]
+ }
+ 
+ config("base_implementation") {
+@@ -890,8 +893,6 @@ jumbo_component("base") {
+     "third_party/cityhash/city.h",
+     "third_party/icu/icu_utf.cc",
+     "third_party/icu/icu_utf.h",
+-    "third_party/nspr/prtime.cc",
+-    "third_party/nspr/prtime.h",
+     "third_party/superfasthash/superfasthash.c",
+     "thread_annotations.h",
+     "threading/platform_thread.cc",
+diff -up chromium/base/time/pr_time_unittest.cc.7~ chromium/base/time/pr_time_unittest.cc
+--- chromium/base/time/pr_time_unittest.cc.7~	2020-01-23 17:25:15.000000000 +0100
++++ chromium/base/time/pr_time_unittest.cc	2020-01-25 17:23:30.036973254 +0100
+@@ -7,7 +7,7 @@
+ 
+ #include "base/compiler_specific.h"
+ #include "base/stl_util.h"
+-#include "base/third_party/nspr/prtime.h"
++#include <nspr4/prtime.h>
+ #include "base/time/time.h"
+ #include "build/build_config.h"
+ #include "testing/gtest/include/gtest/gtest.h"
+diff -up chromium/base/time/time.cc.7~ chromium/base/time/time.cc
+--- chromium/base/time/time.cc.7~	2020-01-23 17:25:15.000000000 +0100
++++ chromium/base/time/time.cc	2020-01-25 17:23:30.036973254 +0100
+@@ -14,7 +14,7 @@
+ #include "base/macros.h"
+ #include "base/no_destructor.h"
+ #include "base/strings/stringprintf.h"
+-#include "base/third_party/nspr/prtime.h"
++#include <nspr4/prtime.h>
+ #include "base/time/time_override.h"
+ #include "build/build_config.h"
+ 

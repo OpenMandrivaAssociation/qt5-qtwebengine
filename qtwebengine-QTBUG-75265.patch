@@ -1,7 +1,7 @@
-diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn
---- qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~	2019-05-02 20:46:13.773104238 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2019-05-02 20:46:52.372749012 +0200
-@@ -2173,17 +2173,6 @@ config("default_optimization") {
+diff -up qtwebengine-everywhere-src-5.15.0-20200125/src/3rdparty/chromium/build/config/compiler/BUILD.gn.12~ qtwebengine-everywhere-src-5.15.0-20200125/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.0-20200125/src/3rdparty/chromium/build/config/compiler/BUILD.gn.12~	2020-01-25 17:29:11.199976722 +0100
++++ qtwebengine-everywhere-src-5.15.0-20200125/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2020-01-25 17:30:05.177977270 +0100
+@@ -2165,28 +2165,6 @@ config("default_optimization") {
  }
  
  _clang_sample_profile = ""
@@ -11,11 +11,22 @@ diff -up qtwebengine-everywhere-src-5.13.0-beta3/src/3rdparty/chromium/build/con
 -  } else if (clang_use_default_sample_profile) {
 -    assert(build_with_chromium,
 -           "Our default profiles currently only apply to Chromium")
--    assert(is_android || is_desktop_linux,
+-    assert(is_android || is_desktop_linux || is_chromeos,
 -           "The current platform has no default profile")
--    _clang_sample_profile = "//chrome/android/profiles/afdo.prof"
+-    if (is_android || is_desktop_linux) {
+-      _clang_sample_profile = "//chrome/android/profiles/afdo.prof"
+-    } else {
+-      assert(
+-          chromeos_afdo_platform == "silvermont" ||
+-              chromeos_afdo_platform == "airmont" ||
+-              chromeos_afdo_platform == "broadwell",
+-          "Only silvermont, airmont and broadwell are valid Chrome OS profiles.")
+-      _clang_sample_profile =
+-          "//chromeos/profiles/${chromeos_afdo_platform}.afdo.prof"
+-    }
 -  }
 -}
- 
+-
  # Clang offers a way to assert that AFDO profiles are accurate, which causes it
  # to optimize functions not represented in a profile more aggressively for size.
+ # This config can be toggled in cases where shaving off binary size hurts

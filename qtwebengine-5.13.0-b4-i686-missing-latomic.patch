@@ -1,7 +1,7 @@
-diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/audio/BUILD.gn.15~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/audio/BUILD.gn
---- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/audio/BUILD.gn.15~	2019-12-12 14:06:03.000000000 +0100
-+++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/audio/BUILD.gn	2019-12-16 02:31:18.850657205 +0100
-@@ -237,7 +237,7 @@ source_set("audio") {
+diff -up qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/media/audio/BUILD.gn.13~ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/media/audio/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/media/audio/BUILD.gn.13~	2020-01-30 13:49:13.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/media/audio/BUILD.gn	2020-01-30 15:46:01.689824332 +0100
+@@ -253,7 +253,7 @@ source_set("audio") {
    }
  
    if (use_alsa) {
@@ -10,16 +10,15 @@ diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/
      sources += [
        "alsa/alsa_input.cc",
        "alsa/alsa_input.h",
-diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn.15~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn
---- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn.15~	2019-12-12 14:06:03.000000000 +0100
-+++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/v8/BUILD.gn	2019-12-16 02:59:10.333576111 +0100
-@@ -3310,7 +3310,8 @@ v8_source_set("v8_base_without_compiler"
+diff -up qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/v8/BUILD.gn.13~ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/v8/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/v8/BUILD.gn.13~	2020-01-30 15:46:01.690824332 +0100
++++ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/v8/BUILD.gn	2020-01-30 15:47:03.747827068 +0100
+@@ -3405,7 +3405,7 @@ v8_source_set("v8_base_without_compiler"
    if (v8_current_cpu == "mips" || v8_current_cpu == "mipsel" ||
        v8_current_cpu == "mips64" || v8_current_cpu == "mips64el" ||
        v8_current_cpu == "ppc" || v8_current_cpu == "ppc64" ||
 -      v8_current_cpu == "s390" || v8_current_cpu == "s390x") {
-+      v8_current_cpu == "s390" || v8_current_cpu == "s390x" ||
-+      v8_current_cpu == "x86") {
++      v8_current_cpu == "s390" || v8_current_cpu == "s390x" || v8_current_cpu == "x86") {
      libs = [ "atomic" ]
    }
  

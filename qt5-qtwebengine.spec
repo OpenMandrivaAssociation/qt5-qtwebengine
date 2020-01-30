@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta 20191213
+%define beta 20200130
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -27,9 +27,9 @@ Version:	5.15.0
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
-# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 77-based
-Source1:	qtwebengine-chromium-77-%{beta}.tar.xz
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.zst
+# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 79-based
+Source1:	qtwebengine-chromium-79-%{beta}.tar.zst
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
@@ -70,18 +70,13 @@ Patch27: qtwebengine-5.13-SIOCGSTAMP-compile.patch
 # ====================
 # Define __mulodi4 when building with clang but without compiler-rt
 Patch1000:	qtwebengine-__mulodi4.patch
-# use the system NSPR prtime (based on Debian patch)
-# We already depend on NSPR, so it is useless to copy these functions here.
-# Debian uses this just fine, and I don't see relevant modifications either.
-# FIXME port
-Patch1001:	qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
+Patch1001:	qtwebengine-5.12-no-static-libstdc++.patch
 # use the system ICU UTF functions
 # We already depend on ICU, so it is useless to copy these functions here.
 # I checked the history of that directory, and other than the renames I am
 # undoing, there were no modifications at all. Must be applied after Patch5.
 # FIXME currently disabled because of linkage problems
 #Patch6:		qtwebengine-5.8-system-icu.patch
-Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 # https://bugreports.qt.io/browse/QTBUG-59769
@@ -91,13 +86,18 @@ Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
 #Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 Patch1015:	qtwebengine-QTBUG-75265.patch
-# Keep in sync with the patch in Chromium...
-Patch1016:	enable-vaapi.patch
 # Make it build with clang on i686
 Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
-Patch1019:	chromium-77-aarch64-buildfix.patch
+Patch1019:	qtwebengine-chromium-79.patch
+Patch1020:	qtwebengine-20200130-buildfix.patch
+# Patches to chromium code, from the chromium-browser-stable package
+# Kept here as Source*: so they don't get applied by autosetup/autopatch
+# That way, we can copy them from the chromium-browser-stable package
+# unmodified instead of changing the paths in which they need to be applied
+Source100:	enable-vaapi.patch
+Source101:	chromium-79-system-nspr-prtime.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -297,9 +297,12 @@ Examples for QtWebEngine.
 %prep
 %setup -n %{qttarballdir}
 %if "%{beta}" != ""
-cd src/3rdparty
+pushd src/3rdparty
 tar xf %{S:1}
-cd -
+cd chromium
+patch -p1 -b -z .p100~ <%{S:100}
+patch -p1 -b -z .p101~ <%{S:101}
+popd
 %{_libdir}/qt5/bin/syncqt.pl -version %{version}
 %endif
 %autopatch -p1
@@ -376,11 +379,13 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
+# FIXME get rid of -no-build-qtpdf once qtpdf is buildable
+# Currently (2020/01/30) disabled because it fails to build
 %ifarch %{arm}
 # FIXME figure out why -alsa fails to build on armv7hnl
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-no-build-qtpdf -proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %else
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-no-build-qtpdf -proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %endif
 
 %make_build NINJA_PATH=ninja
@@ -405,7 +410,7 @@ cd -
 
 # Allow QtWebEngine 5.15.0-* to coexist with other Qt modules from 5.14.x
 # In general, we want stable Qt, but QtWebEngine 5.15 is significantly better
-# than 5.14 due to the Chromium 77 sync...
+# than 5.14 due to the Chromium 79 sync...
 sed -i -e 's,5.15.0 \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.14.0 ${_Qt5WebEngineCore_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
 sed -i -e 's,5.15.0 \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.14.0 ${_Qt5WebEngineWidgets_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
 

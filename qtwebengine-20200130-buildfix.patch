@@ -1,0 +1,23 @@
+diff -up qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/ui/gfx/font.cc.omv~ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/ui/gfx/font.cc
+--- qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/ui/gfx/font.cc.omv~	2020-01-30 16:34:56.641953749 +0100
++++ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/ui/gfx/font.cc	2020-01-30 16:36:47.749958648 +0100
+@@ -8,6 +8,8 @@
+ #include "build/build_config.h"
+ #include "ui/gfx/platform_font.h"
+ 
++#include <algorithm> // std::lower_bound
++
+ namespace gfx {
+ 
+ ////////////////////////////////////////////////////////////////////////////////
+diff -up qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/third_party/blink/renderer/core/frame/local_dom_window.h.omv~ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/third_party/blink/renderer/core/frame/local_dom_window.h
+--- qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/third_party/blink/renderer/core/frame/local_dom_window.h.omv~	2020-01-30 17:38:01.612120646 +0100
++++ qtwebengine-everywhere-src-5.15.0-20200130/src/3rdparty/chromium/third_party/blink/renderer/core/frame/local_dom_window.h	2020-01-30 17:39:10.073123665 +0100
+@@ -33,6 +33,7 @@
+ #include "third_party/blink/renderer/core/events/page_transition_event.h"
+ #include "third_party/blink/renderer/core/frame/dom_window.h"
+ #include "third_party/blink/renderer/core/frame/local_frame.h"
++#include "third_party/blink/renderer/core/loader/frame_loader.h"
+ #include "third_party/blink/renderer/core/scroll/scrollable_area.h"
+ #include "third_party/blink/renderer/platform/heap/handle.h"
+ #include "third_party/blink/renderer/platform/supplementable.h"
