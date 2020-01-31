@@ -8,4 +8,4 @@ git clone -b 77-based --depth 1 git://code.qt.io/qt/qtwebengine-chromium.git
 cd qtwebengine-chromium
 git archive -o ../qtwebengine-chromium-77-$D.tar origin/77-based
 cd ..
-zstd -19 --rm *.tar
+xz -9ef *.tar

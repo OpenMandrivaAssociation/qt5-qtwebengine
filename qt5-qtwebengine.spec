@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta 20200130
+%define beta 20191213
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -27,9 +27,9 @@ Version:	5.15.0
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
-Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.zst
+Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 # git://code.qt.io/qt/qtwebengine-chromium.git -- branch 77-based
-Source1:	qtwebengine-chromium-77-%{beta}.tar.zst
+Source1:	qtwebengine-chromium-77-%{beta}.tar.xz
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
@@ -376,15 +376,14 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-# FIXME enable qtpdf once it works. As of 2020/01/31, doesn't compile.
 %ifarch %{arm}
 # FIXME figure out why -alsa fails to build on armv7hnl
-%qmake_qt5 QMAKE_EXTRA_ARGS="-no-build-qtpdf -proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %else
-%qmake_qt5 QMAKE_EXTRA_ARGS="-no-build-qtpdf -proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
 %endif
 
-make NINJA_PATH=ninja
+%make_build NINJA_PATH=ninja
 cd -
 
 %install
