@@ -266,8 +266,8 @@ Development files for Qt WebEngine Widgets.
 %{_libdir}/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri
 %{_libdir}/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri
 %{_includedir}/qt5/QtWebEngineWidgets
-%{_libdir}/cmake/Qt5Designer/Qt5Designer_QWebEngineViewPlugin.cmake
-%{_libdir}/qt5/plugins/designer/libqwebengineview.so
+%optional %{_libdir}/cmake/Qt5Designer/Qt5Designer_QWebEngineViewPlugin.cmake
+%optional %{_libdir}/qt5/plugins/designer/libqwebengineview.so
 
 %package devel
 Summary:	Metapackage pulling in all QtWebEngine development files
