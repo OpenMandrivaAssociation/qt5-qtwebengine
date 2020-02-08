@@ -24,7 +24,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
