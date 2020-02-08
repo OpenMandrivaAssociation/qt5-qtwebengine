@@ -10,8 +10,16 @@
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
 # Build with gcc instead of clang
+%ifarch %{arm}
+# As of clang 10.0.0-20200207, qt5-qtwebengine 20191213 (chromium-77),
+# on armv7hnl, gn gets miscompiled and throws an Illegal Instruction error
+# when generating the ninja files.
+# The rest of qtwebengine can probably be built with clang -- maybe use
+# system gn at some point?
+%bcond_without gcc
+%else
 %bcond_with gcc
-
+%endif
 
 %ifarch %{ix86}
 %global optflags %{optflags} -O2 -Wl,-z,notext
@@ -350,10 +358,6 @@ export LDFLAGS="%{ldflags} -Wl,--as-needed"
 %if %{with gcc}
 # As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
 # with clang on aarch64
-# On i686, we get a build time error (undefined reference to
-# __atomic_load_8) with Qt 5.12.1, clang 7.0.1
-# On armv7hnl, gn gets miscompiled and throws an Illegal Instruction error
-# when generating the ninja files.
 export CC=gcc
 export CXX=g++
 export QMAKE_CC=gcc
