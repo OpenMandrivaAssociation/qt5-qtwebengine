@@ -10,16 +10,7 @@
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
 # Build with gcc instead of clang
-%ifarch %{arm}
-# As of clang 10.0.0-20200207, qt5-qtwebengine 20191213 (chromium-77),
-# on armv7hnl, gn gets miscompiled and throws an Illegal Instruction error
-# when generating the ninja files.
-# The rest of qtwebengine can probably be built with clang -- maybe use
-# system gn at some point?
-%bcond_without gcc
-%else
 %bcond_with gcc
-%endif
 
 %ifarch %{ix86}
 %global optflags %{optflags} -O2 -Wl,-z,notext
@@ -340,6 +331,15 @@ sed -i -e 's!\./!!g' \
 
 # most arches run out of memory with full debuginfo
 sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
+
+%ifarch %{arm}
+# As of clang 10.0.0-20200207, qt5-qtwebengine 20191213 (chromium-77),
+# on armv7hnl, gn gets miscompiled and throws an Illegal Instruction error
+# when generating the ninja files.
+# The rest of qtwebengine can be built with clang -- so let's do an ugly
+# hack and force a different compiler for gn
+sed -i -e 's,\$\$QMAKE_CC,gcc,g;s,\$\$QMAKE_CXX,g++,g' src/buildtools/gn.pro
+%endif
 
 %build
 export STRIP=strip
