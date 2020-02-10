@@ -23,7 +23,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.2
+Release:	0.%{beta}.3
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
@@ -43,6 +43,8 @@ Source1000:	%{name}.rpmlintrc
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
 # some tweaks to linux.pri (system yasm, link libpci, run unbundling script)
 Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
+# Make it build with clang 10 and libstdc++ 10
+Patch1:	qtwebengine-clang10-libstdc++10.patch
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
 # GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
 Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch

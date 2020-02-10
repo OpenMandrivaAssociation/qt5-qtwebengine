@@ -1,0 +1,101 @@
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/cc/base/list_container.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/cc/base/list_container.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/cc/base/list_container.h.omv~	2020-02-09 21:41:20.586076768 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/cc/base/list_container.h	2020-02-09 23:10:44.783725511 +0100
+@@ -42,7 +42,7 @@ class ListContainer {
+     }
+   }
+ 
+-  ListContainer& operator=(const ListContainer&) = delete;
++  // FIXME - breaks clang 10 : ListContainer& operator=(const ListContainer&) = delete;
+ 
+   class Iterator;
+   class ConstIterator;
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/common/quads/render_pass.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/common/quads/render_pass.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/common/quads/render_pass.h.omv~	2020-02-09 22:49:55.855807293 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/common/quads/render_pass.h	2020-02-09 22:50:13.236806155 +0100
+@@ -42,6 +42,7 @@ class VIZ_COMMON_EXPORT QuadList : publi
+  public:
+   QuadList();
+   explicit QuadList(size_t default_size_to_reserve);
++  ~QuadList() = default;
+ 
+   typedef QuadList::ReverseIterator BackToFrontIterator;
+   typedef QuadList::ConstReverseIterator ConstBackToFrontIterator;
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/service/display/overlay_strategy_fullscreen.cc.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/service/display/overlay_strategy_fullscreen.cc
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/service/display/overlay_strategy_fullscreen.cc.omv~	2020-02-09 23:21:36.508682835 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/components/viz/service/display/overlay_strategy_fullscreen.cc	2020-02-10 00:28:48.250418830 +0100
+@@ -65,7 +65,7 @@ bool OverlayStrategyFullscreen::Attempt(
+ 
+   candidate_list->swap(new_candidate_list);
+ 
+-  render_pass->quad_list = QuadList();  // Remove all the quads
++  render_pass->quad_list.clear();  // Remove all the quads
+   return true;
+ }
+ 
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h.omv~	2020-02-09 17:54:11.526261424 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h	2020-02-09 17:54:17.861261703 +0100
+@@ -52,7 +52,7 @@ constexpr bool IsSupportedCdmModuleVersi
+ // Returns whether the CDM interface of |version| is supported in the
+ // implementation.
+ constexpr bool IsSupportedCdmInterfaceVersion(int version) {
+-  for (size_t i = 0; i < kSupportedCdmInterfaceVersions.size(); ++i) {
++  for (std::size_t i = 0; i < kSupportedCdmInterfaceVersions.size(); ++i) {
+     if (kSupportedCdmInterfaceVersions[i].version == version)
+       return true;
+   }
+@@ -70,7 +70,7 @@ constexpr bool IsSupportedCdmHostVersion
+ 
+ // Returns whether the CDM interface of |version| is enabled by default.
+ constexpr bool IsCdmInterfaceVersionEnabledByDefault(int version) {
+-  for (size_t i = 0; i < kSupportedCdmInterfaceVersions.size(); ++i) {
++  for (std::size_t i = 0; i < kSupportedCdmInterfaceVersions.size(); ++i) {
+     if (kSupportedCdmInterfaceVersions[i].version == version)
+       return kSupportedCdmInterfaceVersions[i].enabled;
+   }
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/perfetto/include/perfetto/base/task_runner.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/perfetto/include/perfetto/base/task_runner.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/perfetto/include/perfetto/base/task_runner.h.omv~	2020-02-09 16:58:36.875114383 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/perfetto/include/perfetto/base/task_runner.h	2020-02-09 16:58:43.761114687 +0100
+@@ -18,6 +18,7 @@
+ #define INCLUDE_PERFETTO_BASE_TASK_RUNNER_H_
+ 
+ #include <functional>
++#include <cstdint>
+ 
+ #include "perfetto/base/export.h"
+ 
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/call/rtx_receive_stream.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/call/rtx_receive_stream.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/call/rtx_receive_stream.h.omv~	2020-02-09 17:01:03.383120843 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/call/rtx_receive_stream.h	2020-02-09 17:01:11.685121209 +0100
+@@ -12,6 +12,7 @@
+ #define CALL_RTX_RECEIVE_STREAM_H_
+ 
+ #include <map>
++#include <cstdint>
+ 
+ #include "call/rtp_packet_sink_interface.h"
+ 
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h.omv~	2020-02-09 17:03:22.903126995 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/clockdrift_detector.h	2020-02-09 17:03:27.521127199 +0100
+@@ -31,7 +31,7 @@ class ClockdriftDetector {
+  private:
+   std::array<int, 3> delay_history_;
+   Level level_;
+-  size_t stability_counter_;
++  std::size_t stability_counter_;
+ };
+ }  // namespace webrtc
+ 
+diff -up qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/decoding_state.h.omv~ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/decoding_state.h
+--- qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/decoding_state.h.omv~	2020-02-09 17:21:38.425175302 +0100
++++ qtwebengine-everywhere-src-5.15.0-20191213/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/decoding_state.h	2020-02-09 17:21:45.621175620 +0100
+@@ -14,6 +14,7 @@
+ #include <map>
+ #include <set>
+ #include <vector>
++#include <cstdint>
+ 
+ namespace webrtc {
+ 
