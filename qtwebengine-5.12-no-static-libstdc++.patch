@@ -1,6 +1,6 @@
-diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/chromium/build/config/chromecast/BUILD.gn.9~ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/chromium/build/config/chromecast/BUILD.gn
---- qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/chromium/build/config/chromecast/BUILD.gn.9~	2019-05-17 22:38:03.000000000 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/chromium/build/config/chromecast/BUILD.gn	2019-05-29 14:55:39.545614952 +0200
+diff -up qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/chromium/build/config/chromecast/BUILD.gn.9~ qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/chromium/build/config/chromecast/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/chromium/build/config/chromecast/BUILD.gn.9~	2020-01-29 16:18:33.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/chromium/build/config/chromecast/BUILD.gn	2020-02-18 03:45:02.289804327 +0100
 @@ -14,15 +14,6 @@ config("static_config") {
        # http://b/26390825
        "-Wl,--exclude-libs=libffmpeg.a",
@@ -17,35 +17,17 @@ diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/chromium/build/con
    }
  }
  
-diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/build/gen.py.9~ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/build/gen.py
---- qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/build/gen.py.9~	2019-05-29 14:55:39.546614952 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/build/gen.py	2019-05-29 17:11:36.492697850 +0200
-@@ -350,7 +350,6 @@ def WriteGNNinja(path, platform, host, o
- 
-     if platform.is_linux():
-       ldflags.extend([
--          '-static-libstdc++',
-           '-Wl,--as-needed',
-       ])
-       # This is needed by libc++.
-diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json.9~ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json
---- qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json.9~	2019-05-17 22:38:03.000000000 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json	2019-05-29 14:55:39.546614952 +0200
-@@ -263,4 +263,4 @@
-     "recipe_result": null,
-     "status_code": 0
-   }
--]
-\ No newline at end of file
-+]
-diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json.9~ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json
---- qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json.9~	2019-05-17 22:38:03.000000000 +0200
-+++ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json	2019-05-29 14:55:39.546614952 +0200
-@@ -279,4 +279,4 @@
-     "recipe_result": null,
-     "status_code": 0
-   }
--]
-\ No newline at end of file
-+]
-diff -up qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.py.9~ qtwebengine-everywhere-src-5.13.0-beta4/src/3rdparty/gn/infra/recipes/gn.py
+diff -up qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/build/gen.py.9~ qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/build/gen.py
+--- qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/build/gen.py.9~	2020-02-18 03:45:02.290804328 +0100
++++ qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/build/gen.py	2020-02-18 03:48:41.016813972 +0100
+@@ -96,7 +96,7 @@ def main(argv):
+   parser.add_option('--no-strip', action='store_true',
+                     help='Don\'t strip release build. Useful for profiling.')
+   parser.add_option('--no-static-libstdc++', action='store_true',
+-                    default=False, dest='no_static_libstdcpp',
++                    default=True, dest='no_static_libstdcpp',
+                     help='Don\'t link libstdc++ statically')
+   parser.add_option('--cc',
+                     help='The path to cc compiler.')
+diff -up qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json.9~ qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/infra/recipes/gn.expected/cipd_exists.json
+diff -up qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json.9~ qtwebengine-everywhere-src-5.15.0-alpha/src/3rdparty/gn/infra/recipes/gn.expected/cipd_register.json

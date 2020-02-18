@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta 20191213
+%define beta alpha
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -23,12 +23,11 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.3
+Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 # git://code.qt.io/qt/qtwebengine-chromium.git -- branch 77-based
-Source1:	qtwebengine-chromium-77-%{beta}.tar.xz
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
@@ -198,10 +197,16 @@ Requires:	nss-shlibsign
 %dependinglibpackage Qt5WebEngineWidgets 5
 %dependinglibpackage Qt5WebEngineCore 5
 %dependinglibpackage Qt5WebEngine 5
+%dependinglibpackage Qt5Pdf 5
+%{_libdir}/qt5/plugins/imageformats/libqpdf.so
+%{_libdir}/qt5/qml/QtQuick/Pdf
+%dependinglibpackage Qt5PdfWidgets 5
 
 %define engined %{mklibname -d Qt5WebEngine}
 %define cored %{mklibname -d Qt5WebEngineCore}
 %define widgetsd %{mklibname -d Qt5WebEngineWidgets}
+%define pdfd %{mklibname -d Qt5Pdf)
+%define pdfwidgetsd %{mklibname -d Qt5PdfWidgets}
 
 %description
 Chromium based web rendering engine for Qt.
@@ -270,12 +275,49 @@ Development files for Qt WebEngine Widgets.
 %optional %{_libdir}/cmake/Qt5Designer/Qt5Designer_QWebEngineViewPlugin.cmake
 %optional %{_libdir}/qt5/plugins/designer/libqwebengineview.so
 
+%package -n %{pdfd}
+Summary:	Development files for Qt Pdf
+Group:		Development/KDE and Qt
+Requires:	%{mklibname Qt5Pdf 5} = %{EVRD}
+
+%description -n %{pdfd}
+Development files for Qt Pdf
+
+%files -n %{pdfd}
+%{_includedir}/qt5/QtPdf
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QPdfPlugin.cmake
+%{_libdir}/cmake/Qt5Pdf
+%{_libdir}/libQt5Pdf.prl
+%{_libdir}/libQt5Pdf.so
+%{_libdir}/pkgconfig/Qt5Pdf.pc
+%{_libdir}/qt5/mkspecs/modules/qt_lib_pdf.pri
+%{_libdir}/qt5/mkspecs/modules/qt_lib_pdf_private.pri
+
+%package -n %{pdfwidgetsd}
+Summary:	Development files for Qt Pdf Widgets
+Group:		Development/KDE and Qt
+Requires:	%{mklibname Qt5PdfWidgets 5} = %{EVRD}
+
+%description -n %{pdfwidgetsd}
+Development files for Qt Pdf Widgets.
+
+%files -n %{pdfwidgetsd}
+%{_includedir}/qt5/QtPdfWidgets
+%{_libdir}/cmake/Qt5PdfWidgets
+%{_libdir}/libQt5PdfWidgets.prl
+%{_libdir}/libQt5PdfWidgets.so
+%{_libdir}/pkgconfig/Qt5PdfWidgets.pc
+%{_libdir}/qt5/mkspecs/modules/qt_lib_pdfwidgets.pri
+%{_libdir}/qt5/mkspecs/modules/qt_lib_pdfwidgets_private.pri
+
 %package devel
 Summary:	Metapackage pulling in all QtWebEngine development files
 Group:		Development/KDE and Qt
 Requires:	%{engined} = %{EVRD}
 Requires:	%{cored} = %{EVRD}
 Requires:	%{widgetsd} = %{EVRD}
+Requires:	%{pdfd} = %{EVRD}
+Requires:	%{pdfwidgetsd} = %{EVRD}
 
 %description devel
 Development files for Qt WebEngine.
@@ -292,17 +334,13 @@ Obsoletes:	%{name}-demobrowser < %{EVRD}
 Examples for QtWebEngine.
 
 %files examples
+%{_libdir}/qt5/examples/pdf
+%{_libdir}/qt5/examples/pdfwidgets
 %{_libdir}/qt5/examples/webengine
 %{_libdir}/qt5/examples/webenginewidgets
 
 %prep
 %setup -n %{qttarballdir}
-%if "%{beta}" != ""
-cd src/3rdparty
-tar xf %{S:1}
-cd -
-%{_libdir}/qt5/bin/syncqt.pl -version %{version}
-%endif
 %autopatch -p1
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
