@@ -205,7 +205,7 @@ Requires:	nss-shlibsign
 %define engined %{mklibname -d Qt5WebEngine}
 %define cored %{mklibname -d Qt5WebEngineCore}
 %define widgetsd %{mklibname -d Qt5WebEngineWidgets}
-%define pdfd %{mklibname -d Qt5Pdf)
+%define pdfd %{mklibname -d Qt5Pdf}
 %define pdfwidgetsd %{mklibname -d Qt5PdfWidgets}
 
 %description
