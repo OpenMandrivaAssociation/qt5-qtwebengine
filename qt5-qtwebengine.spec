@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta 20200130
+%define beta 20200212
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -91,13 +91,13 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	qtwebengine-chromium-79.patch
-Patch1020:	qtwebengine-20200130-buildfix.patch
 # Patches to chromium code, from the chromium-browser-stable package
 # Kept here as Source*: so they don't get applied by autosetup/autopatch
 # That way, we can copy them from the chromium-browser-stable package
 # unmodified instead of changing the paths in which they need to be applied
 Source100:	enable-vaapi.patch
 Source101:	chromium-79-system-nspr-prtime.patch
+Source102:	chromium-79-clang-10-libstdc++-10.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -302,6 +302,7 @@ tar xf %{S:1}
 cd chromium
 patch -p1 -b -z .p100~ <%{S:100}
 patch -p1 -b -z .p101~ <%{S:101}
+patch -p1 -b -z .p102~ <%{S:102}
 popd
 %{_libdir}/qt5/bin/syncqt.pl -version %{version}
 %endif
