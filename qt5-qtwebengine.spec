@@ -12,6 +12,10 @@
 # Build with gcc instead of clang
 %bcond_with gcc
 
+# Currently doesn't work because system gn is way ahead of what
+# qtwebengine expects
+%bcond_with system_gn
+
 %ifarch %{ix86}
 %global optflags %{optflags} -O2 -Wl,-z,notext
 %global ldflags %{ldflags} -Wl,-z,notext
@@ -44,6 +48,8 @@ Source1000:	%{name}.rpmlintrc
 Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
 # Make it build with clang 10 and libstdc++ 10
 Patch1:	qtwebengine-clang10-libstdc++10.patch
+# Detect system ninja 1.10+
+Patch2: qtwebengine-detect-system-ninja.patch
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
 # GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
 Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
@@ -111,6 +117,9 @@ BuildRequires:	gperf
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	ninja
+%if %{with system_gn}
+BuildRequires:	gn
+%endif
 BuildRequires:	imagemagick
 BuildRequires:	jpeg-devel
 # /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
@@ -340,8 +349,7 @@ Examples for QtWebEngine.
 %{_libdir}/qt5/examples/webenginewidgets
 
 %prep
-%setup -n %{qttarballdir}
-%autopatch -p1
+%autosetup -p1 -n %{qttarballdir}
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
@@ -420,14 +428,19 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-%ifarch %{arm}
-# FIXME figure out why -alsa fails to build on armv7hnl
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
-%else
-%qmake_qt5 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -alsa -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose" LFLAGS="${LDFLAGS}" ..
+QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa"
+%if %{with system_gn}
+QMAKE_EXTRA_ARGS+=" -feature-webengine-system-gn"
 %endif
+%ifnarch %{arm}
+# FIXME figure out why -alsa fails to build on armv7hnl
+QMAKE_EXTRA_ARGS+=" -alsa"
+%endif
+%qmake_qt5 QMAKE_EXTRA_ARGS="${QMAKE_EXTRA_ARGS}" LFLAGS="${LDFLAGS}" ..
 
-%make_build NINJA_PATH=ninja
+# Intentionally not using %%make_build because there seem to be
+# problems at -j32
+make NINJA_PATH=ninja
 cd -
 
 %install
