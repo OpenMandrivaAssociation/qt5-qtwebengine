@@ -60,6 +60,7 @@ Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
 #Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
+Patch5: pdfium-compile.patch
 # remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
 #Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
 # Force verbose output from the GN bootstrap process
