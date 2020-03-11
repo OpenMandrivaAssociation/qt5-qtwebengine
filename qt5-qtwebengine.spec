@@ -1,5 +1,6 @@
 %define _disable_ld_no_undefined 1
-%define beta beta1
+%define beta beta2
+%define snapshot 20200311
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -26,17 +27,24 @@
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
+%if 0%{?snapshot}
+Release:	0%{?beta:%{beta}.}%{snapshot}.1
+%define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
+# git://code.qt.io/qt/qtwebengine.git -- branch 5.15
+Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
+# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 79-based
+Source1:	qtwebengine-chromium-79-%{snapshot}.tar.zst
+%else
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
-# git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
-# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 77-based
 %else
 Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
+%endif
 %endif
 License:	GPLv2
 Group:		System/Libraries
@@ -97,7 +105,7 @@ Patch1004:	881ef63.diff
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
 #Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
-Patch1015:	qtwebengine-QTBUG-75265.patch
+#Patch1015:	qtwebengine-QTBUG-75265.patch
 # Keep in sync with the patch in Chromium...
 Patch1016:	enable-vaapi.patch
 # Make it build with clang on i686
@@ -105,6 +113,7 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
+Patch1020:	chromium-79-clang10.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -351,7 +360,14 @@ Examples for QtWebEngine.
 %{_libdir}/qt5/examples/webenginewidgets
 
 %prep
-%autosetup -p1 -n %{qttarballdir}
+%setup -qn %{qttarballdir}
+%if 0%{?snapshot}
+cd src/3rdparty
+tar xf %{S:1}
+cd ../..
+%{_libdir}/qt5/bin/syncqt.pl -version %{version}
+%endif
+%autopatch -p1
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
