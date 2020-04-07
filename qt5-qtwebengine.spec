@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define beta beta2
+%define beta beta3
 #define snapshot 20200311
 %define debug_package %nil
 
