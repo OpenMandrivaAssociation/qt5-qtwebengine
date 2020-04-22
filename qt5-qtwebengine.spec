@@ -113,7 +113,6 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
-Patch1020:	chromium-79-clang10.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -378,9 +377,9 @@ sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/
 cp src/3rdparty/chromium/base/numerics/*_arm_impl.h src/3rdparty/gn/base/numerics/
 
 # remove ./ from #line commands in ANGLE to avoid debugedit failure (?)
-sed -i -e 's!\./!!g' \
-  src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
-  src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
+#sed -i -e 's!\./!!g' \
+#  src/3rdparty/chromium/third_party/angle/src/compiler/preprocessor/Tokenizer.cpp \
+#  src/3rdparty/chromium/third_party/angle/src/compiler/translator/glslang_lex.cpp
 
 # FIXME need to do/fix: Make sure we don't get an executable stack
 #find . -type f -name "*.asm" |while read r; do
