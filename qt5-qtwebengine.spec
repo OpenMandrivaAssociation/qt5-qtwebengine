@@ -28,7 +28,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
 %if 0%{?snapshot}
-Release:	0%{?beta:%{beta}.}%{snapshot}.2
+Release:	0%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
@@ -36,7 +36,7 @@ Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
 Source1:	qtwebengine-chromium-79-%{snapshot}.tar.zst
 %else
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
