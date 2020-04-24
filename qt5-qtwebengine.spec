@@ -28,7 +28,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
 %if 0%{?snapshot}
-Release:	0%{?beta:%{beta}.}%{snapshot}.1
+Release:	0%{?beta:%{beta}.}%{snapshot}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
@@ -101,6 +101,9 @@ Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 # https://bugreports.qt.io/browse/QTBUG-59769
 Patch1004:	881ef63.diff
+# ICU 67 support from v8 git, commit ID
+# 3f8dc4b2e5baf77b463334c769af85b79d8c1463
+Patch1005:	qtwebengine-5.15-icu-67.patch
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
@@ -113,6 +116,8 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
+# Enable VAAPI
+Patch1020:	qtwebengine-5.15-enable-vaapi.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -203,6 +208,12 @@ BuildRequires:	srtp-devel
 BuildRequires:	qt5-qtquickcontrols2
 BuildRequires:	qt5-qtquick-private-devel
 BuildRequires:	qt5-qtqmlmodels-private-devel
+BuildRequires:	pkgconfig(libva)
+BuildRequires:	pkgconfig(libva-drm)
+BuildRequires:	pkgconfig(libva-glx)
+BuildRequires:	pkgconfig(libva-x11)
+BuildRequires:	pkgconfig(dri)
+BuildRequires:	%{_lib}GL-devel
 # FIXME this is evil - the build system should be fixed properly
 # instead of making sure there's no previous version floating
 # around.
@@ -445,7 +456,7 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa"
+QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa -feature-webengine-vaapi"
 %if %{with system_gn}
 QMAKE_EXTRA_ARGS+=" -feature-webengine-system-gn"
 %endif
