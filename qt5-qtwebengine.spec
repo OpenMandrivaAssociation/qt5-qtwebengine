@@ -54,8 +54,6 @@ Source1000:	%{name}.rpmlintrc
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
 # some tweaks to linux.pri (system yasm, link libpci, run unbundling script)
 Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
-# Make it build with clang 10 and libstdc++ 10
-Patch1:	qtwebengine-clang10-libstdc++10.patch
 # Detect system ninja 1.10+
 Patch2: qtwebengine-detect-system-ninja.patch
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
@@ -68,7 +66,6 @@ Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
 #Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
-Patch5: pdfium-compile.patch
 # remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
 #Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
 # Force verbose output from the GN bootstrap process
