@@ -28,7 +28,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.0
 %if 0%{?snapshot}
-Release:	0%{?beta:0.%{beta}.1}%{snapshot}.1
+Release:	0%{?beta:0.%{beta}.1}%{snapshot}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15
 Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
