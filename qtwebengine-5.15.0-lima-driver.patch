@@ -1,0 +1,13 @@
+diff -up qtwebengine-everywhere-src-5.15.0/src/3rdparty/chromium/gpu/config/gpu_driver_bug_list.json.omv~ qtwebengine-everywhere-src-5.15.0/src/3rdparty/chromium/gpu/config/gpu_driver_bug_list.json
+--- qtwebengine-everywhere-src-5.15.0/src/3rdparty/chromium/gpu/config/gpu_driver_bug_list.json.omv~	2020-08-08 04:10:08.371329442 +0200
++++ qtwebengine-everywhere-src-5.15.0/src/3rdparty/chromium/gpu/config/gpu_driver_bug_list.json	2020-08-08 04:10:33.587632311 +0200
+@@ -148,8 +148,7 @@
+       "os": {
+         "type": "android"
+       },
+-      "gl_vendor": "ARM.*",
+-      "gl_renderer": ".*Mali-4.*",
++      "gl_renderer": ".*Mali-*4.*",
+       "features": [
+         "use_non_zero_size_for_client_side_stream_buffers"
+       ]

@@ -54,6 +54,9 @@ Source1000:	%{name}.rpmlintrc
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
 # some tweaks to linux.pri (system yasm, link libpci, run unbundling script)
 Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
+# Make it work with the Lima driver, see
+# https://www.plasma-mobile.org/2019/12/20/plasma_mobile_as_daily_driver_on_pinephone.html
+Patch1:	qtwebengine-5.15.0-lima-driver.patch
 # Detect system ninja 1.10+
 Patch2: qtwebengine-detect-system-ninja.patch
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
