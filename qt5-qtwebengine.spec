@@ -40,7 +40,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	4
+Release:	5
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -118,6 +118,14 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
 # Enable VAAPI
 Patch1020:	qtwebengine-5.15-enable-vaapi.patch
+# Based on upstream commit 1a53f5995697f5ac6fd501dbdc0ee39c9488ee66
+Patch1021:	qtwebengine-chromium-fix-bison-3.7.patch
+# Fix PDF, based on upstream commits
+# https://bugreports.qt.io/browse/QTBUG-84340
+Patch1022:	281dcb0.patch
+Patch1023:	b1b3c56.patch
+Patch1024:	e8d83a9.patch
+Patch1025:	4426763.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm

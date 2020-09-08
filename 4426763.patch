@@ -1,0 +1,26 @@
+commit 44267635f32be01ae0be1434583f2a2f3cca583b
+Author: Allan Sandfeld Jensen <allan.jensen@qt.io>
+Date:   Tue Jul 14 11:27:47 2020 +0200
+
+    Make loading PDF view less racy
+    
+    There was some kind of race between loading as a plugin and this
+    redirect.
+    
+    Task-number: QTBUG-84340
+    Change-Id: I57ac8fcae0c1de98b1fd3013d2b5299c85547cc0
+    Reviewed-by: Michael Brüning <michael.bruning@qt.io>
+
+diff --git a/src/core/net/plugin_response_interceptor_url_loader_throttle.cpp b/src/core/net/plugin_response_interceptor_url_loader_throttle.cpp
+index d854a556..4fdb8c3d 100644
+--- a/src/core/net/plugin_response_interceptor_url_loader_throttle.cpp
++++ b/src/core/net/plugin_response_interceptor_url_loader_throttle.cpp
+@@ -125,6 +125,8 @@ void PluginResponseInterceptorURLLoaderThrottle::WillProcessResponse(const GURL
+     if (extension_id.empty())
+         return;
+ 
++    *defer = true;
++
+     base::PostTask(FROM_HERE, {content::BrowserThread::UI},
+                    base::BindOnce(&onPdfStreamIntercepted,
+                                   response_url,

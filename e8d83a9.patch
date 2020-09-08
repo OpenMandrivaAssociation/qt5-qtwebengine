@@ -1,0 +1,121 @@
+commit e8d83a96d2eff1f601693f2f4cac6aef7d2cdefd
+Author: Szabolcs David <davidsz@inf.u-szeged.hu>
+Date:   Tue May 26 19:05:49 2020 +0200
+
+    [Backport] Fix DCHECK in ~ExtensionFunction().
+    
+    If permission is denied to call an extension function, the function
+    is currently destroyed without responding.  This causes a DCHECK
+    failure in its destructor.
+    
+    Instead, ask the function to respond with an error in this case, which
+    makes did_respond() return true, which avoids the DCHECK.
+    
+    This showed up during some trybot runs of an unrelated change, so this
+    fixes some test flakiness.
+    
+    Bug: none
+    Task-number: QTBUG-84340
+    Change-Id: If4e8ba93ce875b78bb5ed2f3f0bb4f38e8772ff7
+    Reviewed-by: Allan Sandfeld Jensen <allan.jensen@qt.io>
+
+diff --git a/src/3rdparty/chromium/extensions/browser/extension_function.cc b/src/3rdparty/chromium/extensions/browser/extension_function.cc
+index a59abbfa928..244f834fd77 100644
+--- a/src/3rdparty/chromium/extensions/browser/extension_function.cc
++++ b/src/3rdparty/chromium/extensions/browser/extension_function.cc
+@@ -309,6 +309,10 @@ bool ExtensionFunction::HasPermission() const {
+   return availability.is_available();
+ }
+ 
++void ExtensionFunction::RespondWithError(const std::string& error) {
++  Respond(Error(error));
++}
++
+ bool ExtensionFunction::PreRunValidation(std::string* error) {
+   // TODO(crbug.com/625646) This is a partial fix to avoid crashes when certain
+   // extension functions run during shutdown. Browser or Notification creation
+@@ -340,8 +344,7 @@ bool ExtensionFunction::ShouldSkipQuotaLimiting() const {
+ }
+ 
+ void ExtensionFunction::OnQuotaExceeded(const std::string& violation_error) {
+-  error_ = violation_error;
+-  SendResponseImpl(false);
++  RespondWithError(violation_error);
+ }
+ 
+ void ExtensionFunction::SetArgs(base::Value args) {
+diff --git a/src/3rdparty/chromium/extensions/browser/extension_function.h b/src/3rdparty/chromium/extensions/browser/extension_function.h
+index 41c2e5ea0f5..3d4f77c2287 100644
+--- a/src/3rdparty/chromium/extensions/browser/extension_function.h
++++ b/src/3rdparty/chromium/extensions/browser/extension_function.h
+@@ -112,6 +112,9 @@ class ExtensionFunction : public base::RefCountedThreadSafe<
+   // checks in Run(), such as for specific host permissions or user gestures.
+   bool HasPermission() const;
+ 
++  // Sends |error| as an error response.
++  void RespondWithError(const std::string& error);
++
+   // The result of a function call.
+   //
+   // Use NoArguments(), OneArgument(), ArgumentList(), or Error()
+diff --git a/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.cc b/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.cc
+index 4246752f7be..059383fb8d0 100644
+--- a/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.cc
++++ b/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.cc
+@@ -51,6 +51,8 @@ using content::BrowserThread;
+ namespace extensions {
+ namespace {
+ 
++constexpr char kCreationFailed[] = "Access to extension API denied.";
++
+ // Notifies the ApiActivityMonitor that an extension API function has been
+ // called. May be called from any thread.
+ void NotifyApiFunctionCalled(const std::string& extension_id,
+@@ -482,7 +484,7 @@ bool ExtensionFunctionDispatcher::CheckPermissions(
+     const ExtensionFunction::ResponseCallback& callback) {
+   if (!function->HasPermission()) {
+     LOG(ERROR) << "Permission denied for " << params.name;
+-    SendAccessDenied(callback);
++    function->RespondWithError(kCreationFailed);
+     return false;
+   }
+   return true;
+@@ -502,7 +504,7 @@ ExtensionFunctionDispatcher::CreateExtensionFunction(
+       ExtensionFunctionRegistry::GetInstance().NewFunction(params.name);
+   if (!function) {
+     LOG(ERROR) << "Unknown Extension API - " << params.name;
+-    SendAccessDenied(callback);
++    callback.Run(ExtensionFunction::FAILED, base::ListValue(), kCreationFailed);
+     return nullptr;
+   }
+ 
+@@ -520,13 +522,4 @@ ExtensionFunctionDispatcher::CreateExtensionFunction(
+ 
+   return function;
+ }
+-
+-// static
+-void ExtensionFunctionDispatcher::SendAccessDenied(
+-    const ExtensionFunction::ResponseCallback& callback) {
+-  base::ListValue empty_list;
+-  callback.Run(ExtensionFunction::FAILED, empty_list,
+-               "Access to extension API denied.");
+-}
+-
+ }  // namespace extensions
+diff --git a/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.h b/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.h
+index 6721cee02ae..a7048cbac23 100644
+--- a/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.h
++++ b/src/3rdparty/chromium/extensions/browser/extension_function_dispatcher.h
+@@ -134,11 +134,6 @@ class ExtensionFunctionDispatcher
+       void* profile_id,
+       const ExtensionFunction::ResponseCallback& callback);
+ 
+-  // Helper to run the response callback with an access denied error. Can be
+-  // called on any thread.
+-  static void SendAccessDenied(
+-      const ExtensionFunction::ResponseCallback& callback);
+-
+   void DispatchWithCallbackInternal(
+       const ExtensionHostMsg_Request_Params& params,
+       content::RenderFrameHost* render_frame_host,
