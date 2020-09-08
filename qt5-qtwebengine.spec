@@ -126,6 +126,8 @@ Patch1022:	281dcb0.patch
 Patch1023:	b1b3c56.patch
 Patch1024:	e8d83a9.patch
 Patch1025:	4426763.patch
+# Fix build with clang 11
+Patch1026:	qtwebengine-chromium-clang11.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
