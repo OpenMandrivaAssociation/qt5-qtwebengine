@@ -1,16 +1,16 @@
-diff -up qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp.6~ qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp
---- qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp.6~	2019-03-07 08:21:22.000000000 +0000
-+++ qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp	2019-03-19 13:54:40.770760133 +0000
-@@ -108,6 +108,8 @@
+diff -up qtwebengine-everywhere-src-5.15.1/src/core/web_engine_context.cpp.11~ qtwebengine-everywhere-src-5.15.1/src/core/web_engine_context.cpp
+--- qtwebengine-everywhere-src-5.15.1/src/core/web_engine_context.cpp.11~	2020-09-01 13:02:34.000000000 +0200
++++ qtwebengine-everywhere-src-5.15.1/src/core/web_engine_context.cpp	2020-09-09 23:15:42.011145234 +0200
+@@ -127,6 +127,8 @@
  #include <QOffscreenSurface>
- #ifndef QT_NO_OPENGL
+ #if QT_CONFIG(opengl)
  # include <QOpenGLContext>
 +# include <QOpenGLFunctions>
 +# include <QOffscreenSurface>
  #endif
  #include <QQuickWindow>
  #include <QStringList>
-@@ -167,6 +169,37 @@ void dummyGetPluginCallback(const std::v
+@@ -186,6 +188,37 @@ void dummyGetPluginCallback(const std::v
  }
  #endif
  
@@ -48,11 +48,12 @@ diff -up qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp
  } // namespace
  
  namespace QtWebEngineCore {
-@@ -500,9 +533,19 @@ WebEngineContext::WebEngineContext()
+@@ -696,8 +729,17 @@ WebEngineContext::WebEngineContext()
  
      const char *glType = 0;
- #ifndef QT_NO_OPENGL
+ #if QT_CONFIG(opengl)
 -
+-    const bool tryGL = (usingDefaultSGBackend() && !usingSoftwareDynamicGL() &&
 +    bool disableGpu = qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_GPU");
 +    if (!qEnvironmentVariableIsSet("QT_WEBENGINE_DISABLE_NOUVEAU_WORKAROUND") && openGLVendor() == QStringLiteral("nouveau")) {
 +	    qWarning() << "Nouveau openGL driver detected. Qt WebEngine will disable usage of the GPU.\n"
@@ -63,10 +64,7 @@ diff -up qtwebengine-everywhere-src-5.13.0-beta1/src/core/web_engine_context.cpp
 +			  "Nouveau openGL drivers don't support multithreaded rendering";
 +	    disableGpu = true;
 +    }
-     const bool tryGL = (usingDefaultSGBackend() && !usingSoftwareDynamicGL() &&
--                        QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
-+                        QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL)
-+			&& !disableGpu)
++    const bool tryGL = (usingDefaultSGBackend() && !usingSoftwareDynamicGL() && !disableGpu &&
+                         QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
                          || enableGLSoftwareRendering;
      if (tryGL) {
-         if (qt_gl_global_share_context() && qt_gl_global_share_context()->isValid()) {

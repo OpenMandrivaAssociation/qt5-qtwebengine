@@ -1,9 +1,9 @@
-diff -ur qtwebengine-everywhere-src-5.10.0/src/buildtools/config/linux.pri qtwebengine-everywhere-src-5.10.0-linux-pri/src/buildtools/config/linux.pri
---- qtwebengine-everywhere-src-5.10.0/src/buildtools/config/linux.pri	2017-11-29 09:42:29.000000000 +0100
-+++ qtwebengine-everywhere-src-5.10.0-linux-pri/src/buildtools/config/linux.pri	2017-12-25 12:07:40.262411459 +0100
-@@ -157,3 +157,19 @@
-     #qtConfig(webengine-system-jsoncpp): gn_args += use_system_jsoncpp=true
-     #qtConfig(webengine-system-libsrtp: gn_args += use_system_libsrtp=true
+diff -up qtwebengine-everywhere-src-5.15.1/src/buildtools/config/linux.pri.1~ qtwebengine-everywhere-src-5.15.1/src/buildtools/config/linux.pri
+--- qtwebengine-everywhere-src-5.15.1/src/buildtools/config/linux.pri.1~	2020-09-09 23:07:11.990115893 +0200
++++ qtwebengine-everywhere-src-5.15.1/src/buildtools/config/linux.pri	2020-09-09 23:09:30.409854070 +0200
+@@ -176,3 +176,19 @@ host_build {
+     }
+     gn_args += use_glib=false
  }
 +
 +# yasm is only used on x86, and passing use_system_yasm makes the build fail on

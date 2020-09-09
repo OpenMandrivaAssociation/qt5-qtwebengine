@@ -26,7 +26,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.0
+Version:	5.15.1
 %if 0%{?snapshot}
 Release:	0%{?beta:0.%{beta}.1}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
@@ -40,7 +40,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	5
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 #Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
@@ -101,31 +101,16 @@ Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 # https://bugreports.qt.io/browse/QTBUG-59769
 Patch1004:	881ef63.diff
-# ICU 67 support from v8 git, commit ID
-# 3f8dc4b2e5baf77b463334c769af85b79d8c1463
-Patch1005:	qtwebengine-5.15-icu-67.patch
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
 #Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 #Patch1015:	qtwebengine-QTBUG-75265.patch
-# Keep in sync with the patch in Chromium...
-Patch1016:	enable-vaapi.patch
 # Make it build with clang on i686
 Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
-# Enable VAAPI
-Patch1020:	qtwebengine-5.15-enable-vaapi.patch
-# Based on upstream commit 1a53f5995697f5ac6fd501dbdc0ee39c9488ee66
-Patch1021:	qtwebengine-chromium-fix-bison-3.7.patch
-# Fix PDF, based on upstream commits
-# https://bugreports.qt.io/browse/QTBUG-84340
-Patch1022:	281dcb0.patch
-Patch1023:	b1b3c56.patch
-Patch1024:	e8d83a9.patch
-Patch1025:	4426763.patch
 # Fix build with clang 11
 Patch1026:	qtwebengine-chromium-clang11.patch
 BuildRequires:	atomic-devel
@@ -374,7 +359,6 @@ Obsoletes:	%{name}-demobrowser < %{EVRD}
 Examples for QtWebEngine.
 
 %files examples
-%{_libdir}/qt5/examples/pdf
 %{_libdir}/qt5/examples/pdfwidgets
 %{_libdir}/qt5/examples/webengine
 %{_libdir}/qt5/examples/webenginewidgets
@@ -466,7 +450,7 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 export NINJAFLAGS="-v %{_smp_mflags}"
-QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa -feature-webengine-vaapi"
+QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa"
 %if %{with system_gn}
 QMAKE_EXTRA_ARGS+=" -feature-webengine-system-gn"
 %endif
