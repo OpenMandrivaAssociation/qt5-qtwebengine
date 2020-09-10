@@ -210,6 +210,7 @@ BuildRequires:	pkgconfig(libva-x11)
 BuildRequires:	pkgconfig(dri)
 BuildRequires:	%{_lib}GL-devel
 BuildRequires:	pkgconfig(xkbcommon)
+BuildRequires:	pkgconfig(poppler-cpp)
 # FIXME this is evil - the build system should be fixed properly
 # instead of making sure there's no previous version floating
 # around.
