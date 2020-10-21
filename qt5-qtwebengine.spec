@@ -40,9 +40,8 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-everywhere-src-%{version}
-#Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}-clean.tar.xz
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
 %endif
@@ -111,6 +110,8 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
+# Fix build with icu 68
+Patch1020:	qtwebengine-5.15.1-icu-68.patch
 # Fix build with clang 11
 Patch1026:	qtwebengine-chromium-clang11.patch
 BuildRequires:	atomic-devel
