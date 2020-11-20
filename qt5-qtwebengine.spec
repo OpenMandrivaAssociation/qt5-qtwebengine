@@ -26,7 +26,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.1
+Version:	5.15.2
 %if 0%{?snapshot}
 Release:	0%{?beta:0.%{beta}.1}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
@@ -40,7 +40,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	2
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
@@ -112,8 +112,6 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
 # Fix build with icu 68
 Patch1020:	qtwebengine-5.15.1-icu-68.patch
-# Fix build with clang 11
-Patch1026:	qtwebengine-chromium-clang11.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm

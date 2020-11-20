@@ -1,6 +1,6 @@
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/string_compare.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/string_compare.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/string_compare.cc.omv~	2020-10-20 23:22:15.412120304 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/string_compare.cc	2020-10-20 23:22:20.773208687 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/string_compare.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/string_compare.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/string_compare.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/string_compare.cc	2020-11-20 00:16:35.008264485 +0100
 @@ -18,8 +18,8 @@ UCollationResult CompareString16WithColl
                                               StringPiece16 rhs) {
    UErrorCode error = U_ZERO_ERROR;
@@ -12,9 +12,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/strin
        error);
    DCHECK(U_SUCCESS(error));
    return result;
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/time_formatting.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/time_formatting.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/time_formatting.cc.omv~	2020-10-20 23:21:56.666811269 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/time_formatting.cc	2020-10-20 23:22:01.239886661 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/time_formatting.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/time_formatting.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/time_formatting.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/i18n/time_formatting.cc	2020-11-20 00:16:35.008264485 +0100
 @@ -236,7 +236,7 @@ bool TimeDurationFormatWithSeconds(const
    icu::FieldPosition ignore(icu::FieldPosition::DONT_CARE);
    measure_format.formatMeasures(measures, 3, formatted, ignore, status);
@@ -24,9 +24,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/base/i18n/time_
  }
  
  string16 DateIntervalFormat(const Time& begin_time,
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc.omv~	2020-10-21 00:57:45.555866182 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc	2020-10-21 00:57:56.718048996 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/autofill/core/common/autofill_regexes.cc	2020-11-20 00:16:35.008264485 +0100
 @@ -43,7 +43,7 @@ class AutofillRegexes {
  icu::RegexMatcher* AutofillRegexes::GetMatcher(const base::string16& pattern) {
    auto it = matchers_.find(pattern);
@@ -60,9 +60,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/auto
  }
  
  }  // namespace autofill
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc.omv~	2020-10-21 01:21:43.933599780 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc	2020-10-21 01:21:49.174646559 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/spellcheck/renderer/spellcheck_worditerator.cc	2020-11-20 00:16:35.008264485 +0100
 @@ -424,7 +424,7 @@ bool SpellcheckWordIterator::Normalize(s
    // spellchecker and we need manual normalization as well. The normalized
    // text does not have to be NUL-terminated since its characters are copied to
@@ -72,10 +72,10 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/spel
                             base::checked_cast<int32_t>(input_length));
    UErrorCode status = U_ZERO_ERROR;
    icu::UnicodeString output;
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc.omv~	2020-10-21 00:53:09.098089618 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc	2020-10-21 00:53:33.262529738 +0200
-@@ -315,7 +315,7 @@ bool IDNSpoofChecker::SafeToDisplayAsUni
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/idn_spoof_checker.cc	2020-11-20 00:19:56.436348790 +0100
+@@ -347,7 +347,7 @@ bool IDNSpoofChecker::SafeToDisplayAsUni
    if (U_FAILURE(status) || (result & USPOOF_ALL_CHECKS))
      return false;
  
@@ -84,27 +84,18 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/components/url_
                                    base::checked_cast<int32_t>(label.size()));
  
    // A punycode label with 'xn--' prefix is not subject to the URL
-@@ -491,7 +491,7 @@ TopDomainEntry IDNSpoofChecker::GetSimil
- Skeletons IDNSpoofChecker::GetSkeletons(base::StringPiece16 hostname) {
-   Skeletons skeletons;
-   size_t hostname_length = hostname.length() - (hostname.back() == '.' ? 1 : 0);
--  icu::UnicodeString host(FALSE, hostname.data(), hostname_length);
-+  icu::UnicodeString host(false, hostname.data(), hostname_length);
-   // If input has any characters outside Latin-Greek-Cyrillic and [0-9._-],
-   // there is no point in getting rid of diacritics because combining marks
-   // attached to non-LGC characters are already blocked.
-@@ -690,7 +690,7 @@ bool IDNSpoofChecker::IsCyrillicTopLevel
+@@ -677,7 +677,7 @@ bool IDNSpoofChecker::IsWholeScriptConfu
      base::StringPiece tld,
-     base::StringPiece16 tld_unicode) const {
+     base::StringPiece16 tld_unicode) {
    icu::UnicodeString tld_string(
 -      FALSE /* isTerminated */, tld_unicode.data(),
 +      false /* isTerminated */, tld_unicode.data(),
        base::checked_cast<int32_t>(tld_unicode.size()));
-   if (cyrillic_letters_.containsSome(tld_string)) {
-     return true;
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc.omv~	2020-10-21 01:36:35.254411411 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc	2020-10-21 01:36:39.566464028 +0200
+   // Allow if the TLD contains any letter from the script, in which case it's
+   // likely to be a TLD in that script.
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/services/service_manager/zygote/zygote_linux.cc	2020-11-20 00:16:35.009269073 +0100
 @@ -564,7 +564,7 @@ base::ProcessId Zygote::ReadArgsAndFork(
    if (!iter.ReadString16(&timezone_id))
      return -1;
@@ -114,10 +105,10 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/services/servic
  
    if (!iter.ReadInt(&numfds))
      return -1;
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc.omv~	2020-10-21 02:52:49.876614534 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc	2020-10-21 02:52:58.232702878 +0200
-@@ -168,12 +168,12 @@ static String GetDateFormatPattern(const
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/locale_icu.cc	2020-11-20 00:16:35.009269073 +0100
+@@ -169,12 +169,12 @@ static String GetDateFormatPattern(const
      return g_empty_string;
  
    UErrorCode status = U_ZERO_ERROR;
@@ -132,9 +123,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/bli
    if (U_FAILURE(status))
      return g_empty_string;
    return String::Adopt(buffer);
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc.omv~	2020-10-21 11:54:15.135863790 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc	2020-10-21 11:54:34.387098476 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc	2020-11-20 00:16:35.009269073 +0100
 @@ -311,13 +311,13 @@ static inline bool TextInChunkOrOutOfRan
        text->chunkOffset = offset <= std::numeric_limits<int32_t>::max()
                                ? static_cast<int32_t>(offset)
@@ -202,9 +193,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/bli
  }
  
  static const struct UTextFuncs kTextUTF16Funcs = {
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc.omv~	2020-10-21 02:53:03.484758410 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc	2020-10-21 02:53:08.465811081 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/text/unicode_utilities.cc	2020-11-20 00:16:35.009269073 +0100
 @@ -300,7 +300,7 @@ void NormalizeCharactersIntoNFCForm(cons
    DCHECK(U_SUCCESS(status));
    int32_t input_length = static_cast<int32_t>(length);
@@ -214,9 +205,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/bli
    // In the vast majority of cases, input is already NFC. Run a quick check
    // to avoid normalizing the entire input unnecessarily.
    int32_t normalized_prefix_length =
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc.omv~	2020-10-20 23:21:34.748449923 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc	2020-10-20 23:21:38.990519858 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/third_party/blink/renderer/platform/wtf/text/text_codec_icu.cc	2020-11-20 00:16:35.009269073 +0100
 @@ -326,7 +326,7 @@ void TextCodecICU::CreateICUConverter()
    DLOG_IF(ERROR, err == U_AMBIGUOUS_ALIAS_WARNING)
        << "ICU ambiguous alias warning for encoding: " << encoding_.GetName();
@@ -226,9 +217,9 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/bli
  }
  
  int TextCodecICU::DecodeToBuffer(UChar* target,
-diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/ui/base/l10n/formatter.cc.omv~ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/ui/base/l10n/formatter.cc
---- qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/ui/base/l10n/formatter.cc.omv~	2020-10-21 11:47:35.278018991 +0200
-+++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/ui/base/l10n/formatter.cc	2020-10-21 11:47:45.041136403 +0200
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/ui/base/l10n/formatter.cc.17~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/ui/base/l10n/formatter.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/ui/base/l10n/formatter.cc.17~	2020-11-07 02:22:36.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/ui/base/l10n/formatter.cc	2020-11-20 00:16:35.009269073 +0100
 @@ -232,7 +232,7 @@ void Formatter::Format(Unit unit,
                         int value,
                         icu::UnicodeString* formatted_string) const {
@@ -256,3 +247,15 @@ diff -up qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/ui/base/l10n/fo
      DCHECK(U_SUCCESS(error));
      if (format.get())
        return format;
+diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/skeleton_generator.cc.omv~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/skeleton_generator.cc
+--- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/skeleton_generator.cc.omv~	2020-11-20 01:13:13.022262349 +0100
++++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/components/url_formatter/spoof_checks/skeleton_generator.cc	2020-11-20 01:13:19.123335666 +0100
+@@ -117,7 +117,7 @@ SkeletonGenerator::~SkeletonGenerator()
+ Skeletons SkeletonGenerator::GetSkeletons(base::StringPiece16 hostname) {
+   Skeletons skeletons;
+   size_t hostname_length = hostname.length() - (hostname.back() == '.' ? 1 : 0);
+-  icu::UnicodeString host(FALSE, hostname.data(), hostname_length);
++  icu::UnicodeString host(false, hostname.data(), hostname_length);
+   // If input has any characters outside Latin-Greek-Cyrillic and [0-9._-],
+   // there is no point in getting rid of diacritics because combining marks
+   // attached to non-LGC characters are already blocked.
