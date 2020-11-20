@@ -360,6 +360,7 @@ Obsoletes:	%{name}-demobrowser < %{EVRD}
 Examples for QtWebEngine.
 
 %files examples
+%{_libdir}/qt5/examples/pdf
 %{_libdir}/qt5/examples/pdfwidgets
 %{_libdir}/qt5/examples/webengine
 %{_libdir}/qt5/examples/webenginewidgets
