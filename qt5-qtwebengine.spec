@@ -13,9 +13,9 @@
 # Build with gcc instead of clang
 %bcond_with gcc
 
-# Currently doesn't work because system gn is way ahead of what
+# 2021-02-08 Currently doesn't work because system gn is way ahead of what
 # qtwebengine expects
-%bcond_with system_gn
+%bcond_without system_gn
 
 %ifarch %{ix86}
 %global optflags %{optflags} -O2 -Wl,-z,notext
