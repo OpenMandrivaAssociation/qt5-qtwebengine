@@ -15,7 +15,7 @@
 
 # 2021-02-08 Currently doesn't work because system gn is way ahead of what
 # qtwebengine expects
-%bcond_without system_gn
+%bcond_with system_gn
 
 %ifarch %{ix86}
 %global optflags %{optflags} -O2 -Wl,-z,notext
