@@ -21,7 +21,7 @@
 %global optflags %{optflags} -O2 -Wl,-z,notext
 %global ldflags %{ldflags} -Wl,-z,notext
 %else
-%global optflags %{optflags} -O2
+%global optflags %{optflags} -O3
 %endif
 
 Summary:	Qt WebEngine
@@ -40,7 +40,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
@@ -52,15 +52,15 @@ Source1000:	%{name}.rpmlintrc
 # Patches "borrowed" from rpmfusion
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
 # some tweaks to linux.pri (system yasm, link libpci, run unbundling script)
-Patch0:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
+Patch0:		 https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.10.0-linux-pri.patch
 # Make it work with the Lima driver, see
 # https://www.plasma-mobile.org/2019/12/20/plasma_mobile_as_daily_driver_on_pinephone.html
-Patch1:	qtwebengine-5.15.0-lima-driver.patch
+Patch1:		qtwebengine-5.15.0-lima-driver.patch
 # Detect system ninja 1.10+
-Patch2: qtwebengine-detect-system-ninja.patch
+Patch2:		qtwebengine-detect-system-ninja.patch
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
 # GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
-Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
+Patch3:		 https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
 # ../../../../src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h:734:5: warning: 'memcpy' will always overflow; destination buffer has size 2, but size argument is 8 [-Wfortify-source]
 #     memcpy(&fp16, &h, sizeof(U16));
 #     ^
@@ -74,11 +74,11 @@ Patch3:  https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 # Needs porting
 #Patch21: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.12.0-gn-bootstrap-verbose.patch
 # Fix/workaround FTBFS on aarch64 with newer glibc
-Patch24: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.11.3-aarch64-new-stat.patch
+Patch24:	https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-everywhere-src-5.11.3-aarch64-new-stat.patch
 # borrow fix from chromium packaging
-Patch26: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-gcc9-drop-rsp-clobber.patch
+Patch26:	https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-gcc9-drop-rsp-clobber.patch
 # Fix build with SIOCGSTAMP missing
-Patch27: qtwebengine-5.13-SIOCGSTAMP-compile.patch
+Patch27:	qtwebengine-5.13-SIOCGSTAMP-compile.patch
 # ====================
 # OpenMandriva patches
 # ====================
@@ -112,6 +112,9 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
 # Fix build with icu 68
 Patch1020:	qtwebengine-5.15.1-icu-68.patch
+Patch1021:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-#1904652.patch
+Patch1022:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-sandbox-time64-syscalls.patch
+
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
@@ -425,7 +428,7 @@ export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
 export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-mfpu=neon$/-mfpu=neon-vfpv4/'`
 
 # reduce memory on linking
-export LDFLAGS="%{ldflags} -Wl,--as-needed"
+export LDFLAGS="%{build_ldflags} -Wl,--as-needed"
 
 %if %{with gcc}
 # As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
