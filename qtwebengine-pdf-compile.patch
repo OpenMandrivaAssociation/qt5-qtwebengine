@@ -1,0 +1,13 @@
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/fx_codec_def.h.omv~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/fx_codec_def.h
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/fx_codec.h.omv~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/fx_codec.h
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/png/png_decoder.cpp.omv~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/png/png_decoder.cpp
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/png/png_decoder.cpp.omv~	2021-03-09 22:39:09.040152752 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/png/png_decoder.cpp	2021-03-09 22:40:51.637647400 +0100
+@@ -10,6 +10,7 @@
+ 
+ #include "core/fxcodec/cfx_codec_memory.h"
+ #include "core/fxcodec/fx_codec.h"
++#include "core/fxcodec/fx_codec_def.h"
+ #include "core/fxcrt/unowned_ptr.h"
+ #include "core/fxge/fx_dib.h"
+ #include "third_party/base/compiler_specific.h"

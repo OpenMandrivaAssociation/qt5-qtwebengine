@@ -1,6 +1,6 @@
-diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/base/decoder_buffer.h.15~ qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/base/decoder_buffer.h
---- qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/base/decoder_buffer.h.15~	2020-03-11 01:14:25.321941414 +0100
-+++ qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/base/decoder_buffer.h	2020-03-11 01:14:25.321941414 +0100
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/base/decoder_buffer.h.14~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/base/decoder_buffer.h
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/base/decoder_buffer.h.14~	2021-03-09 21:34:00.938613616 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/base/decoder_buffer.h	2021-03-09 21:34:00.938613616 +0100
 @@ -8,7 +8,9 @@
  #include <stddef.h>
  #include <stdint.h>
@@ -11,10 +11,10 @@ diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/
  
  #include <memory>
  #include <string>
-diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/filters/BUILD.gn.15~ qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/filters/BUILD.gn
---- qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/filters/BUILD.gn.15~	2020-03-06 10:28:09.000000000 +0100
-+++ qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/filters/BUILD.gn	2020-03-11 01:16:58.966933960 +0100
-@@ -104,6 +104,12 @@ jumbo_source_set("filters") {
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/filters/BUILD.gn.14~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/filters/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/filters/BUILD.gn.14~	2021-03-07 00:06:05.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/media/filters/BUILD.gn	2021-03-09 21:34:58.225742601 +0100
+@@ -105,6 +105,12 @@ jumbo_source_set("filters") {
      ]
    }
  
@@ -27,7 +27,7 @@ diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/
    if (media_use_ffmpeg) {
      deps += [
        "//media/ffmpeg",
-@@ -130,6 +136,11 @@ jumbo_source_set("filters") {
+@@ -131,6 +137,11 @@ jumbo_source_set("filters") {
        "media_file_checker.cc",
        "media_file_checker.h",
      ]
@@ -39,7 +39,7 @@ diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/
    }
  
    if (media_use_libvpx) {
-@@ -170,6 +181,12 @@ jumbo_source_set("filters") {
+@@ -179,6 +190,12 @@ jumbo_source_set("filters") {
            "ffmpeg_h265_to_annex_b_bitstream_converter.cc",
            "ffmpeg_h265_to_annex_b_bitstream_converter.h",
          ]
@@ -52,7 +52,7 @@ diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/
        }
      }
  
-@@ -178,6 +195,12 @@ jumbo_source_set("filters") {
+@@ -187,6 +204,12 @@ jumbo_source_set("filters") {
          "ffmpeg_video_decoder.cc",
          "ffmpeg_video_decoder.h",
        ]
@@ -63,5 +63,5 @@ diff -up qtwebengine-everywhere-src-5.15.0-20200311/src/3rdparty/chromium/media/
 +        "avutil",
 +      ]
      }
-   }
  
+     if (is_android) {

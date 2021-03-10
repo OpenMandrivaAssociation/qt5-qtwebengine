@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
-%define beta %{nil}
-#define snapshot 20200311
+#define beta %{nil}
+%define snapshot 20210309
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -26,14 +26,14 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.2
+Version:	5.15.4
 %if 0%{?snapshot}
 Release:	0%{?beta:0.%{beta}.1}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
-# git://code.qt.io/qt/qtwebengine.git -- branch 5.15
+# git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
 Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
-# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 79-based
-Source1:	qtwebengine-chromium-79-%{snapshot}.tar.zst
+# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 87-based
+Source1:	qtwebengine-chromium-87-%{snapshot}.tar.zst
 %else
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
@@ -110,8 +110,7 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 # https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
-# Fix build with icu 68
-Patch1020:	qtwebengine-5.15.1-icu-68.patch
+Patch1020:	qtwebengine-pdf-compile.patch
 Patch1021:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-#1904652.patch
 Patch1022:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-sandbox-time64-syscalls.patch
 

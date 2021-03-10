@@ -1,2 +1,3 @@
 sources:
-  qtwebengine-everywhere-src-5.15.2.tar.xz: fc633cf15998a89229446b778085f59191e27b0f
+  qtwebengine-chromium-87-20210309.tar.zst: 5da32515a86867c47e91adc5763dbc41b78cb76c
+  qtwebengine-everywhere-src-5.15.4-20210309.tar.zst: 4e2f8a15f91467a0bd0c130c8fe863fd1d1f4b91

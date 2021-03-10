@@ -1,15 +1,7 @@
-Description: fix seccomp-bpf failures in syscalls 0403, 0407
- glibc ≥ 2.31 uses these syscalls on 32-bit platforms:
- .
- - https://sourceware.org/git/?p=glibc.git;a=commit;h=2e44b10b42d68d98
- - https://sourceware.org/git/?p=glibc.git;a=commit;h=ec138c67cbda8b58
-Author: Andreas Müller <schnitzeltony@gmail.com>
-Forwarded: no
-Last-Update: 2020-09-02
-
---- a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
-+++ b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
-@@ -148,7 +148,14 @@ ResultExpr EvaluateSyscallImpl(int fs_de
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc.18~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc.18~	2021-03-09 21:38:18.157356087 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc	2021-03-09 21:38:18.157356087 +0100
+@@ -157,7 +157,14 @@ ResultExpr EvaluateSyscallImpl(int fs_de
      return Allow();
  #endif
  
@@ -25,8 +17,9 @@ Last-Update: 2020-09-02
      return RestrictClockID();
    }
  
---- a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
-+++ b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc.18~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc.18~	2021-03-07 00:06:05.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc	2021-03-09 21:38:18.157356087 +0100
 @@ -60,6 +60,12 @@ class RestrictClockIdPolicy : public bpf
        case __NR_clock_gettime:
        case __NR_clock_getres:
@@ -40,8 +33,9 @@ Last-Update: 2020-09-02
          return RestrictClockID();
        default:
          return Allow();
---- a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
-+++ b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc.18~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc.18~	2021-03-07 00:06:05.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc	2021-03-09 21:38:18.157356087 +0100
 @@ -39,6 +39,12 @@ bool SyscallSets::IsAllowedGettime(int s
                                  // filtered by RestrictClokID().
      case __NR_clock_gettime:    // Parameters filtered by RestrictClockID().
@@ -55,8 +49,9 @@ Last-Update: 2020-09-02
      case __NR_clock_settime:    // Privileged.
  #if defined(__i386__) || \
      (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS))
---- a/src/3rdparty/chromium/sandbox/linux/system_headers/arm_linux_syscalls.h
-+++ b/src/3rdparty/chromium/sandbox/linux/system_headers/arm_linux_syscalls.h
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/arm_linux_syscalls.h.18~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/arm_linux_syscalls.h
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/arm_linux_syscalls.h.18~	2021-03-09 21:38:18.160689447 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/arm_linux_syscalls.h	2021-03-09 21:38:52.554300342 +0100
 @@ -1385,6 +1385,14 @@
  #define __NR_memfd_create (__NR_SYSCALL_BASE+385)
  #endif
@@ -69,11 +64,12 @@ Last-Update: 2020-09-02
 +#define __NR_clock_nanosleep_time64 (__NR_SYSCALL_BASE+407)
 +#endif
 +
- // ARM private syscalls.
- #if !defined(__ARM_NR_BASE)
- #define __ARM_NR_BASE (__NR_SYSCALL_BASE + 0xF0000)
---- a/src/3rdparty/chromium/sandbox/linux/system_headers/mips_linux_syscalls.h
-+++ b/src/3rdparty/chromium/sandbox/linux/system_headers/mips_linux_syscalls.h
+ #if !defined(__NR_bpf)
+ #define __NR_bpf (__NR_SYSCALL_BASE+386)
+ #endif
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/mips_linux_syscalls.h.18~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/mips_linux_syscalls.h
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/mips_linux_syscalls.h.18~	2021-03-07 00:06:05.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/sandbox/linux/system_headers/mips_linux_syscalls.h	2021-03-09 21:38:18.160689447 +0100
 @@ -1433,4 +1433,12 @@
  #define __NR_memfd_create (__NR_Linux + 354)
  #endif

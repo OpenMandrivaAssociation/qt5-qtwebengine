@@ -1,7 +1,7 @@
-diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/BUILD.gn.9~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/BUILD.gn
---- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/BUILD.gn.9~	2020-11-07 02:22:36.000000000 +0100
-+++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/BUILD.gn	2020-11-19 23:27:24.418635485 +0100
-@@ -108,6 +108,9 @@ config("base_flags") {
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/BUILD.gn.9~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/BUILD.gn.9~	2021-03-07 00:06:05.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/BUILD.gn	2021-03-09 21:32:38.847951128 +0100
+@@ -103,6 +103,9 @@ config("base_flags") {
        "-Wglobal-constructors",
      ]
    }
@@ -11,7 +11,7 @@ diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/BUILD.gn.9
  }
  
  config("base_implementation") {
-@@ -713,8 +716,6 @@ jumbo_component("base") {
+@@ -728,8 +731,6 @@ jumbo_component("base") {
      "third_party/cityhash_v103/src/city_v103.h",
      "third_party/icu/icu_utf.cc",
      "third_party/icu/icu_utf.h",
@@ -20,9 +20,9 @@ diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/BUILD.gn.9
      "third_party/superfasthash/superfasthash.c",
      "thread_annotations.h",
      "threading/hang_watcher.cc",
-diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/pr_time_unittest.cc.9~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/pr_time_unittest.cc
---- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/pr_time_unittest.cc.9~	2020-11-07 02:22:36.000000000 +0100
-+++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/pr_time_unittest.cc	2020-11-19 23:05:13.641887476 +0100
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/pr_time_unittest.cc.9~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/pr_time_unittest.cc
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/pr_time_unittest.cc.9~	2021-03-07 00:06:05.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/pr_time_unittest.cc	2021-03-09 21:32:38.847951128 +0100
 @@ -7,7 +7,7 @@
  
  #include "base/compiler_specific.h"
@@ -32,12 +32,12 @@ diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/pr_ti
  #include "base/time/time.h"
  #include "build/build_config.h"
  #include "testing/gtest/include/gtest/gtest.h"
-diff -up qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/time.cc.9~ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/time.cc
---- qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/time.cc.9~	2020-11-07 02:22:36.000000000 +0100
-+++ qtwebengine-everywhere-src-5.15.2/src/3rdparty/chromium/base/time/time.cc	2020-11-19 23:05:13.641887476 +0100
+diff -up qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/time.cc.9~ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/time.cc
+--- qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/time.cc.9~	2021-03-09 21:32:38.847951128 +0100
++++ qtwebengine-everywhere-src-5.15.4-20210309/src/3rdparty/chromium/base/time/time.cc	2021-03-09 21:33:09.168195819 +0100
 @@ -14,7 +14,7 @@
- #include "base/macros.h"
- #include "base/no_destructor.h"
+ #include "base/optional.h"
+ #include "base/strings/string_util.h"
  #include "base/strings/stringprintf.h"
 -#include "base/third_party/nspr/prtime.h"
 +#include <nspr4/prtime.h>
