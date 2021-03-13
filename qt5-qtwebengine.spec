@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210309
+%define snapshot 20210313
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -28,11 +28,11 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.4
 %if 0%{?snapshot}
-Release:	0%{?beta:0.%{beta}.1}%{snapshot}.1
+Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
 Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
-# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 87-based
+# git://code.qt.io/qt/qtwebengine-chromium.git -- branch 87-based (no prefix)
 Source1:	qtwebengine-chromium-87-%{snapshot}.tar.zst
 %else
 %if "%{beta}" != ""
@@ -487,10 +487,10 @@ for prl_file in libQt5*.prl ; do
 done
 cd -
 
-# Allow QtWebEngine 5.15.0-* to coexist with other Qt modules from 5.14.x
-# In general, we want stable Qt, but QtWebEngine 5.15 is significantly better
-# than 5.14 due to the Chromium 77 sync...
-sed -i -e 's,5.15.0 \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.14.0 ${_Qt5WebEngineCore_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
-sed -i -e 's,5.15.0 \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.14.0 ${_Qt5WebEngineWidgets_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
+# Allow QtWebEngine > 5.15.2 to coexist with other Qt modules from 5.15.x
+# In general, we want stable Qt, but QtWebEngine git is significantly better
+# than 5.15.2 due to the Chromium 87 sync...
+sed -i -e 's,%{version} \${_Qt5WebEngineCore_FIND_VERSION_EXACT},5.15.2 ${_Qt5WebEngineCore_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineCore/Qt5WebEngineCoreConfig.cmake
+sed -i -e 's,%{version} \${_Qt5WebEngineWidgets_FIND_VERSION_EXACT},5.15.2 ${_Qt5WebEngineWidgets_FIND_VERSION},g' %{buildroot}%{_libdir}/cmake/Qt5WebEngineWidgets/Qt5WebEngineWidgetsConfig.cmake
 
 mkdir -p %{buildroot}%{_datadir}/qt5/qtwebengine_dictionaries
