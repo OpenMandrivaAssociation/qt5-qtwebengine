@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210313
+%define snapshot 20210407
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -30,10 +30,12 @@ Version:	5.15.4
 %if 0%{?snapshot}
 Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
+# Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
 Source0:	qtwebengine-everywhere-src-%{version}-%{snapshot}.tar.zst
 # git://code.qt.io/qt/qtwebengine-chromium.git -- branch 87-based (no prefix)
 Source1:	qtwebengine-chromium-87-%{snapshot}.tar.zst
+Source1001:	package-source.sh
 %else
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
