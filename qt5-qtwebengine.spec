@@ -129,7 +129,7 @@ BuildRequires:	nodejs
 BuildRequires:	gn
 %endif
 BuildRequires:	imagemagick
-BuildRequires:	jpeg-devel
+BuildRequires:	pkgconfig(libjpeg)
 # /usr/bin/clang++ -Xassembler --version -x assembler -c /dev/null
 # not working, well gcc-cpp need only to detect version
 BuildRequires:	gcc-c++
@@ -420,9 +420,9 @@ export NINJA_PATH=%{__ninja}
 export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks -Wno-class-memaccess -Wno-packed-not-aligned"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
-export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//'`
+export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//')
 # Use of vfp instructions is hardcoded in SkBlurMaskFilter.cpp
-export CXXFLAGS=`echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-mfpu=neon$/-mfpu=neon-vfpv4/'`
+export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-mfpu=neon$/-mfpu=neon-vfpv4/')
 
 # reduce memory on linking
 export LDFLAGS="%{build_ldflags} -Wl,--as-needed"
