@@ -1,0 +1,78 @@
+diff -up qtwebengine-everywhere-src-5.15.4-20210414/src/3rdparty/chromium/v8/src/objects/js-list-format.cc.omv~ qtwebengine-everywhere-src-5.15.4-20210414/src/3rdparty/chromium/v8/src/objects/js-list-format.cc
+--- qtwebengine-everywhere-src-5.15.4-20210414/src/3rdparty/chromium/v8/src/objects/js-list-format.cc.omv~	2021-04-15 01:08:15.107119154 +0200
++++ qtwebengine-everywhere-src-5.15.4-20210414/src/3rdparty/chromium/v8/src/objects/js-list-format.cc	2021-04-15 01:14:02.630092569 +0200
+@@ -29,50 +29,29 @@ namespace v8 {
+ namespace internal {
+ 
+ namespace {
+-const char* kStandard = "standard";
+-const char* kOr = "or";
+-const char* kUnit = "unit";
+-const char* kStandardShort = "standard-short";
+-const char* kOrShort = "or-short";
+-const char* kUnitShort = "unit-short";
+-const char* kStandardNarrow = "standard-narrow";
+-const char* kOrNarrow = "or-narrow";
+-const char* kUnitNarrow = "unit-narrow";
++UListFormatterWidth GetIcuWidth(JSListFormat::Style style) {
++  switch (style) {
++    case JSListFormat::Style::LONG:
++      return ULISTFMT_WIDTH_WIDE;
++    case JSListFormat::Style::SHORT:
++      return ULISTFMT_WIDTH_SHORT;
++    case JSListFormat::Style::NARROW:
++      return ULISTFMT_WIDTH_NARROW;
++  }
++  UNREACHABLE();
++}
+ 
+-const char* GetIcuStyleString(JSListFormat::Style style,
+-                              JSListFormat::Type type) {
++UListFormatterType GetIcuType(JSListFormat::Type type) {
+   switch (type) {
+     case JSListFormat::Type::CONJUNCTION:
+-      switch (style) {
+-        case JSListFormat::Style::LONG:
+-          return kStandard;
+-        case JSListFormat::Style::SHORT:
+-          return kStandardShort;
+-        case JSListFormat::Style::NARROW:
+-          return kStandardNarrow;
+-      }
++      return ULISTFMT_TYPE_AND;
+     case JSListFormat::Type::DISJUNCTION:
+-      switch (style) {
+-        case JSListFormat::Style::LONG:
+-          return kOr;
+-        case JSListFormat::Style::SHORT:
+-          return kOrShort;
+-        case JSListFormat::Style::NARROW:
+-          return kOrNarrow;
+-      }
++      return ULISTFMT_TYPE_OR;
+     case JSListFormat::Type::UNIT:
+-      switch (style) {
+-        case JSListFormat::Style::LONG:
+-          return kUnit;
+-        case JSListFormat::Style::SHORT:
+-          return kUnitShort;
+-        case JSListFormat::Style::NARROW:
+-          return kUnitNarrow;
+-      }
++      return ULISTFMT_TYPE_UNITS;
+   }
+   UNREACHABLE();
+ }
+-
+ }  // namespace
+ 
+ MaybeHandle<JSListFormat> JSListFormat::New(Isolate* isolate, Handle<Map> map,
+@@ -143,7 +122,7 @@ MaybeHandle<JSListFormat> JSListFormat::
+   icu::Locale icu_locale = r.icu_locale;
+   UErrorCode status = U_ZERO_ERROR;
+   icu::ListFormatter* formatter = icu::ListFormatter::createInstance(
+-      icu_locale, GetIcuStyleString(style_enum, type_enum), status);
++      icu_locale, GetIcuType(type_enum), GetIcuWidth(style_enum), status);
+   if (U_FAILURE(status) || formatter == nullptr) {
+     delete formatter;
+     THROW_NEW_ERROR(isolate, NewRangeError(MessageTemplate::kIcuError),

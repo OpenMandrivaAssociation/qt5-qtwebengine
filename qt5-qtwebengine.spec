@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210407
+%define snapshot 20210414
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -91,12 +91,6 @@ Patch1000:	qtwebengine-__mulodi4.patch
 # Debian uses this just fine, and I don't see relevant modifications either.
 # FIXME port
 Patch1001:	qtwebengine-everywhere-src-5.11.0-system-nspr-prtime.patch
-# use the system ICU UTF functions
-# We already depend on ICU, so it is useless to copy these functions here.
-# I checked the history of that directory, and other than the renames I am
-# undoing, there were no modifications at all. Must be applied after Patch5.
-# FIXME currently disabled because of linkage problems
-#Patch6:		qtwebengine-5.8-system-icu.patch
 Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 # (tpg) Detect MESA DRI nouveau drivers and disable gpu usage to work around nouveau crashing
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
@@ -115,6 +109,7 @@ Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
 Patch1021:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-#1904652.patch
 Patch1022:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-sandbox-time64-syscalls.patch
+Patch1023:	qtwebengine-87-icu-69.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
