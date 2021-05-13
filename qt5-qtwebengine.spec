@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210414
+%define snapshot 20210513
 %define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
@@ -109,7 +109,7 @@ Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
 Patch1021:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-#1904652.patch
 Patch1022:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-sandbox-time64-syscalls.patch
-Patch1023:	qtwebengine-87-icu-69.patch
+Patch1023:	qtwebengine-5.15.4-compile.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
