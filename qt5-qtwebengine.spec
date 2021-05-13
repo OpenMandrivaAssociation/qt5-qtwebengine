@@ -1,7 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
 %define snapshot 20210513
-%define debug_package %nil
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
