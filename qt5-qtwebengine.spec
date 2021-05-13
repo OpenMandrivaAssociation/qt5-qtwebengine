@@ -197,6 +197,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(lcms2)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(libxslt)
+BuildRequires:	pkgconfig(xkbfile)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
 BuildRequires:	qt5-qtquickcontrols2
