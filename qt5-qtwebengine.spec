@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210519
+%define snapshot 20210814
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -25,7 +25,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.4
+Version:	5.15.6
 %if 0%{?snapshot}
 Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
@@ -95,6 +95,7 @@ Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 # https://bugreports.qt.io/browse/QTBUG-59769
 Patch1004:	881ef63.diff
+Patch1005:	qtwebengine-87-glibc-2.34-libstdc++-11.patch
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
@@ -412,6 +413,12 @@ sed -i 's|$(STRIP)|strip|g' src/core/core_module.pro
 # hack and force a different compiler for gn
 sed -i -e 's,\$\$QMAKE_CC,gcc,g;s,\$\$QMAKE_CXX,g++,g' src/buildtools/gn.pro
 %endif
+
+# Let's trust our kernel and libc, not files copied in
+# from some horribly outdated distro
+for i in src/3rdparty/chromium/sandbox/linux/system_headers/*_linux_syscalls.h; do
+	echo '#include <asm/unistd.h>' >$i
+done
 
 %build
 export STRIP=strip

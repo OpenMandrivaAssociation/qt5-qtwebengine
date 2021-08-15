@@ -1,0 +1,74 @@
+diff -up qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/services/credentials.cc.omv~ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/services/credentials.cc
+--- qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/services/credentials.cc.omv~	2021-08-14 05:04:27.105544368 +0200
++++ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/services/credentials.cc	2021-08-14 05:07:19.467209812 +0200
+@@ -98,7 +98,7 @@ bool ChrootToSafeEmptyDir() {
+   // attempt this optimization.
+   clone_flags |= CLONE_VM | CLONE_VFORK | CLONE_SETTLS;
+ 
+-  char tls_buf[PTHREAD_STACK_MIN] = {0};
++  char tls_buf[16384] = {0};
+   tls = tls_buf;
+ #endif
+ 
+diff -up qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/abseil-cpp/absl/debugging/failure_signal_handler.cc.omv~ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/abseil-cpp/absl/debugging/failure_signal_handler.cc
+--- qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/abseil-cpp/absl/debugging/failure_signal_handler.cc.omv~	2021-08-14 04:52:40.987869111 +0200
++++ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/abseil-cpp/absl/debugging/failure_signal_handler.cc	2021-08-14 04:52:48.970773090 +0200
+@@ -135,7 +135,7 @@ static bool SetupAlternateStackOnce() {
+ #else
+   const size_t page_mask = sysconf(_SC_PAGESIZE) - 1;
+ #endif
+-  size_t stack_size = (std::max(SIGSTKSZ, 65536) + page_mask) & ~page_mask;
++  size_t stack_size = (std::max<size_t>(SIGSTKSZ, 65536) + page_mask) & ~page_mask;
+ #if defined(ABSL_HAVE_ADDRESS_SANITIZER) || \
+     defined(ABSL_HAVE_MEMORY_SANITIZER) || defined(ABSL_HAVE_THREAD_SANITIZER)
+   // Account for sanitizer instrumentation requiring additional stack space.
+diff -up qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc.omv~ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc
+--- qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc.omv~	2021-08-14 04:53:17.386434910 +0200
++++ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc	2021-08-14 04:53:28.001309983 +0200
+@@ -138,7 +138,7 @@ void InstallAlternateStackLocked() {
+   // SIGSTKSZ may be too small to prevent the signal handlers from overrunning
+   // the alternative stack. Ensure that the size of the alternative stack is
+   // large enough.
+-  static const unsigned kSigStackSize = std::max(16384, SIGSTKSZ);
++  static const unsigned kSigStackSize = std::max<unsigned>(16384, SIGSTKSZ);
+ 
+   // Only set an alternative stack if there isn't already one, or if the current
+   // one is too small.
+diff -up qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/api/qquickwebengineview.cpp.omv~ qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/api/qquickwebengineview.cpp
+--- qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/api/qquickwebengineview.cpp.omv~	2021-08-14 17:23:23.525197360 +0200
++++ qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/api/qquickwebengineview.cpp	2021-08-14 17:23:32.514156071 +0200
+@@ -101,6 +101,7 @@
+ 
+ QT_BEGIN_NAMESPACE
+ using namespace QtWebEngineCore;
++using namespace QtQml;
+ 
+ #ifndef QT_NO_ACCESSIBILITY
+ static QAccessibleInterface *webAccessibleFactory(const QString &, QObject *object)
+diff -up qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/ui_delegates_manager.cpp.omv~ qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/ui_delegates_manager.cpp
+--- qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/ui_delegates_manager.cpp.omv~	2021-08-14 17:29:11.298618866 +0200
++++ qtwebengine-everywhere-src-5.15.6-20210814/src/webengine/ui_delegates_manager.cpp	2021-08-14 17:29:20.793576216 +0200
+@@ -61,6 +61,8 @@
+ // Uncomment for QML debugging
+ //#define UI_DELEGATES_DEBUG
+ 
++using namespace QtQml;
++
+ namespace QtWebEngineCore {
+ 
+ #define NO_SEPARATOR
+diff -up qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc.omv~ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+--- qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc.omv~	2021-08-15 02:06:51.588285192 +0200
++++ qtwebengine-everywhere-src-5.15.6-20210814/src/3rdparty/chromium/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc	2021-08-15 02:08:04.823900820 +0200
+@@ -172,6 +172,11 @@ ResultExpr EvaluateSyscallImpl(int fs_de
+     return RestrictCloneToThreadsAndEPERMFork();
+   }
+ 
++  // clone3 takes a pointer argument which we cannot examine, so return ENOSYS
++  // to force the libc to use clone. See https://crbug.com/1213452
++  if (sysno == __NR_clone3)
++    return Error(ENOSYS);
++
+   if (sysno == __NR_fcntl)
+     return RestrictFcntlCommands();
+ 
