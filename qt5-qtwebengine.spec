@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210920
+%define snapshot 20210924
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -48,7 +48,7 @@ Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f
 %endif
 License:	GPLv2
 Group:		System/Libraries
-Url:		http://qtwebengine.sf.net/
+Url:		http://download.qt.io/official_releases/qt
 Source1000:	%{name}.rpmlintrc
 # Patches "borrowed" from rpmfusion
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
