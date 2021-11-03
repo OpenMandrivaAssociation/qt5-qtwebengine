@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20210924
+%define snapshot 20211103
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -107,10 +107,7 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 #Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
-Patch1021:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-#1904652.patch
-Patch1022:	https://src.fedoraproject.org/rpms/qt5-qtwebengine/raw/rawhide/f/qtwebengine-everywhere-src-5.15.2-sandbox-time64-syscalls.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
-Patch1024:	qtwebengine-5.15-harfbuzz-3.0.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
