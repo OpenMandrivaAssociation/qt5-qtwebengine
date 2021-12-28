@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20211103
+%define snapshot 20211228
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -25,9 +25,9 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.7
+Version:	5.15.8
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.2
+Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -95,7 +95,7 @@ Patch1002:	qtwebengine-5.12-no-static-libstdc++.patch
 Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 # https://bugreports.qt.io/browse/QTBUG-59769
 Patch1004:	881ef63.diff
-Patch1005:	qtwebengine-87-glibc-2.34-libstdc++-11.patch
+#Patch1005:	qtwebengine-87-glibc-2.34-libstdc++-11.patch
 # Support ffmpeg 3.5
 Patch1010:	chromium-65-ffmpeg-3.5.patch
 Patch1011:	ffmpeg-linkage.patch
@@ -108,6 +108,8 @@ Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
+# Fix glibc 2.34
+Patch1024:	qtwebengine-5.15.8-glibc-2.34.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
