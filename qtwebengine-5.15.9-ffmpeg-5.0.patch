@@ -195,7 +195,7 @@ diff -up qtwebengine-everywhere-src-5.15.9-20220116/src/3rdparty/chromium/third_
 -    media::FFmpegGlue::InitializeFFmpeg();
 -  } else {
 +  if (!base::FeatureList::IsEnabled(
-+          blink::features::kWebRtcH264WithOpenH264FFmpeg))
++          blink::features::kWebRtcH264WithOpenH264FFmpeg)) {
      // Feature is to be disabled, no need to make sure FFmpeg is initialized.
      webrtc::DisableRtcUseH264();
    }
