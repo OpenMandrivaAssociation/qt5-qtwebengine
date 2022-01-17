@@ -181,3 +181,21 @@ diff -up qtwebengine-everywhere-src-5.15.9-20220116/src/3rdparty/chromium/third_
    if (!codec) {
      // This is an indication that FFmpeg has not been initialized or it has not
      // been compiled/initialized with the correct set of codecs.
+diff -up qtwebengine-everywhere-src-5.15.9-20220116/src/3rdparty/chromium/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc.omv~ qtwebengine-everywhere-src-5.15.9-20220116/src/3rdparty/chromium/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc
+--- qtwebengine-everywhere-src-5.15.9-20220116/src/3rdparty/chromium/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc.omv~	2022-01-17 02:32:41.403825868 +0100
++++ qtwebengine-everywhere-src-5.15.9-20220116/src/3rdparty/chromium/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc	2022-01-17 02:32:57.609921451 +0100
+@@ -174,12 +174,8 @@ void PeerConnectionDependencyFactory::Cr
+ 
+ #if BUILDFLAG(RTC_USE_H264) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)
+   // Building /w |rtc_use_h264|, is the corresponding run-time feature enabled?
+-  if (base::FeatureList::IsEnabled(
+-          blink::features::kWebRtcH264WithOpenH264FFmpeg)) {
+-    // |H264DecoderImpl| may be used which depends on FFmpeg, therefore we need
+-    // to initialize FFmpeg before going further.
+-    media::FFmpegGlue::InitializeFFmpeg();
+-  } else {
++  if (!base::FeatureList::IsEnabled(
++          blink::features::kWebRtcH264WithOpenH264FFmpeg))
+     // Feature is to be disabled, no need to make sure FFmpeg is initialized.
+     webrtc::DisableRtcUseH264();
+   }
