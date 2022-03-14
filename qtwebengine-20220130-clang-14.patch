@@ -1,0 +1,12 @@
+diff -up qtwebengine-everywhere-src-5.15.9-20220130/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc.omv~ qtwebengine-everywhere-src-5.15.9-20220130/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc
+--- qtwebengine-everywhere-src-5.15.9-20220130/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc.omv~	2022-03-12 15:21:47.636309894 +0100
++++ qtwebengine-everywhere-src-5.15.9-20220130/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator_icu.cc	2022-03-12 15:22:07.781714524 +0100
+@@ -121,7 +121,7 @@ enum TextContext { kNoContext, kPriorCon
+ const int kTextBufferCapacity = 16;
+ 
+ typedef struct {
+-  DISALLOW_NEW();
++  //DISALLOW_NEW(); (would be useful to prevent "new", but doesn't work with C linkage)
+   UText text;
+   UChar buffer[kTextBufferCapacity];
+ } UTextWithBuffer;

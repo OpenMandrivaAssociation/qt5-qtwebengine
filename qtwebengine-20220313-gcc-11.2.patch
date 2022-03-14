@@ -1,0 +1,13 @@
+diff -up qtwebengine-everywhere-src-5.15.9-20220313/src/3rdparty/chromium/base/macros.h.omv~ qtwebengine-everywhere-src-5.15.9-20220313/src/3rdparty/chromium/base/macros.h
+diff -up qtwebengine-everywhere-src-5.15.9-20220313/src/3rdparty/chromium/base/threading/thread_local_internal.h.omv~ qtwebengine-everywhere-src-5.15.9-20220313/src/3rdparty/chromium/base/threading/thread_local_internal.h
+--- qtwebengine-everywhere-src-5.15.9-20220313/src/3rdparty/chromium/base/threading/thread_local_internal.h.omv~	2022-03-14 15:10:56.457379113 +0100
++++ qtwebengine-everywhere-src-5.15.9-20220313/src/3rdparty/chromium/base/threading/thread_local_internal.h	2022-03-14 15:22:20.767977361 +0100
+@@ -70,7 +70,7 @@ class CheckedThreadLocalOwnedPointer {
+ 
+   std::atomic_int num_assigned_threads_{0};
+ 
+-  DISALLOW_COPY_AND_ASSIGN(CheckedThreadLocalOwnedPointer<T>);
++//  DISALLOW_COPY_AND_ASSIGN(CheckedThreadLocalOwnedPointer<T>);
+ };
+ 
+ }  // namespace internal

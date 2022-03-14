@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20220130
+%define snapshot 20220314
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -10,7 +10,13 @@
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
 # Build with gcc instead of clang
-%bcond_with gcc
+%bcond_without gcc
+
+%if ! %{with gcc}
+# Workaround for debugsource generator
+# not finding anything
+%define _debugsource_template %{nil}
+%endif
 
 # 2021-02-08 Currently doesn't work because system gn is way ahead of what
 # qtwebengine expects
@@ -109,8 +115,10 @@ Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
 # Fix glibc 2.34
-Patch1024:	qtwebengine-5.15.8-glibc-2.34.patch
+#Patch1024:	qtwebengine-5.15.8-glibc-2.34.patch
 Patch1025:	qtwebengine-5.15.9-ffmpeg-5.0.patch
+Patch1030:	qtwebengine-20220130-clang-14.patch
+Patch1031:	qtwebengine-20220313-gcc-11.2.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
@@ -468,7 +476,15 @@ QMAKE_EXTRA_ARGS+=" -feature-webengine-system-gn"
 # FIXME figure out why -alsa fails to build on armv7hnl
 QMAKE_EXTRA_ARGS+=" -alsa"
 %endif
-%qmake_qt5 QMAKE_EXTRA_ARGS="${QMAKE_EXTRA_ARGS}" LFLAGS="${LDFLAGS}" ..
+%qmake_qt5 \
+%if %{with gcc}
+%ifarch %{arm} %{ix86}
+	-spec linux-g++ \
+%else
+	-spec linux-g++-32 \
+%endif
+%endif
+	QMAKE_EXTRA_ARGS="${QMAKE_EXTRA_ARGS}" LFLAGS="${LDFLAGS}" ..
 
 # Intentionally not using %%make_build because there seem to be
 # problems at -j32
