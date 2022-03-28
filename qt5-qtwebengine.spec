@@ -478,7 +478,7 @@ QMAKE_EXTRA_ARGS+=" -alsa"
 %endif
 %qmake_qt5 \
 %if %{with gcc}
-%ifarch %{arm} %{ix86}
+%ifnarch %{arm} %{ix86}
 	-spec linux-g++ \
 %else
 	-spec linux-g++-32 \
