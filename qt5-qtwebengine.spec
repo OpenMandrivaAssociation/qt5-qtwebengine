@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20220314
+%define snapshot 20220523
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -31,7 +31,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.9
+Version:	5.15.10
 %if 0%{?snapshot}
 Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
@@ -47,7 +47,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	4
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
@@ -119,6 +119,7 @@ Patch1023:	qtwebengine-5.15.4-compile.patch
 Patch1025:	qtwebengine-5.15.9-ffmpeg-5.0.patch
 Patch1030:	qtwebengine-20220130-clang-14.patch
 Patch1031:	qtwebengine-20220313-gcc-11.2.patch
+Patch1032:	qtwebengine-20220523-gcc12.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
