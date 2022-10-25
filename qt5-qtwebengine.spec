@@ -468,7 +468,13 @@ mkdir bin
 ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
-export NINJAFLAGS="-v %{_smp_mflags}"
+if [ $(getconf _NPROCESSORS_ONLN) -le 32 ]; then
+	export NINJAFLAGS="-v %{_smp_mflags}"
+else
+	# 160 parallel build processes on altra
+	# always run out of memory
+	export NINJAFLAGS="-v -j 32"
+fi
 QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa"
 %if %{with system_gn}
 QMAKE_EXTRA_ARGS+=" -feature-webengine-system-gn"
