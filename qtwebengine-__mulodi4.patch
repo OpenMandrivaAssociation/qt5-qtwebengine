@@ -1,8 +1,59 @@
-diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.omv~ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c
---- qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.omv~	2019-02-10 23:23:23.342045940 +0100
-+++ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c	2019-02-10 23:26:53.536586646 +0100
+diff -up qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp.8~ qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp
+--- qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp.8~	2022-11-16 23:23:02.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp	2022-11-20 22:05:18.604994314 +0100
+@@ -149,3 +149,47 @@ namespace SkOpts {
+         once(init);
+     }
+ }  // namespace SkOpts
++
++#ifdef __arm__
++// based on https://reviews.llvm.org/D4927
++float __gnu_h2f_ieee(short param) {
++    unsigned short expHalf16 = param & 0x7C00;
++    int exp1 = (int)expHalf16;
++    unsigned short mantissa16 = param & 0x03FF;
++    int mantissa1 = (int)mantissa16;
++    int sign = (int)(param & 0x8000);
++    sign = sign << 16;
++
++    // nan or inf
++    if (expHalf16 == 0x7C00) {
++        // nan
++        if (mantissa16 > 0) {
++            int res = (0x7FC00000 | sign);
++            float fres = *((float*)(&res));
++            return fres;
++        }
++        // inf
++        int res = (0x7F800000 | sign);
++        float fres = *((float*)(&res));
++        return fres;
++    }
++    if (expHalf16 != 0) {
++        exp1 += ((127 - 15) << 10); //exponents converted to float32 bias
++        int res = (exp1 | mantissa1);
++        res = res << 13 ;
++        res = ( res | sign );
++        float fres = *((float*)(&res));
++        return fres;
++    }
++
++    int xmm1 = exp1 > (1 << 10) ? exp1 : (1 << 10);
++    xmm1 = (xmm1 << 13);
++    xmm1 += ((127 - 15 - 10) << 23);  // add the bias difference to xmm1
++    xmm1 = xmm1 | sign; // Combine with the sign mask
++
++    float res = (float)mantissa1;  // Convert mantissa to float
++    res *= *((float*) (&xmm1));
++
++    return res;
++}
++#endif
+diff -up qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.8~ qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c
+--- qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c.8~	2022-11-20 22:05:18.604994314 +0100
++++ qtwebengine-everywhere-src-5.15.12-20221120/src/3rdparty/chromium/third_party/sqlite/sqlite3_shim.c	2022-11-20 22:07:03.161722199 +0100
 @@ -5,6 +5,50 @@
- // This is a shim that injects Chrome-specific defitions into sqlite3.c
+ // This is a shim that injects Chrome-specific definitions into sqlite3.c
  // BUILD.gn uses this instead of building the sqlite3 amalgamation directly.
  
 +// __mulodi4 is injected by clang, but not exported by libgcc, so let's
@@ -52,54 +103,3 @@ diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/sql
  // We prefix chrome_ to SQLite's exported symbols, so that we don't clash with
  // other SQLite libraries loaded by the system libraries. This only matters when
  // using the component build, where our SQLite's symbols are visible to the
-diff -up qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp.omv~ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp
---- qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp.omv~	2019-02-11 18:22:22.164827490 +0100
-+++ qtwebengine-everywhere-src-5.12.1/src/3rdparty/chromium/third_party/skia/src/core/SkOpts.cpp	2019-02-11 18:34:39.271899070 +0100
-@@ -136,3 +136,47 @@ namespace SkOpts {
-         once(init);
-     }
- }  // namespace SkOpts
-+
-+#ifdef __arm__
-+// based on https://reviews.llvm.org/D4927
-+float __gnu_h2f_ieee(short param) {
-+    unsigned short expHalf16 = param & 0x7C00;
-+    int exp1 = (int)expHalf16;
-+    unsigned short mantissa16 = param & 0x03FF;
-+    int mantissa1 = (int)mantissa16;
-+    int sign = (int)(param & 0x8000);
-+    sign = sign << 16;
-+
-+    // nan or inf
-+    if (expHalf16 == 0x7C00) {
-+        // nan
-+        if (mantissa16 > 0) {
-+            int res = (0x7FC00000 | sign);
-+            float fres = *((float*)(&res));
-+            return fres;
-+        }
-+        // inf
-+        int res = (0x7F800000 | sign);
-+        float fres = *((float*)(&res));
-+        return fres;
-+    }
-+    if (expHalf16 != 0) {
-+        exp1 += ((127 - 15) << 10); //exponents converted to float32 bias
-+        int res = (exp1 | mantissa1);
-+        res = res << 13 ;
-+        res = ( res | sign );
-+        float fres = *((float*)(&res));
-+        return fres;
-+    }
-+
-+    int xmm1 = exp1 > (1 << 10) ? exp1 : (1 << 10);
-+    xmm1 = (xmm1 << 13);
-+    xmm1 += ((127 - 15 - 10) << 23);  // add the bias difference to xmm1
-+    xmm1 = xmm1 | sign; // Combine with the sign mask
-+
-+    float res = (float)mantissa1;  // Convert mantissa to float
-+    res *= *((float*) (&xmm1));
-+
-+    return res;
-+}
-+#endif
