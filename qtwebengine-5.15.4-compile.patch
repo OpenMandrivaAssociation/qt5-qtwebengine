@@ -1,7 +1,7 @@
-diff -up qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h.omv~ qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h
---- qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h.omv~	2021-05-13 19:51:26.378583230 +0200
-+++ qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h	2021-05-13 19:51:52.313796173 +0200
-@@ -22,6 +22,8 @@
+diff -up qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h.18~ qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h
+--- qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h.18~	2022-12-22 09:25:26.000000000 +0100
++++ qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/containers/string_pool.h	2023-01-05 18:41:29.662385687 +0100
+@@ -23,6 +23,8 @@
  
  #include <unordered_map>
  #include <vector>
@@ -10,20 +10,16 @@ diff -up qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_
  
  #include "perfetto/ext/base/optional.h"
  #include "perfetto/ext/base/paged_memory.h"
-diff -up qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc.omv~ qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc
---- qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc.omv~	2021-05-13 20:39:03.287496737 +0200
-+++ qtwebengine-everywhere-src-5.15.4-20210513/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc	2021-05-13 20:39:39.165819059 +0200
-@@ -13,10 +13,12 @@
- #include "base/notreached.h"
+diff -up qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc.18~ qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc
+--- qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc.18~	2023-01-05 18:41:29.662385687 +0100
++++ qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third_party/zlib/google/zip_internal.cc	2023-01-05 18:42:05.620570089 +0100
+@@ -17,7 +17,8 @@
+ #include "base/strings/string_util.h"
  #include "base/strings/utf_string_conversions.h"
  
 -#if defined(USE_SYSTEM_MINIZIP)
-+#if 1 //defined(USE_SYSTEM_MINIZIP)
++#if 1
 +#include <zlib.h>
  #include <minizip/ioapi.h>
  #include <minizip/unzip.h>
  #include <minizip/zip.h>
-+typedef unsigned long uLong;
- #else
- #include "third_party/zlib/contrib/minizip/unzip.h"
- #include "third_party/zlib/contrib/minizip/zip.h"
