@@ -262,7 +262,7 @@ Chromium based web rendering engine for Qt.
 %package -n %{engined}
 Summary:	Development files for Qt WebEngine
 Group:		Development/KDE and Qt
-Requires:	%{mklibname Qt5WebEngine 5} = %{EVRD}
+Requires:	%{mklibname Qt5WebEngine} = %{EVRD}
 
 %description -n %{engined}
 Development files for Qt WebEngine.
@@ -279,7 +279,7 @@ Development files for Qt WebEngine.
 %package -n %{cored}
 Summary:	Development files for Qt WebEngine Core
 Group:		Development/KDE and Qt
-Requires:	%{mklibname Qt5WebEngineCore 5} = %{EVRD}
+Requires:	%{mklibname Qt5WebEngineCore} = %{EVRD}
 
 %description -n %{cored}
 Development files for Qt WebEngine Core.
@@ -297,7 +297,7 @@ Development files for Qt WebEngine Core.
 %package -n %{widgetsd}
 Summary:	Development files for Qt WebEngine Widgets
 Group:		Development/KDE and Qt
-Requires:	%{mklibname Qt5WebEngineWidgets 5} = %{EVRD}
+Requires:	%{mklibname Qt5WebEngineWidgets} = %{EVRD}
 
 %description -n %{widgetsd}
 Development files for Qt WebEngine Widgets.
@@ -316,7 +316,7 @@ Development files for Qt WebEngine Widgets.
 %package -n %{pdfd}
 Summary:	Development files for Qt Pdf
 Group:		Development/KDE and Qt
-Requires:	%{mklibname Qt5Pdf 5} = %{EVRD}
+Requires:	%{mklibname Qt5Pdf} = %{EVRD}
 
 %description -n %{pdfd}
 Development files for Qt Pdf
@@ -334,7 +334,7 @@ Development files for Qt Pdf
 %package -n %{pdfwidgetsd}
 Summary:	Development files for Qt Pdf Widgets
 Group:		Development/KDE and Qt
-Requires:	%{mklibname Qt5PdfWidgets 5} = %{EVRD}
+Requires:	%{mklibname Qt5PdfWidgets} = %{EVRD}
 
 %description -n %{pdfwidgetsd}
 Development files for Qt Pdf Widgets.
