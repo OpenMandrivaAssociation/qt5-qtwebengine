@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20230411
+%define snapshot 20230422
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -33,7 +33,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.14
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.2
+Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -109,18 +109,14 @@ Patch1011:	ffmpeg-linkage.patch
 #Patch1015:	qtwebengine-QTBUG-75265.patch
 # Make it build with clang on i686
 Patch1017:	qtwebengine-5.13.0-b4-i686-missing-latomic.patch
-# https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=27947d92157b0987ceef9ae31fe0d3e7f8b653df
-#Patch1018:	34662922afe684e6561224cb217e220536bc8bcc..27947d92157b0987ceef9ae31fe0d3e7f8b653df.patch
 Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
 # Fix glibc 2.34
-#Patch1024:	qtwebengine-5.15.8-glibc-2.34.patch
 Patch1025:	qtwebengine-5.15.9-ffmpeg-5.0.patch
 Patch1030:	qtwebengine-20220130-clang-14.patch
 Patch1031:	qtwebengine-20220313-gcc-11.2.patch
-#Patch1032:	qtwebengine-20220523-gcc12.patch
-Patch1033:	qtwebengine-20230410-gcc13.patch
+#Patch1033:	qtwebengine-20230410-gcc13.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
