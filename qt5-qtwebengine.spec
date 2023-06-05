@@ -10,7 +10,7 @@
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
 # Build with gcc instead of clang
-%bcond_without gcc
+%bcond_with gcc
 
 %if ! %{with gcc}
 # Workaround for debugsource generator
@@ -22,18 +22,11 @@
 # qtwebengine expects
 %bcond_with system_gn
 
-%ifarch %{ix86}
-%global optflags %{optflags} -O2 -Wl,-z,notext
-%global ldflags %{ldflags} -Wl,-z,notext
-%else
-%global optflags %{optflags} -O3
-%endif
-
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.14
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.2
+Release:	0.%{?beta:%{beta}.}%{snapshot}.3
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -67,7 +60,7 @@ Patch1:		qtwebengine-5.15.0-lima-driver.patch
 Patch2:		qtwebengine-detect-system-ninja.patch
 # disable NEON vector instructions on ARM where the NEON code FTBFS due to
 # GCC bug https://bugzilla.redhat.com/show_bug.cgi?id=1282495
-Patch3:		 https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
+Patch3:		https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-no-neon.patch
 # ../../../../src/3rdparty/chromium/third_party/skia/src/opts/SkRasterPipeline_opts.h:734:5: warning: 'memcpy' will always overflow; destination buffer has size 2, but size argument is 8 [-Wfortify-source]
 #     memcpy(&fp16, &h, sizeof(U16));
 #     ^
@@ -121,7 +114,7 @@ Patch1031:	qtwebengine-20220313-gcc-11.2.patch
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
 BuildRequires:	nasm
-BuildRequires:	re2-devel
+BuildRequires:	pkgconfig(re2)
 BuildRequires:	re2c
 BuildRequires:	python2
 BuildRequires:	qmake5
@@ -243,7 +236,7 @@ Requires:	nss-shlibsign
 %define pdfwidgetsd %{mklibname -d Qt5PdfWidgets}
 
 %description
-Chromium based web rendering engine for Qt.
+Chromium based web rendering engine for Qt5.
 
 %files
 %dir %{_datadir}/qt5
@@ -386,7 +379,7 @@ cd ../..
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
-sed -i -e 's|--fatal-warnings|-O2|' src/3rdparty/chromium/build/config/compiler/BUILD.gn
+sed -i -e 's|fatal_linker_warnings = true|fatal_linker_warnings = false|' src/3rdparty/chromium/build/config/compiler/BUILD.gn
 
 # fix missing (bogus but required) file duplication
 cp src/3rdparty/chromium/base/numerics/*_arm_impl.h src/3rdparty/gn/base/numerics/
@@ -424,7 +417,7 @@ sed -i -e 's,\$\$QMAKE_CC,gcc,g;s,\$\$QMAKE_CXX,g++,g' src/buildtools/gn.pro
 # Let's trust our kernel and libc, not files copied in
 # from some horribly outdated distro
 for i in src/3rdparty/chromium/sandbox/linux/system_headers/*_linux_syscalls.h; do
-	echo '#include <asm/unistd.h>' >$i
+    echo '#include <asm/unistd.h>' >$i
 done
 
 %build
@@ -438,8 +431,16 @@ export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//')
 # Use of vfp instructions is hardcoded in SkBlurMaskFilter.cpp
 export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-mfpu=neon$/-mfpu=neon-vfpv4/')
 
-# reduce memory on linking
-export LDFLAGS="%{build_ldflags} -Wl,--as-needed"
+# (tpg)reduce memory on linking
+QMAKE_LFLAGS="%{build_ldflags} -Wl,--as-needed -Wl,--no-keep-memory -Wl,--hash-size=31 -Wl,--reduce-memory-overheads"
+
+# (tpg) default QtWebEngine feature set
+QMAKE_EXTRA_ARGS=" -feature-webengine-system-re2 -feature-webengine-system-icu -feature-webengine-system-libwebp -feature-webengine-system-opus -feature-webengine-system-ffmpeg \
+    -feature-webengine-system-libvpx -feature-webengine-system-glib -feature-webengine-system-minizip -feature-webengine-system-libxml2 -feature-webengine-system-lcms2 \
+    -feature-webengine-system-freetype -feature-webengine-system-harfbuzz -feature-webengine-system-png -feature-webengine-system-jpeg -feature-webengine-system-zlib \
+    -feature-webengine-system-ninja -feature-webengine-alsa -feature-webengine-kerberos -feature-webengine-geolocation -feature-webengine-proprietary-codecs -feature-webengine-pulseaudio \
+    -feature-webengine-spellchecker  -feature-webengine-printing-and-pdf -feature-webengine-qtpdf-support \
+    -no-feature-webengine-embedded-build -feature-pdf-v8 -feature-pdf-xfa -verbose"
 
 %if %{with gcc}
 # As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
@@ -457,6 +458,10 @@ export QMAKE_CC=clang
 export QMAKE_CXX=clang++
 export QMAKE_XSPEC=linux-clang
 export QMAKESPEC=%{_libdir}/qt5/mkspecs/${QMAKE_XSPEC}
+%global optflags %{optflags} -flto=thin 
+# (tpg) 2023-06-05 fix for clang-16
+# error: integer value 7 is outside the valid range of values [0, 3] for this enumeration type [-Wenum-constexpr-conversion]
+sed -i -e 's|"-Wno-unknown-attributes",|"-Wno-enum-constexpr-conversion",\n      &|' src/3rdparty/chromium/build/config/compiler/BUILD.gn
 %endif
 
 mkdir %{_target_platform}
@@ -466,20 +471,17 @@ ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
 if [ $(getconf _NPROCESSORS_ONLN) -le 32 ]; then
-	export NINJAFLAGS="-v %{_smp_mflags}"
+    export NINJAFLAGS="-v %{_smp_mflags}"
 else
-	# 160 parallel build processes on altra
-	# always run out of memory
-	export NINJAFLAGS="-v -j 32"
+# 160 parallel build processes on altra
+# always run out of memory
+    export NINJAFLAGS="-v -j 32"
 fi
-QMAKE_EXTRA_ARGS="-proprietary-codecs -pulseaudio -webp -printing-and-pdf -spellchecker -system-ffmpeg -system-opus -system-webengine-icu -verbose -feature-webengine-system-ninja -feature-pdf-v8 -feature-pdf-xfa"
+
 %if %{with system_gn}
-QMAKE_EXTRA_ARGS+=" -feature-webengine-system-gn"
+QMAKE_EXTRA_ARGS+=" -webengine-system-gn"
 %endif
-%ifnarch %{arm}
-# FIXME figure out why -alsa fails to build on armv7hnl
-QMAKE_EXTRA_ARGS+=" -alsa"
-%endif
+
 %qmake_qt5 \
 %if %{with gcc}
 %ifnarch %{arm} %{ix86}
@@ -488,7 +490,8 @@ QMAKE_EXTRA_ARGS+=" -alsa"
 	-spec linux-g++-32 \
 %endif
 %endif
-	QMAKE_EXTRA_ARGS="${QMAKE_EXTRA_ARGS}" LFLAGS="${LDFLAGS}" ..
+	QMAKE_LFLAGS="${QMAKE_LFLAGS}" \
+	QMAKE_EXTRA_ARGS="${QMAKE_EXTRA_ARGS}" ..
 
 # Intentionally not using %%make_build because there seem to be
 # problems at -j32
