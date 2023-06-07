@@ -432,8 +432,8 @@ export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//')
 # Use of vfp instructions is hardcoded in SkBlurMaskFilter.cpp
 export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/-mfpu=neon$/-mfpu=neon-vfpv4/')
 
-# (tpg)reduce memory on linking
-QMAKE_LFLAGS="%{build_ldflags} -Wl,--as-needed -Wl,--no-keep-memory -Wl,--hash-size=31 -Wl,--reduce-memory-overheads"
+# (tpg) ld.lld does not understand some GNU ld options
+QMAKE_LFLAGS="%{build_ldflags} -Wl,--as-needed"
 
 # (tpg) default QtWebEngine feature set
 QMAKE_EXTRA_ARGS=" -feature-webengine-system-re2 -feature-webengine-system-icu -feature-webengine-system-libwebp -feature-webengine-system-opus -feature-webengine-system-ffmpeg \
