@@ -26,7 +26,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.14
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.3
+Release:	0.%{?beta:%{beta}.}%{snapshot}.4
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -138,6 +138,7 @@ BuildRequires:	pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libudev)
 BuildRequires:	pkgconfig(libavcodec)
 BuildRequires:	pkgconfig(atk)
+BuildRequires:	cmake(absl)
 # QT5 part
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
