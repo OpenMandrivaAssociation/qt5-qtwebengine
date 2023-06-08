@@ -10,7 +10,14 @@
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
 
 # Build with gcc instead of clang
+# (tpg) 2023-06-08 Falkon quite often displays "Error when loading page"
+# which indicates that qtwebengine process coredumped
+# try build with gcc for aarch64 as is do not know for x86
+%ifnarch aarch64
+%bcond_without gcc
+%else
 %bcond_with gcc
+%endif
 
 %if ! %{with gcc}
 # Workaround for debugsource generator
@@ -26,7 +33,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.14
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.4
+Release:	0.%{?beta:%{beta}.}%{snapshot}.5
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -444,8 +451,6 @@ QMAKE_EXTRA_ARGS=" -feature-webengine-system-re2 -feature-webengine-system-icu -
     -no-feature-webengine-embedded-build -feature-pdf-v8 -feature-pdf-xfa -verbose"
 
 %if %{with gcc}
-# As of Qt 5.12.0, clang 7.0.1, falkon freezes if qtwebengine is built
-# with clang on aarch64
 export CC=gcc
 export CXX=g++
 export QMAKE_CC=gcc
@@ -459,7 +464,7 @@ export QMAKE_CC=clang
 export QMAKE_CXX=clang++
 export QMAKE_XSPEC=linux-clang
 export QMAKESPEC=%{_libdir}/qt5/mkspecs/${QMAKE_XSPEC}
-%global optflags %{optflags} -flto=thin 
+%global optflags %{optflags} -flto=thin
 # (tpg) 2023-06-05 fix for clang-16
 # error: integer value 7 is outside the valid range of values [0, 3] for this enumeration type [-Wenum-constexpr-conversion]
 sed -i -e 's|"-Wno-unknown-attributes",|"-Wno-enum-constexpr-conversion",\n      &|' src/3rdparty/chromium/build/config/compiler/BUILD.gn
