@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20230504
+%define snapshot 20230613
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -13,7 +13,7 @@
 # (tpg) 2023-06-08 Falkon quite often displays "Error when loading page"
 # which indicates that qtwebengine process coredumped
 # try build with gcc for aarch64 as is do not know for x86
-%ifnarch aarch64
+%ifnarch %{aarch64}
 %bcond_without gcc
 %else
 %bcond_with gcc
@@ -31,9 +31,9 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.14
+Version:	5.15.15
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.5
+Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -114,9 +114,7 @@ Patch1020:	qtwebengine-pdf-compile.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
 # Fix glibc 2.34
 Patch1025:	qtwebengine-5.15.9-ffmpeg-5.0.patch
-Patch1030:	qtwebengine-20220130-clang-14.patch
-Patch1031:	qtwebengine-20220313-gcc-11.2.patch
-#Patch1033:	qtwebengine-20230410-gcc13.patch
+Patch1026:	qtwebengine-5.15.15-compile.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
