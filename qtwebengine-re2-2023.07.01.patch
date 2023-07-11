@@ -1,0 +1,12 @@
+diff -up qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc.omv~ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc
+--- qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc.omv~	2023-07-11 01:49:51.766561395 +0200
++++ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc	2023-07-11 01:51:40.210723075 +0200
+@@ -620,7 +620,7 @@ std::string Program::ProcessLogInfo(cons
+       output += hashed_name;
+   }
+ 
+-  return output + input.as_string();
++  return output + static_cast<std::string>(input);
+ }
+ 
+ void Program::UpdateLogInfo() {

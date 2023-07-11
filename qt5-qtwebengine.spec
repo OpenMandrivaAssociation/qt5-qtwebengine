@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20230613
+%define snapshot 20230710
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -43,7 +43,7 @@ Source1:	qtwebengine-chromium-87-%{snapshot}.tar.zst
 Source1001:	package-source.sh
 %else
 %if "%{beta}" != ""
-Release:	0.%{beta}.2
+Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
@@ -75,6 +75,7 @@ Patch3:		https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
 #Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
+Patch5: qtwebengine-re2-2023.07.01.patch
 # remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
 #Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
 # Force verbose output from the GN bootstrap process
