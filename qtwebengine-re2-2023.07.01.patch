@@ -1,6 +1,27 @@
-diff -up qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc.omv~ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc
---- qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc.omv~	2023-07-11 01:49:51.766561395 +0200
-+++ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc	2023-07-11 01:51:40.210723075 +0200
+diff -up qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/extensions/browser/api/web_request/form_data_parser.cc.5~ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/extensions/browser/api/web_request/form_data_parser.cc
+--- qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/extensions/browser/api/web_request/form_data_parser.cc.5~	2023-07-08 07:28:14.000000000 +0200
++++ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/extensions/browser/api/web_request/form_data_parser.cc	2023-07-11 13:48:26.726255040 +0200
+@@ -421,7 +421,7 @@ bool FormDataParserUrlEncoded::GetNextNa
+ bool FormDataParserUrlEncoded::SetSource(base::StringPiece source) {
+   if (source_set_)
+     return false;  // We do not allow multiple sources for this parser.
+-  source_.set(source.data(), source.size());
++  source_ = re2::StringPiece(source.data(), source.size());
+   source_set_ = true;
+   source_malformed_ = false;
+   return true;
+@@ -565,7 +565,7 @@ bool FormDataParserMultipart::GetNextNam
+ bool FormDataParserMultipart::SetSource(base::StringPiece source) {
+   if (source.data() == NULL || !source_.empty())
+     return false;
+-  source_.set(source.data(), source.size());
++  source_ = re2::StringPiece(source.data(), source.size());
+ 
+   switch (state_) {
+     case STATE_INIT:
+diff -up qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc.5~ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc
+--- qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc.5~	2023-07-08 07:28:14.000000000 +0200
++++ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc	2023-07-11 13:46:58.691036597 +0200
 @@ -620,7 +620,7 @@ std::string Program::ProcessLogInfo(cons
        output += hashed_name;
    }
