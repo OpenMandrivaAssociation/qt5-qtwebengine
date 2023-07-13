@@ -12,12 +12,7 @@
 # Build with gcc instead of clang
 # (tpg) 2023-06-08 Falkon quite often displays "Error when loading page"
 # which indicates that qtwebengine process coredumped
-# try build with gcc for aarch64 as is do not know for x86
-%ifnarch %{aarch64}
 %bcond_without gcc
-%else
-%bcond_with gcc
-%endif
 
 %if ! %{with gcc}
 # Workaround for debugsource generator
