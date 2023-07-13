@@ -1,0 +1,21 @@
+diff -up qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/build/config/compiler/BUILD.gn.omv~	2023-07-13 06:23:00.808526510 +0200
++++ qtwebengine-everywhere-src-5.15.15-20230710/src/3rdparty/chromium/build/config/compiler/BUILD.gn	2023-07-13 06:23:34.043838797 +0200
+@@ -566,7 +566,7 @@ config("compiler") {
+       # Override Chromium's default for projects that wish to stay on C++11.
+       cflags_cc += [ "-std=${standard_prefix}++11" ]
+     } else {
+-      cflags_cc += [ "-std=${standard_prefix}++14" ]
++      cflags_cc += [ "-std=${standard_prefix}++17" ]
+     }
+   } else if (!is_win && !is_nacl) {
+     if (target_os == "android") {
+@@ -583,7 +583,7 @@ config("compiler") {
+     if (cxx11_override) {
+       cflags_cc += [ "-std=c++11" ]
+     } else {
+-      cflags_cc += [ "-std=c++14" ]
++      cflags_cc += [ "-std=c++17" ]
+     }
+   }
+ 

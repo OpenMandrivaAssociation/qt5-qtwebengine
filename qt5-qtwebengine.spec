@@ -75,7 +75,17 @@ Patch3:		https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
 #Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
-Patch5: qtwebengine-re2-2023.07.01.patch
+Patch5:		qtwebengine-re2-2023.07.01.patch
+# re2 needs absl with c++17 or higher for string_view
+Patch6:		qtwebengine-5.15.15-c++17.patch
+# Try to get ABI compatibility between system absl (used by system re2)
+# and internalized absl until we can remove the latter
+Patch7:		qtwebengine-system-absl-compat.patch
+# Try to restore a sufficient amount of binary compatibility between the
+# internalized copy of absl (which can't be disabled yet) and the system
+# version (used, among others, by the system version of re2, which DOES
+# get used...
+#Patch6:		qtwebengine-re2-absl-compat.patch 
 # remove Android dependencies from openmax_dl ARM NEON detection (detect.c)
 #Patch10: https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/master/qtwebengine-opensource-src-5.9.0-openmax-dl-neon.patch
 # Force verbose output from the GN bootstrap process
@@ -205,6 +215,7 @@ BuildRequires:	pkgconfig(lcms2)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(libxslt)
 BuildRequires:	pkgconfig(xkbfile)
+BuildRequires:	pkgconfig(absl_config)
 BuildRequires:	snappy-devel
 BuildRequires:	srtp-devel
 BuildRequires:	qt5-qtquickcontrols2
@@ -383,6 +394,12 @@ cd ../..
 %endif
 %autopatch -p1
 
+# Until we can figure out how to kill the internal absl, let's at least
+# try to make it ABI compatible with the system copy (as used by re2...)
+cp -f %{_includedir}/absl/base/options.h src/3rdparty/chromium/third_party/abseil-cpp/absl/base/options.h
+# Chromium isn't compatible with std::optional though
+sed -i -e 's,#define ABSL_OPTION_USE_STD_OPTIONAL 1,#define ABSL_OPTION_USE_STD_OPTIONAL 0,' src/3rdparty/chromium/third_party/abseil-cpp/absl/base/options.h
+
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
 # into --fatal-warnings mode...
@@ -427,11 +444,17 @@ for i in src/3rdparty/chromium/sandbox/linux/system_headers/*_linux_syscalls.h; 
     echo '#include <asm/unistd.h>' >$i
 done
 
+# webengine really really likes forcing C++14 on us...
+# but we need C++17 for compatibility with system absl
+find . -name "*.pro" -o -name "*.pri" |while read r; do
+	echo 'QMAKE_CXXFLAGS_GNUCXX14 = -std=gnu++17' >>$r
+done
+
 %build
 export STRIP=strip
 export NINJAFLAGS="%{__ninja_common_opts}"
 export NINJA_PATH=%{__ninja}
-export CXXFLAGS="%{optflags} -std=gnu++14 -fno-delete-null-pointer-checks -Wno-class-memaccess -Wno-packed-not-aligned"
+export CXXFLAGS="%{optflags} -std=gnu++17 -fno-delete-null-pointer-checks -Wno-class-memaccess -Wno-packed-not-aligned"
 
 # most arches run out of memory with full debuginfo, so use -g1 on non-x86_64
 export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/ -g / -g0 /g' -e 's/-gdwarf-4//')

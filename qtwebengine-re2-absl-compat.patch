@@ -1,0 +1,33 @@
+diff -up qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/content/browser/attribution_reporting/aggregatable_attribution_utils.h.omv~ qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/content/browser/attribution_reporting/aggregatable_attribution_utils.h
+--- qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/content/browser/attribution_reporting/aggregatable_attribution_utils.h.omv~	2023-07-12 19:25:44.280003370 +0200
++++ qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/content/browser/attribution_reporting/aggregatable_attribution_utils.h	2023-07-12 19:27:16.104905714 +0200
+@@ -11,9 +11,10 @@
+ #include "content/common/content_export.h"
+ #include "third_party/abseil-cpp/absl/types/optional.h"
+ 
+-namespace absl {
++/*namespace absl {
+ class uint128;
+-}  // namespace absl
++}  // namespace absl*/
++#include "absl/numeric/int128.h"
+ 
+ namespace content {
+ 
+diff -up qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/third_party/abseil-cpp/absl/numeric/int128.h.omv~ qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/third_party/abseil-cpp/absl/numeric/int128.h
+diff -up qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/third_party/blink/renderer/core/frame/attribution_response_parsing.h.omv~ qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/third_party/blink/renderer/core/frame/attribution_response_parsing.h
+--- qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/third_party/blink/renderer/core/frame/attribution_response_parsing.h.omv~	2023-07-12 20:01:08.671644345 +0200
++++ qtwebengine-everywhere-src-6.6.0-beta1/src/3rdparty/chromium/third_party/blink/renderer/core/frame/attribution_response_parsing.h	2023-07-12 20:01:24.645792143 +0200
+@@ -13,9 +13,12 @@
+ #include "third_party/blink/renderer/platform/wtf/hash_map.h"
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+ 
++/*
+ namespace absl {
+ class uint128;
+ }  // namespace absl
++*/
++#include <absl/numeric/int128.h>
+ 
+ namespace blink {
+ 
