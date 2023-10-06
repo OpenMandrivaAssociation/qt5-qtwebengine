@@ -12,7 +12,7 @@
 # Build with gcc instead of clang
 # (tpg) 2023-06-08 Falkon quite often displays "Error when loading page"
 # which indicates that qtwebengine process coredumped
-%bcond_with gcc
+%bcond_without gcc
 
 %if ! %{with gcc}
 # Workaround for debugsource generator
@@ -76,6 +76,7 @@ Patch6:		qtwebengine-5.15.15-c++17.patch
 # Try to get ABI compatibility between system absl (used by system re2)
 # and internalized absl until we can remove the latter
 Patch7:		qtwebengine-system-absl-compat.patch
+Patch8:		qtwebengine-icu.patch
 # Try to restore a sufficient amount of binary compatibility between the
 # internalized copy of absl (which can't be disabled yet) and the system
 # version (used, among others, by the system version of re2, which DOES
@@ -402,6 +403,9 @@ sed -i -e 's|fatal_linker_warnings = true|fatal_linker_warnings = false|' src/3r
 
 # fix missing (bogus but required) file duplication
 cp src/3rdparty/chromium/base/numerics/*_arm_impl.h src/3rdparty/gn/base/numerics/
+
+# Prevent the code from using internal ICU headers even if told to use system icu
+cp -f %{_includedir}/unicode/* src/3rdparty/chromium/third_party/icu/source/common/unicode/
 
 # remove ./ from #line commands in ANGLE to avoid debugedit failure (?)
 #sed -i -e 's!\./!!g' \
