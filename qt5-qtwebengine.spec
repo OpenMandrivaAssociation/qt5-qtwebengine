@@ -12,7 +12,7 @@
 # Build with gcc instead of clang
 # (tpg) 2023-06-08 Falkon quite often displays "Error when loading page"
 # which indicates that qtwebengine process coredumped
-%bcond_without gcc
+%bcond_with gcc
 
 %if ! %{with gcc}
 # Workaround for debugsource generator
@@ -26,7 +26,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.15
+Version:	5.15.16
 %if 0%{?snapshot}
 Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
@@ -70,6 +70,7 @@ Patch3:		https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
 #Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
+Patch5:		qtwebengine-5.15.16-clang16.patch
 # re2 needs absl with c++17 or higher for string_view
 Patch6:		qtwebengine-5.15.15-c++17.patch
 # Try to get ABI compatibility between system absl (used by system re2)
