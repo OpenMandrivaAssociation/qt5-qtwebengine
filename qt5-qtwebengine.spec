@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20230710
+%define snapshot 20231006
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -70,7 +70,6 @@ Patch3:		https://raw.githubusercontent.com/rpmfusion/qt5-qtwebengine-freeworld/m
 #     __fp16 fp16 = __fp16(f);
 #                   ^~~~~~~~
 #Patch4:	qt5-qtwebengine-workaround-aarch64-build-failure.patch
-Patch5:		qtwebengine-re2-2023.07.01.patch
 # re2 needs absl with c++17 or higher for string_view
 Patch6:		qtwebengine-5.15.15-c++17.patch
 # Try to get ABI compatibility between system absl (used by system re2)
