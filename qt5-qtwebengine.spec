@@ -28,7 +28,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.16
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.1
+Release:	0.%{?beta:%{beta}.}%{snapshot}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -42,7 +42,7 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	1
+Release:	2
 %define qttarballdir qtwebengine-everywhere-src-%{version}
 Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
