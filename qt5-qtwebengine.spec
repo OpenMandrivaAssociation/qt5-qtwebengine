@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20240101
+%define snapshot 20240207
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -77,7 +77,6 @@ Patch6:		qtwebengine-5.15.15-c++17.patch
 # and internalized absl until we can remove the latter
 Patch7:		qtwebengine-system-absl-compat.patch
 Patch8:		qtwebengine-icu.patch
-Patch9:		qtwebengine-20231230-icu-72.patch
 # Try to restore a sufficient amount of binary compatibility between the
 # internalized copy of absl (which can't be disabled yet) and the system
 # version (used, among others, by the system version of re2, which DOES
