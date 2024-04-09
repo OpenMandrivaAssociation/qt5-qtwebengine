@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20240207
+%define snapshot 20240408
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -8,6 +8,10 @@
 %global __requires_exclude ^libv8\\.so$
 # and designer plugins
 %global __provides_exclude_from ^%{_qt5_plugindir}/.*\\.so$
+
+# Use this if you get "filename too long" errors:
+# Workaround for filenames getting too long for ****ing gn to handle
+%define _builddir /tmp/b
 
 # Build with gcc instead of clang
 # (tpg) 2023-06-08 Falkon quite often displays "Error when loading page"
@@ -110,8 +114,8 @@ Patch1003:	disable-gpu-when-using-nouveau-boo-1005323.diff
 Patch1004:	881ef63.diff
 #Patch1005:	qtwebengine-87-glibc-2.34-libstdc++-11.patch
 # Support ffmpeg 3.5
-Patch1010:	chromium-65-ffmpeg-3.5.patch
-Patch1011:	ffmpeg-linkage.patch
+#Patch1010:	chromium-65-ffmpeg-3.5.patch
+#Patch1011:	ffmpeg-linkage.patch
 #Patch1014:	qtwebengine-everywhere-src-5.11.1-reduce-build-log-size.patch
 #Patch1015:	qtwebengine-QTBUG-75265.patch
 # Make it build with clang on i686
@@ -120,7 +124,6 @@ Patch1019:	chromium-77-aarch64-buildfix.patch
 Patch1020:	qtwebengine-pdf-compile.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
 # Fix glibc 2.34
-Patch1025:	qtwebengine-5.15.9-ffmpeg-5.0.patch
 Patch1026:	qtwebengine-5.15.15-compile.patch
 
 BuildRequires:	atomic-devel
@@ -388,7 +391,7 @@ tar xf %{S:1}
 cd ../..
 %{_libdir}/qt5/bin/syncqt.pl -version %{version}
 %endif
-%autopatch -p1
+%autopatch -p1 -M 1999
 
 # Until we can figure out how to kill the internal absl, let's at least
 # try to make it ABI compatible with the system copy (as used by re2...)
@@ -464,7 +467,7 @@ export CXXFLAGS=$(echo "$CXXFLAGS" | sed -e 's/-mfpu=neon /-mfpu=neon-vfpv4 /;s/
 QMAKE_LFLAGS="%{build_ldflags} -Wl,--as-needed"
 
 # (tpg) default QtWebEngine feature set
-QMAKE_EXTRA_ARGS=" -feature-webengine-system-re2 -feature-webengine-system-icu -feature-webengine-system-libwebp -feature-webengine-system-opus -feature-webengine-system-ffmpeg \
+QMAKE_EXTRA_ARGS=" -feature-webengine-system-re2 -feature-webengine-system-icu -feature-webengine-system-libwebp -feature-webengine-system-opus -no-feature-webengine-system-ffmpeg \
     -feature-webengine-system-libvpx -feature-webengine-system-glib -feature-webengine-system-minizip -feature-webengine-system-libxml2 -feature-webengine-system-lcms2 \
     -feature-webengine-system-freetype -feature-webengine-system-harfbuzz -feature-webengine-system-png -feature-webengine-system-jpeg -feature-webengine-system-zlib \
     -feature-webengine-system-ninja -feature-webengine-alsa -feature-webengine-kerberos -feature-webengine-geolocation -feature-webengine-proprietary-codecs -feature-webengine-pulseaudio \
