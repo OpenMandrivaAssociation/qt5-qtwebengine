@@ -30,7 +30,7 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.18
+Version:	5.15.17
 %if 0%{?snapshot}
 Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
@@ -389,7 +389,6 @@ Examples for QtWebEngine.
 cd src/3rdparty
 tar xf %{S:1}
 cd ../..
-%{_libdir}/qt5/bin/syncqt.pl -version %{version}
 %endif
 %autopatch -p1 -M 1999
 
@@ -451,6 +450,8 @@ done
 find . -name "*.pro" -o -name "*.pri" |while read r; do
 	echo 'QMAKE_CXXFLAGS_GNUCXX14 = -std=gnu++17' >>$r
 done
+
+%{_libdir}/qt5/bin/syncqt.pl -version %{version}
 
 %build
 export STRIP=strip
