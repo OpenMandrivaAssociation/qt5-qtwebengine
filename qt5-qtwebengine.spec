@@ -53,7 +53,7 @@ Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f
 %endif
 License:	GPLv2
 Group:		System/Libraries
-Url:		http://download.qt.io/official_releases/qt
+Url:		https://download.qt.io/official_releases/qt
 Source1000:	%{name}.rpmlintrc
 # Patches "borrowed" from rpmfusion
 # https://github.com/rpmfusion/qt5-qtwebengine-freeworld
