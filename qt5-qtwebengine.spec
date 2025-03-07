@@ -32,7 +32,7 @@ Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
 Version:	5.15.18
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.1
+Release:	0.%{?beta:%{beta}.}%{snapshot}.2
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
