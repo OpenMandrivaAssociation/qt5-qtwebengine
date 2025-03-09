@@ -19,7 +19,7 @@ diff -up qtwebengine-everywhere-src-5.15.12-20230105/src/3rdparty/chromium/third
  
 -#if defined(USE_SYSTEM_MINIZIP)
 +#if 1
-+#include <zlib.h>
++#include <zlib-ng.h>
  #include <minizip/ioapi.h>
  #include <minizip/unzip.h>
  #include <minizip/zip.h>
