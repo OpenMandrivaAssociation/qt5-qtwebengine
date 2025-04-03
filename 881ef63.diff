@@ -11,7 +11,7 @@ index a5bc6cd..5cefbfe 100644
 +    //please note ".$unique_name" is not used at the moment
 +    int pos = 0;
 +    std::string delimiter("_");
-+    while (rspfile.length() > 251 && (pos = rspfile.find_last_of(delimiter)) != std::string::npos)
++    while (rspfile.length() > 128 && (pos = rspfile.find_last_of(delimiter)) != std::string::npos)
 +        rspfile = rspfile.substr(0,pos);
 +
      if (!target_->sources().empty())
