@@ -1,0 +1,353 @@
+diff --git a/src/3rdparty/chromium/base/task/thread_pool.h b/src/3rdparty/chromium/base/task/thread_pool.h
+index 085c249ba..5b97e6d3a 100644
+--- a/src/3rdparty/chromium/base/task/thread_pool.h
++++ b/src/3rdparty/chromium/base/task/thread_pool.h
+@@ -6,6 +6,7 @@
+ #define BASE_TASK_THREAD_POOL_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <utility>
+ 
+ namespace base {
+diff --git a/src/3rdparty/chromium/gpu/command_buffer/common/skia_utils.h b/src/3rdparty/chromium/gpu/command_buffer/common/skia_utils.h
+index 6508d79a1..628ddbade 100644
+--- a/src/3rdparty/chromium/gpu/command_buffer/common/skia_utils.h
++++ b/src/3rdparty/chromium/gpu/command_buffer/common/skia_utils.h
+@@ -6,6 +6,7 @@
+ #define GPU_COMMAND_BUFFER_COMMON_SKIA_UTILS_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ 
+ #include "base/optional.h"
+ #include "gpu/raster_export.h"
+diff --git a/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.cc b/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.cc
+index b70675a1c..0d0ff2282 100644
+--- a/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.cc
++++ b/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.cc
+@@ -2,6 +2,8 @@
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
++#include <stdint.h>
++
+ #include "gpu/command_buffer/service/gpu_fence_manager.h"
+ 
+ #include <memory>
+diff --git a/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.h b/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.h
+index ee50d6fdd..e35ab1301 100644
+--- a/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.h
++++ b/src/3rdparty/chromium/gpu/command_buffer/service/gpu_fence_manager.h
+@@ -6,6 +6,7 @@
+ #define GPU_COMMAND_BUFFER_SERVICE_GPU_FENCE_MANAGER_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <vector>
+ 
+ #include "base/containers/flat_map.h"
+diff --git a/src/3rdparty/chromium/net/tools/huffman_trie/trie_entry.h b/src/3rdparty/chromium/net/tools/huffman_trie/trie_entry.h
+index fe70260f9..7f25ebbbe 100644
+--- a/src/3rdparty/chromium/net/tools/huffman_trie/trie_entry.h
++++ b/src/3rdparty/chromium/net/tools/huffman_trie/trie_entry.h
+@@ -6,6 +6,7 @@
+ #define NET_TOOLS_HUFFMAN_TRIE_TRIE_ENTRY_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <string>
+ #include <vector>
+ 
+diff --git a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/trap.cc b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/trap.cc
+index f5b86a73a..f42608943 100644
+--- a/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/trap.cc
++++ b/src/3rdparty/chromium/sandbox/linux/seccomp-bpf/trap.cc
+@@ -152,7 +152,12 @@ void Trap::SigSys(int nr, LinuxSigInfo* info, ucontext_t* ctx) {
+   // Various sanity checks to make sure we actually received a signal
+   // triggered by a BPF filter. If something else triggered SIGSYS
+   // (e.g. kill()), there is really nothing we can do with this signal.
+-  if (nr != LINUX_SIGSYS || info->si_code != SYS_SECCOMP || !ctx ||
++  // Hard-code 1 (the original sentinel value the shim used to force for
++  // SYS_SECCOMP).  We no longer emit a #define SYS_SECCOMP from the shim
++  // header at all, because any such line triggers a fatal preprocessor
++  // error on this glibc ("expected identifier before numeric constant").
++  // The only use of the value in the entire sandbox was this SIGSYS check.
++  if (nr != LINUX_SIGSYS || info->si_code != 1 || !ctx ||
+       info->si_errno <= 0 ||
+       static_cast<size_t>(info->si_errno) > trap_array_size_) {
+     // ATI drivers seem to send SIGSYS, so this cannot be FATAL.
+diff --git a/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h b/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
+index 1fa47ed09..42c571b1e 100644
+--- a/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
++++ b/src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h
+@@ -5,6 +5,17 @@
+ #ifndef SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SECCOMP_H_
+ #define SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SECCOMP_H_
+ 
++// after #undef and even when placed before all other includes) results in the
++// preprocessor seeing the name position as a numeric constant (from prior
++// system headers pulled by the including .cc or by stdint/build_config/ioctl
++// etc.), producing the fatal "expected identifier before numeric constant"
++// while compiling broker_process.o (and the SIGSYS handler in trap.cc).
++//
++// The shim's only purpose for this constant was to give the value 1 to the
++// SIGSYS trap handler logic.  We therefore hard-code the literal 1 at the
++// single use site (sandbox/linux/seccomp-bpf/trap.cc) and never emit a
++// included cleanly while still providing the original sentinel behaviour.
++
+ #include <stdint.h>
+ 
+ #include "build/build_config.h"
+@@ -220,8 +231,10 @@ struct seccomp_notif_addfd {
+ #define SECCOMP_RET_INVALID 0x00010000U  // Illegal return value
+ #endif
+ 
+-#ifndef SYS_SECCOMP
+-#define SYS_SECCOMP                   1
+-#endif
++// with an explicit #include <sys/syscall.h> + #undef + #define 1.  That must be
++// done before any other header in this file or in the including .cc can bring
++// in a system definition; doing it at the bottom (as previous attempts did)
++// lets the problematic macro be live when we reach the late #define, producing
++// the "expected identifier before numeric constant" error again.
+ 
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SECCOMP_H_
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator.cc b/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator.cc
+index c0f9268aa..4f988f6d5 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator.cc
++++ b/src/3rdparty/chromium/third_party/blink/renderer/platform/text/text_break_iterator.cc
+@@ -169,6 +169,13 @@ static const unsigned char kAsciiLineBreakTable[][(kAsciiLineBreakTableLastChar
+ #else
+ #define BA_LB_COUNT U_LB_COUNT
+ #endif
++// Force BA_LB_COUNT to match the number of rows in kBreakAllLineBreakClassTable
++// below (for modern ICU where U_LB_COUNT has grown but the table data here
++// has not been extended).
++#if BA_LB_COUNT != 40
++#undef BA_LB_COUNT
++#define BA_LB_COUNT 40
++#endif
+ // Line breaking table for CSS word-break: break-all. This table differs from
+ // asciiLineBreakTable in:
+ // - Indices are Line Breaking Classes defined in UAX#14 Unicode Line Breaking
+diff --git a/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_function.h b/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_function.h
+index fd68b6b49..9d47555ed 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_function.h
++++ b/src/3rdparty/chromium/third_party/pdfium/core/fpdfapi/page/cpdf_function.h
+@@ -9,6 +9,7 @@
+ 
+ #include <memory>
+ #include <set>
++#include <stdint.h>
+ #include <vector>
+ 
+ class CPDF_ExpIntFunc;
+diff --git a/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/JBig2_DocumentContext.h b/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/JBig2_DocumentContext.h
+index 9bcdd371e..16fdf6daf 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/JBig2_DocumentContext.h
++++ b/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/JBig2_DocumentContext.h
+@@ -10,6 +10,7 @@
+ #include <list>
+ #include <memory>
+ #include <utility>
++#include <cstdint>
+ 
+ class CJBig2_SymbolDict;
+ 
+diff --git a/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/jbig2_decoder.h b/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/jbig2_decoder.h
+index 97867ca85..a0ac6bd4b 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/jbig2_decoder.h
++++ b/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/jbig2/jbig2_decoder.h
+@@ -7,6 +7,7 @@
+ #ifndef CORE_FXCODEC_JBIG2_JBIG2_DECODER_H_
+ #define CORE_FXCODEC_JBIG2_JBIG2_DECODER_H_
+ 
++#include <cstdint>
+ #include <memory>
+ 
+ #include "core/fxcodec/fx_codec_def.h"
+diff --git a/src/3rdparty/chromium/third_party/pdfium/third_party/base/span.h b/src/3rdparty/chromium/third_party/pdfium/third_party/base/span.h
+index bb07f43a0..c06dfb873 100644
+--- a/src/3rdparty/chromium/third_party/pdfium/third_party/base/span.h
++++ b/src/3rdparty/chromium/third_party/pdfium/third_party/base/span.h
+@@ -5,6 +5,7 @@
+ #ifndef THIRD_PARTY_BASE_SPAN_H_
+ #define THIRD_PARTY_BASE_SPAN_H_
+ 
++#include <cstdint>
+ #include <stddef.h>
+ 
+ #include <algorithm>
+diff --git a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/slice.h b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/slice.h
+index 4ce66fdea..29425d371 100644
+--- a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/slice.h
++++ b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/slice.h
+@@ -18,6 +18,7 @@
+ #define INCLUDE_PERFETTO_EXT_TRACING_CORE_SLICE_H_
+ 
+ #include <stddef.h>
++#include <stdint.h>
+ #include <string.h>
+ 
+ #include <memory>
+diff --git a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/trace_packet.h b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/trace_packet.h
+index c1e79489e..e7089a368 100644
+--- a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/trace_packet.h
++++ b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/tracing/core/trace_packet.h
+@@ -18,6 +18,7 @@
+ #define INCLUDE_PERFETTO_EXT_TRACING_CORE_TRACE_PACKET_H_
+ 
+ #include <stddef.h>
++#include <stdint.h>
+ #include <memory>
+ #include <tuple>
+ 
+diff --git a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/tracing/tracing_backend.h b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/tracing/tracing_backend.h
+index 67b0d2eb5..0701dc880 100644
+--- a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/tracing/tracing_backend.h
++++ b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/tracing/tracing_backend.h
+@@ -18,6 +18,7 @@
+ #define INCLUDE_PERFETTO_TRACING_TRACING_BACKEND_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <string>
+ 
+ #include "perfetto/base/export.h"
+diff --git a/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/importers/gzip/gzip_utils.h b/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/importers/gzip/gzip_utils.h
+index 624363ff6..5b8cfc823 100644
+--- a/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/importers/gzip/gzip_utils.h
++++ b/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/importers/gzip/gzip_utils.h
+@@ -18,6 +18,8 @@
+ #define SRC_TRACE_PROCESSOR_IMPORTERS_GZIP_GZIP_UTILS_H_
+ 
+ #include <memory>
++#include <stddef.h>
++#include <stdint.h>
+ 
+ struct z_stream_s;
+ 
+diff --git a/src/3rdparty/chromium/third_party/webrtc/api/fec_controller.h b/src/3rdparty/chromium/third_party/webrtc/api/fec_controller.h
+index 3e5f7bb21..e352f811b 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/api/fec_controller.h
++++ b/src/3rdparty/chromium/third_party/webrtc/api/fec_controller.h
+@@ -12,6 +12,7 @@
+ #define API_FEC_CONTROLLER_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <vector>
+ 
+ #include "api/video/video_frame_type.h"
+diff --git a/src/3rdparty/chromium/third_party/webrtc/api/network_state_predictor.h b/src/3rdparty/chromium/third_party/webrtc/api/network_state_predictor.h
+index 9cf5ab6f0..c8f265ed9 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/api/network_state_predictor.h
++++ b/src/3rdparty/chromium/third_party/webrtc/api/network_state_predictor.h
+@@ -12,6 +12,7 @@
+ #define API_NETWORK_STATE_PREDICTOR_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <vector>
+ 
+ namespace webrtc {
+diff --git a/src/3rdparty/chromium/third_party/webrtc/api/task_queue/task_queue_base.h b/src/3rdparty/chromium/third_party/webrtc/api/task_queue/task_queue_base.h
+index 90b1efd31..d3803b7b3 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/api/task_queue/task_queue_base.h
++++ b/src/3rdparty/chromium/third_party/webrtc/api/task_queue/task_queue_base.h
+@@ -11,6 +11,7 @@
+ #define API_TASK_QUEUE_TASK_QUEUE_BASE_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ 
+ #include "api/task_queue/queued_task.h"
+ #include "rtc_base/system/rtc_export.h"
+diff --git a/src/3rdparty/chromium/third_party/webrtc/common_video/h264/pps_parser.h b/src/3rdparty/chromium/third_party/webrtc/common_video/h264/pps_parser.h
+index d6c31b068..d0bc3c80f 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/common_video/h264/pps_parser.h
++++ b/src/3rdparty/chromium/third_party/webrtc/common_video/h264/pps_parser.h
+@@ -11,6 +11,8 @@
+ #ifndef COMMON_VIDEO_H264_PPS_PARSER_H_
+ #define COMMON_VIDEO_H264_PPS_PARSER_H_
+ 
++#include <stdint.h>
++
+ #include "absl/types/optional.h"
+ 
+ namespace rtc {
+diff --git a/src/3rdparty/chromium/third_party/webrtc/common_video/h264/sps_parser.h b/src/3rdparty/chromium/third_party/webrtc/common_video/h264/sps_parser.h
+index 76e627d27..d09f67f3c 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/common_video/h264/sps_parser.h
++++ b/src/3rdparty/chromium/third_party/webrtc/common_video/h264/sps_parser.h
+@@ -11,6 +11,8 @@
+ #ifndef COMMON_VIDEO_H264_SPS_PARSER_H_
+ #define COMMON_VIDEO_H264_SPS_PARSER_H_
+ 
++#include <stdint.h>
++
+ #include "absl/types/optional.h"
+ 
+ namespace rtc {
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/reverb_model_estimator.h b/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/reverb_model_estimator.h
+index 3b9971aba..e4e954067 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/reverb_model_estimator.h
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/audio_processing/aec3/reverb_model_estimator.h
+@@ -12,6 +12,7 @@
+ #define MODULES_AUDIO_PROCESSING_AEC3_REVERB_MODEL_ESTIMATOR_H_
+ 
+ #include <array>
++#include <memory>
+ #include <vector>
+ 
+ #include "absl/types/optional.h"
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/include/module_common_types_public.h b/src/3rdparty/chromium/third_party/webrtc/modules/include/module_common_types_public.h
+index 345e45ce1..4e21168c8 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/include/module_common_types_public.h
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/include/module_common_types_public.h
+@@ -12,6 +12,7 @@
+ #define MODULES_INCLUDE_MODULE_COMMON_TYPES_PUBLIC_H_
+ 
+ #include <limits>
++#include <stdint.h>
+ 
+ #include "absl/types/optional.h"
+ 
+diff --git a/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/timestamp_map.h b/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/timestamp_map.h
+index c85666c9a..e83497309 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/timestamp_map.h
++++ b/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/timestamp_map.h
+@@ -12,6 +12,7 @@
+ #define MODULES_VIDEO_CODING_TIMESTAMP_MAP_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ 
+ namespace webrtc {
+ 
+diff --git a/src/3rdparty/chromium/third_party/webrtc/video/stats_counter.h b/src/3rdparty/chromium/third_party/webrtc/video/stats_counter.h
+index fb6017f41..0509231d9 100644
+--- a/src/3rdparty/chromium/third_party/webrtc/video/stats_counter.h
++++ b/src/3rdparty/chromium/third_party/webrtc/video/stats_counter.h
+@@ -12,6 +12,7 @@
+ #define VIDEO_STATS_COUNTER_H_
+ 
+ #include <memory>
++#include <stdint.h>
+ #include <string>
+ 
+ #include "rtc_base/constructor_magic.h"
+diff --git a/src/3rdparty/chromium/third_party/woff2/include/woff2/output.h b/src/3rdparty/chromium/third_party/woff2/include/woff2/output.h
+index c325f67be..f3c4e24dd 100644
+--- a/src/3rdparty/chromium/third_party/woff2/include/woff2/output.h
++++ b/src/3rdparty/chromium/third_party/woff2/include/woff2/output.h
+@@ -10,6 +10,8 @@
+ #define WOFF2_WOFF2_OUT_H_
+ 
+ #include <algorithm>
++#include <cstddef>
++#include <cstdint>
+ #include <cstring>
+ #include <memory>
+ #include <string>

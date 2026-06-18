@@ -1,6 +1,6 @@
 %define _disable_ld_no_undefined 1
 #define beta %{nil}
-%define snapshot 20240906
+%define snapshot 20260617
 
 # exclude plugins (all architectures) and libv8.so (i686, it's static everywhere else)
 %global __provides_exclude ^lib.*plugin\\.so.*|libv8\\.so$
@@ -30,9 +30,9 @@
 
 Summary:	Qt WebEngine
 Name:		qt5-qtwebengine
-Version:	5.15.18
+Version:	5.15.19
 %if 0%{?snapshot}
-Release:	0.%{?beta:%{beta}.}%{snapshot}.2
+Release:	0.%{?beta:%{beta}.}%{snapshot}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{snapshot}
 # Use package-source.sh to create the 2 files below
 # git://code.qt.io/qt/qtwebengine.git -- branch 5.15 --prefix qtwebengine-everywhere-src-%{version}-%{snapshot}/
@@ -46,9 +46,9 @@ Release:	0.%{beta}.1
 %define qttarballdir qtwebengine-everywhere-src-%{version}-%{beta}
 Source0:	http://download.qt.io/development_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}-%{beta}/submodules/%{qttarballdir}.tar.xz
 %else
-Release:	2
+Release:	1
 %define qttarballdir qtwebengine-everywhere-src-%{version}
-Source0:	http://download.qt.io/official_releases/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
+Source0:	http://download.qt.io/archive/qt/%(echo %{version}|cut -d. -f1-2)/%{version}/submodules/%{qttarballdir}.tar.xz
 %endif
 %endif
 License:	GPLv2
@@ -125,6 +125,7 @@ Patch1020:	qtwebengine-pdf-compile.patch
 Patch1023:	qtwebengine-5.15.4-compile.patch
 # Fix glibc 2.34
 Patch1026:	qtwebengine-5.15.15-compile.patch
+Patch1027:	qtwebengine-5.15.19-compile.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
@@ -397,6 +398,13 @@ cd ../..
 cp -f %{_includedir}/absl/base/options.h src/3rdparty/chromium/third_party/abseil-cpp/absl/base/options.h
 # Chromium isn't compatible with std::optional though
 sed -i -e 's,#define ABSL_OPTION_USE_STD_OPTIONAL 1,#define ABSL_OPTION_USE_STD_OPTIONAL 0,' src/3rdparty/chromium/third_party/abseil-cpp/absl/base/options.h
+# Obsolete flags that are still used in qt5, but no longer defined in current abseil
+cat >>src/3rdparty/chromium/third_party/abseil-cpp/absl/base/options.h <<EOF
+#define ABSL_OPTION_USE_STD_ANY 1
+#define ABSL_OPTION_USE_STD_OPTIONAL 1
+#define ABSL_OPTION_USE_STD_VARIANT 1
+#define ABSL_OPTION_USE_STD_STRING_VIEW 1
+EOF
 
 # chromium is a huge bogosity -- references to hidden SQLite symbols, has
 # asm files forcing an executable stack etc., but still tries to force ld
