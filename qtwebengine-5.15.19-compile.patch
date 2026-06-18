@@ -351,3 +351,47 @@ index c325f67be..f3c4e24dd 100644
  #include <cstring>
  #include <memory>
  #include <string>
+diff -up qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/gif/cfx_gif.h.omv~ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/gif/cfx_gif.h
+--- qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/gif/cfx_gif.h.omv~	2026-06-18 19:28:23.118479997 +0200
++++ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/core/fxcodec/gif/cfx_gif.h	2026-06-18 19:28:30.334720679 +0200
+@@ -9,6 +9,7 @@
+ 
+ #include <memory>
+ #include <vector>
++#include <cstdint>
+ 
+ #include "core/fxcrt/fx_memory_wrappers.h"
+ 
+diff -up qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomon.h.omv~ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomon.h
+--- qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomon.h.omv~	2026-06-18 19:39:44.011068036 +0200
++++ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomon.h	2026-06-18 19:39:53.053491543 +0200
+@@ -9,6 +9,7 @@
+ 
+ #include <memory>
+ #include <vector>
++#include <cstdint>
+ 
+ #include "core/fxcrt/unowned_ptr.h"
+ 
+diff -up qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomonGF256Poly.h.omv~ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomonGF256Poly.h
+--- qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomonGF256Poly.h.omv~	2026-06-18 19:56:16.590147781 +0200
++++ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/common/reedsolomon/BC_ReedSolomonGF256Poly.h	2026-06-18 19:56:23.534708537 +0200
+@@ -9,6 +9,7 @@
+ 
+ #include <memory>
+ #include <vector>
++#include <cstdint>
+ 
+ #include "core/fxcrt/unowned_ptr.h"
+ 
+diff -up qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/pdf417/BC_PDF417BarcodeMatrix.h.omv~ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/pdf417/BC_PDF417BarcodeMatrix.h
+--- qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/pdf417/BC_PDF417BarcodeMatrix.h.omv~	2026-06-18 19:57:04.578715995 +0200
++++ qtwebengine-everywhere-src-5.15.19-20260617/src/3rdparty/chromium/third_party/pdfium/fxbarcode/pdf417/BC_PDF417BarcodeMatrix.h	2026-06-18 19:57:12.511302124 +0200
+@@ -9,6 +9,7 @@
+ 
+ #include <memory>
+ #include <vector>
++#include <cstdint>
+ 
+ #include "core/fxcrt/fx_memory_wrappers.h"
+ 

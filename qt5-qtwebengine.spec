@@ -134,6 +134,7 @@ BuildRequires:	pkgconfig(re2)
 BuildRequires:	re2c
 BuildRequires:	python2
 BuildRequires:	qmake5
+BuildRequires:	make
 BuildRequires:	yasm
 BuildRequires:	cups-devel
 BuildRequires:	gperf
