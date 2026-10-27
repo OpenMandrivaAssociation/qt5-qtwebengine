@@ -1,0 +1,33 @@
+--- a/src/3rdparty/chromium/v8/src/regexp/gen-regexp-special-case.cc
++++ b/src/3rdparty/chromium/v8/src/regexp/gen-regexp-special-case.cc
+@@ -16,6 +16,14 @@
+ static const uc32 kSurrogateEnd = 0xdfff;
+ static const uc32 kNonBmpStart = 0x10000;
+ 
++// Unicode 18 case closures of BMP characters can contain supplementary
++// code points (U+1DF95 case-folds to U+00DF). Canonicalize() is only
++// defined for UTF-16 code units, and non-unicode ignoreCase matching
++// never compares a supplementary code point with a BMP character.
++static void RemoveSupplementary(icu::UnicodeSet& set) {
++  set.remove(static_cast<UChar32>(kNonBmpStart), 0x10ffff);
++}
++
+ // The following code generates "src/regexp/special-case.cc".
+ void PrintSet(std::ofstream& out, const char* name,
+               const icu::UnicodeSet& set) {
+@@ -62,6 +70,7 @@
+     }
+     current.set(i, i);
+     current.closeOver(USET_CASE_INSENSITIVE);
++    RemoveSupplementary(current);
+ 
+     // Check to see if all characters in the case-folding equivalence
+     // class as defined by UnicodeSet::closeOver all map to the same
+@@ -111,6 +120,7 @@
+       UChar32 canonical = RegExpCaseFolding::Canonicalize(c);
+       current.set(c, c);
+       current.closeOver(USET_CASE_INSENSITIVE);
++      RemoveSupplementary(current);
+       current.removeAll(ignore);
+       for (int32_t j = 0; j < current.getRangeCount(); j++) {
+         for (UChar32 c2 = current.getRangeStart(j);

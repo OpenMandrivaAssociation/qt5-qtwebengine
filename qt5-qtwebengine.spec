@@ -126,6 +126,9 @@ Patch1023:	qtwebengine-5.15.4-compile.patch
 # Fix glibc 2.34
 Patch1026:	qtwebengine-5.15.15-compile.patch
 Patch1027:	qtwebengine-5.15.19-compile.patch
+# ICU 79 Unicode 18 case closures include supplementary code points.
+# Canonicalize() asserts the character is a UTF-16 code unit.
+Patch1028:	qtwebengine-icu79-regexp-nonbmp.patch
 
 BuildRequires:	atomic-devel
 BuildRequires:	git-core
