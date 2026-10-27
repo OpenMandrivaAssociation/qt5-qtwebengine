@@ -513,6 +513,10 @@ mkdir bin
 ln -s /usr/bin/python2 bin/python
 export PATH="$(pwd)/bin:$PATH"
 
+%ifarch znver1
+# Build 682930 died in cc1plus while ninja ran -j32.
+export NINJAFLAGS="-v -j8"
+%else
 if [ $(getconf _NPROCESSORS_ONLN) -le 32 ]; then
     export NINJAFLAGS="-v %{_smp_mflags}"
 else
@@ -520,6 +524,7 @@ else
 # always run out of memory
     export NINJAFLAGS="-v -j 32"
 fi
+%endif
 
 %if %{with system_gn}
 QMAKE_EXTRA_ARGS+=" -webengine-system-gn"
